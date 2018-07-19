@@ -1,0 +1,17 @@
+﻿@model int
+
+<input id="routeId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h2>Procedure: <span data-bind="text: route().ProcedureName"></span></h2>
+        <h3>Type: <span data-bind="text: route().ProcedureRouteTypeName"></span></h3>
+        <h3>From: <span data-bind="text: route().FromProcedureStepName"></span></h3>
+        <h3>To: <span data-bind="text: route().ToProcedureStepName"></span></h3>
+        <h3>Id: <span data-bind="text: route().TripleStoreId"></span></h3>
+        <a href="/Route/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Scripts/Views/routeview.js"></script>
+}

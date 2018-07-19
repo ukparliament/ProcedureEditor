@@ -1,0 +1,100 @@
+﻿@model int?
+
+<input id="routeId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        @if (Model.HasValue)
+        {
+            <h2>Edit route</h2>
+        }
+        else
+        {
+            <h2>New route</h2>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Procedure*</label>
+                <div data-bind="foreach: procedures">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="procedure" data-bind="checked: $root.procedureId, checkedValue: Id, attr:{id: 'p'+Id}" />
+                        <label data-bind="text: ProcedureName, attr:{for: 'p'+Id}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Type*</label>
+                <div data-bind="foreach: routeTypes">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="routeType" data-bind="checked: $root.procedureRouteTypeId, checkedValue: Id, attr:{id: 'p'+Id}" />
+                        <label data-bind="text: ProcedureRouteTypeName, attr:{for: 'p'+Id}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>From step*</label>
+                <div class="input-group" data-bind="visible: fromProcedureStepId()!==null">
+                    <span class="form-control" data-bind="text: fromProcedureStepName"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeFromStep">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: fromProcedureStepId()===null, textInput: searchFromStepText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredFromSteps().length>0, foreach: filteredFromSteps">
+                    <li class="list-group-item">
+                        <span data-bind="text: ProcedureStepName"></span>
+                        <ul class="list-inline" data-bind="foreach: HouseNames">
+                            <li class="list-inline-item" data-bind="text: $data"></li>
+                        </ul>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectFromStep">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>To step*</label>
+                <div class="input-group" data-bind="visible: toProcedureStepId()!==null">
+                    <span class="form-control" data-bind="text: toProcedureStepName"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeToStep">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: toProcedureStepId()===null, textInput: searchToStepText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredToSteps().length>0, foreach: filteredToSteps">
+                    <li class="list-group-item">
+                        <span data-bind="text: ProcedureStepName"></span>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectToStep">Select</button>
+                    </li>
+                </ul>
+            </div>
+            @if (Model.HasValue)
+            {
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: route.TripleStoreId" readonly />
+                </div>
+            }
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
+        </form>
+    </div>
+</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteProcedure, actionText: 'Delete'">
+    @{
+        Html.RenderPartial("Popup");
+    }
+</popup>
+
+@section scripts{
+    <script src="~/Scripts/Views/routeedit.js"></script>
+    <script src="~/Scripts/Views/popup.js"></script>
+}

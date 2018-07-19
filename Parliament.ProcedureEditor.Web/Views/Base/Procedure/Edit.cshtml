@@ -1,0 +1,52 @@
+﻿@model int?
+
+<input id="procedureId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        @if (Model.HasValue)
+        {
+            <h2>Edit procedure</h2>
+        }
+        else
+        {
+            <h2>New procedure</h2>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Name*</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: procedureName" />
+            </div>
+
+            @if (Model.HasValue)
+            {
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: procedure.TripleStoreId" readonly />
+                </div>
+            }
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
+        </form>
+    </div>
+</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteProcedure, actionText: 'Delete'">
+    @{
+        Html.RenderPartial("Popup");
+    }
+</popup>
+
+@section scripts{
+    <script src="~/Scripts/Views/procedureedit.js"></script>
+    <script src="~/Scripts/Views/popup.js"></script>
+}

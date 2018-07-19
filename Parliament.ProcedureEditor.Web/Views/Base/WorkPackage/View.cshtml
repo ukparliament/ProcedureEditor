@@ -1,0 +1,40 @@
+﻿@model int
+
+<input id="workPackageableId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h2>Work package: <span data-bind="text: workPackageable().ProcedureWorkPackageableThingName"></span></h2>
+        <h3>Procedure: <span data-bind="text: workPackageable().ProcedureName"></span></h3>
+        <h3>Work packageable Id: <span data-bind="text: workPackageable().TripleStoreId"></span></h3>
+        <h3>Work package Id: <span data-bind="text: workPackageable().ProcedureWorkPackageTripleStoreId"></span></h3>
+        <h3 data-bind="visible: (workPackageable().StatutoryInstrumentNumberPrefix||'').length>0">Prefix: <span data-bind="text: workPackageable().StatutoryInstrumentNumberPrefix"></span></h3>
+        <h3 data-bind="visible: (workPackageable().StatutoryInstrumentNumber||'').length>0">Number: <span data-bind="text: workPackageable().StatutoryInstrumentNumber"></span></h3>
+        <h3 data-bind="visible: workPackageable().StatutoryInstrumentNumberYear!==null">Year: <span data-bind="text: workPackageable().StatutoryInstrumentNumberYear"></span></h3>
+        <a href="/WorkPackage/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h4>Business items</h4>
+        <ul class="list-group list-group-flush" data-bind="visible:businessItems().length>0, foreach: businessItems">
+            <li class="list-group-item">
+                <a data-bind="attr: {href: window.urls.showBusinessItem.replace('{id}',Id)}">
+                    <ul class="list-unstyled" data-bind="foreach: Steps">
+                        <li>
+                            <h5 data-bind="text: ProcedureStepName"></h5>
+                            <ul class="list-inline" data-bind="foreach: HouseNames">
+                                <li class="list-inline-item"><h6 data-bind="text: $data"></h6></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate))?'N/A':new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>                    
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Scripts/Views/workpackageview.js"></script>
+}

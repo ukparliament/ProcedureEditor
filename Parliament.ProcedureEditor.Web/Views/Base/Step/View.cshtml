@@ -1,0 +1,44 @@
+﻿@model int
+
+<input id="stepId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h2>Name: <span data-bind="text: step().ProcedureStepName"></span></h2>
+        <h3>Id: <span data-bind="text: step().TripleStoreId"></span></h3>
+        <a href="/step/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h4>Business items</h4>
+        <ul class="list-group list-group-flush" data-bind="visible:businessItems().length>0, foreach: businessItems">
+            <li class="list-group-item">
+                <a data-bind="attr: {href: window.urls.showBusinessItem.replace('{id}',Id)}">
+                    <h5 data-bind="text: ProcedureWorkPackageableThingName"></h5>
+                    <h6 data-bind="text: ProcedureName"></h6>
+                    <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate))?'N/A':new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h4>Routes</h4>
+        <ul class="list-group list-group-flush" data-bind="visible:routes().length>0, foreach: routes">
+            <li class="list-group-item">
+                <a data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">
+                    <h5 data-bind="text: ProcedureName"></h5>
+                    <h6 data-bind="text: ProcedureRouteTypeName"></h6>
+                    <h6>From <span data-bind="text: FromProcedureStepName"></span> to <span data-bind="text: ToProcedureStepName"></span></h6>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Scripts/Views/stepview.js"></script>
+}

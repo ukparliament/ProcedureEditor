@@ -1,0 +1,123 @@
+﻿@model int?
+
+<input id="businessItemId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        @if (Model.HasValue)
+        {
+            <h2>Edit business item</h2>
+        }
+        else
+        {
+            <h2>New business item</h2>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Work package*</label>
+                <div class="input-group" data-bind="visible: procedureWorkPackageId()!==null">
+                    <span type="text" class="form-control" data-bind="text: procedureWorkPackageableThingName"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeWorkPackage">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: procedureWorkPackageId()===null, textInput: searchWorkPackageText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredWorkPackages().length>0, foreach: filteredWorkPackages">
+                    <li class="list-group-item">
+                        <span data-bind="text: ProcedureWorkPackageableThingName"></span>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectWorkPackage">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Step*</label>                
+                <dl data-bind="foreach: computedSteps">
+                    <dd>
+                        <div class="input-group">
+                            <span class="form-control" data-bind="text: ProcedureStepName"></span>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" data-bind="click: $parent.removeStep">Remove</button>
+                            </div>
+                        </div>
+                    </dd>
+                </dl>
+                <input class="form-control" data-bind="textInput: searchStepText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredSteps().length>0, foreach: filteredSteps">
+                    <li class="list-group-item">
+                        <span data-bind="text: ProcedureStepName"></span>
+                        <ul class="list-inline" data-bind="foreach: HouseNames">
+                            <li class="list-inline-item" data-bind="text: $data"></li>
+                        </ul>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectStep">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Laying body</label>
+                <div class="input-group" data-bind="visible: layingBodyId()!==null">
+                    <span class="form-control" data-bind="text: layingBodyName"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeLayingBody">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: layingBodyId()===null, textInput: searchLayingBodyText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredLayingBodies().length>0, foreach: filteredLayingBodies">
+                    <li class="list-group-item">
+                        <span data-bind="text: LayingBodyName"></span>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectLayingBody">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <div class="form-row" data-bind="with: biDate">
+                    <div class="form-group col-md-1">
+                        <label>Day</label>
+                        <input type="number" class="form-control" data-bind="textInput: day" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label>Month</label>
+                        <input type="number" class="form-control" data-bind="textInput: month" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Year</label>
+                        <input type="number" class="form-control" data-bind="textInput: year" />
+                    </div>
+                </div>
+            </div>
+            @if (Model.HasValue)
+            {
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: businessItem.TripleStoreId" readonly />
+                </div>
+            }
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
+        </form>
+    </div>
+</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteBusinessItem, actionText: 'Delete'">
+    @{
+        Html.RenderPartial("Popup");
+    }
+</popup>
+
+@section scripts{
+    <script src="~/Scripts/Views/businessitemedit.js"></script>
+    <script src="~/Scripts/Views/popup.js"></script>
+}

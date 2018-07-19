@@ -1,0 +1,31 @@
+﻿body, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+header {
+    position: relative;
+    padding-top: 15px;
+    padding-bottom: 17px;
+    background-color: #373151;
+    color: #F8F7F7;
+}
+
+main {
+    padding-bottom: 36px;
+    box-sizing: border-box;
+    flex-grow: 1;
+}
+
+footer {
+    width: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: #373151;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    color: #F8F7F7;
+}
+
+section {
+    padding-top: 20px;
+}

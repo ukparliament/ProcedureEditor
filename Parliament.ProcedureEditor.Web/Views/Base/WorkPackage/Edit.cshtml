@@ -1,0 +1,127 @@
+﻿@model int?
+
+<input id="workPackageableId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        @if (Model.HasValue)
+        {
+            <h2>Edit work package</h2>
+        }
+        else
+        {
+            <h2>New work package</h2>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Procedure*</label>
+                <div data-bind="foreach: procedures">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="procedure" data-bind="checked: $root.procedureId, checkedValue: Id, attr:{id: 'p'+Id}" />
+                        <label data-bind="text: ProcedureName, attr:{for: 'p'+Id}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Name*</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: procedureWorkPackageableThingName" />
+            </div>
+            <div class="form-group">
+                <label>Number</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumber" />
+            </div>
+            <div class="form-group">
+                <label>Prefix</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberPrefix" />
+            </div>
+            <div class="form-group">
+                <label>Year</label>
+                <input type="number" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberYear" />
+            </div>
+            <div class="form-group">
+                <label>Coming into force note</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: comingIntoForceNote" />
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <div data-bind="foreach: types">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="wptype" data-bind="checked: $root.procedureWorkPackageableThingTypeId, checkedValue: Id, attr:{id: 't'+Id}" />
+                        <label data-bind="text: ProcedureWorkPackageableThingTypeName, attr:{for: 't'+Id}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Coming into force date</label>
+                <div class="form-row" data-bind="with: forceDate">
+                    <div class="form-group col-md-1">
+                        <label>Day</label>
+                        <input type="number" class="form-control" data-bind="textInput: day" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label>Month</label>
+                        <input type="number" class="form-control" data-bind="textInput: month" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Year</label>
+                        <input type="number" class="form-control" data-bind="textInput: year" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Time limit for objection end date</label>
+                <div class="form-row" data-bind="with: objectionDate">
+                    <div class="form-group col-md-1">
+                        <label>Day</label>
+                        <input type="number" class="form-control" data-bind="textInput: day" />
+                    </div>
+                    <div class="form-group col-md-1">
+                        <label>Month</label>
+                        <input type="number" class="form-control" data-bind="textInput: month" />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>Year</label>
+                        <input type="number" class="form-control" data-bind="textInput: year" />
+                    </div>
+                </div>                
+            </div>
+            @if (Model.HasValue)
+            {
+                <div class="form-group">
+                    <label>Work packageable Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: workPackageable.TripleStoreId" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Work package Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: workPackageable.ProcedureWorkPackageTripleStoreId" readonly />
+                </div>
+            }
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
+        </form>
+    </div>
+</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageable, actionText: 'Delete'">
+    @{
+        Html.RenderPartial("Popup");
+    }
+</popup>
+
+@section scripts{
+    <script src="~/Scripts/Views/workpackageedit.js"></script>
+    <script src="~/Scripts/Views/popup.js"></script>    
+}

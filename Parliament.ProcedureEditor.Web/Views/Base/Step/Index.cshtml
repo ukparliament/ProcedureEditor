@@ -1,0 +1,27 @@
+﻿<section>
+    <div class="container">
+        <h2>Steps</h2>
+        <a href="/Step/Edit" class="btn btn-outline-primary btn-sm">Add step</a>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <ul class="list-group list-group-flush" data-bind="visible:steps().length>0, foreach: steps">
+            <li class="list-group-item">
+                <a data-bind="attr: {href: window.urls.showStep.replace('{id}',Id)}">
+                    <h5 data-bind="text: ProcedureStepName"></h5>
+                    <ul class="list-inline" data-bind="foreach: HouseNames">
+                        <li class="list-inline-item"><h6 data-bind="text: $data"></h6></li>
+                    </ul>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+
+
+@section scripts{
+    <script src="~/Scripts/Views/steplist.js"></script>
+}

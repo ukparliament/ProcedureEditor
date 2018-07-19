@@ -1,0 +1,26 @@
+﻿<section>
+    <div class="container">
+        <h2 data-bind="visible: procedures().length>0" style="display:none">Procedures</h2>
+        <h2 data-bind="visible: procedures().length===0" style="display:none">No procedures</h2>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <ul class="list-group list-group-flush" data-bind="foreach: procedures">
+            <li class="list-group-item">
+                <a data-bind="text: ProcedureName, attr:{href: window.urls.showProcedure.replace('{id}',Id)}"></a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <a href="/Procedure/Edit" class="btn btn-outline-primary btn-sm">Add procedure</a>
+    </div>
+</section>
+
+@section scripts{
+    <script src="~/Scripts/Views/procedurelist.js"></script>
+}

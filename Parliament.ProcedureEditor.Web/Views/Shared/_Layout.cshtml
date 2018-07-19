@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedure Editor</title>
+    <link rel="stylesheet" href="~/Content/main.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <script src="~/Scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/knockout-3.4.2.js" type="text/javascript"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Procedure Editor</h1>
+        </div>
+    </header>
+    <nav class="navbar navbar-expand-md">
+        <div class="container">
+            <div class="navbar-nav mx-auto border-bottom">
+                <a href="/Procedure" class="nav-item nav-link">Procedures</a>
+                <a href="/WorkPackage" class="nav-item nav-link">Work packages</a>
+                <a href="/BusinessItem" class="nav-item nav-link">Business items</a>
+                <a href="/Route" class="nav-item nav-link">Routes</a>
+                <a href="/Step" class="nav-item nav-link">Steps</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        @RenderBody()
+    </main>
+    <footer>
+        <div class="container">
+            <h6>UK Parliament</h6>
+        </div>
+    </footer>
+    <script>
+        (function () {
+            var urls = {
+                getProcedures: "/api/procedure",
+                addProcedure: "/api/procedure",
+                updateProcedure: "/api/procedure/{id}",
+                deleteProcedure: "/api/procedure/{id}",
+                getProcedure: "/api/procedure/{id}",
+                showProcedures: "/Procedure",
+                showProcedure: "/Procedure/View/{id}",
+
+                getWorkPackages: "/api/workpackage",
+                getWorkPackagesSearchByProcedureAndText: "/api/workpackage?procedureId={procedureId}&searchText={searchText}",
+                getWorkPackagesSearchByProcedure: "/api/workpackage?procedureId={procedureId}",
+                getWorkPackagesSearch: "/api/workpackage?searchText={searchText}",
+                getWorkPackage: "/api/workpackage/{id}",
+                addWorkPackage: "/api/workpackage",
+                updateWorkPackage: "/api/workpackage/{id}",
+                deleteWorkPackage: "/api/workpackage/{id}",
+                showWorkPackages: "/WorkPackage",
+                showWorkPackage: "/WorkPackage/View/{id}",
+
+                getWorkPackageTypes: "/api/workpackageabletype",
+
+                getRoutes: "/api/route",
+                addRoute: "/api/route",
+                updateRoute: "/api/route/{id}",
+                deleteRoute: "/api/route/{id}",
+                getRoute: "/api/route/{id}",
+                getRoutesSearch: "/api/route?searchText={searchText}",
+                getRoutesSearchByProcedure: "/api/route?procedureId={procedureId}",
+                getRoutesSearchByStep: "/api/route?stepId={stepId}",
+                showRoutes: "/Route",
+                showRoute: "/Route/View/{id}",
+
+                getRouteTypes: "/api/routetype",
+
+                getSteps: "/api/step",
+                addStep: "/api/step",
+                updateStep: "/api/step/{id}",
+                deleteStep: "/api/step/{id}",
+                getStep: "/api/step/{id}",
+                getStepsSearch: "/api/step?searchText={searchText}",
+                getStepsSearchByWorkPackage: "/api/step?workPackageId={workPackageId}",
+                showSteps: "/Step",
+                showStep: "/Step/View/{id}",
+
+                getLayingBodies: "/api/layingbody",
+
+                getBusinessItems: "/api/businessitem",
+                addBusinessItem: "/api/businessitem",
+                updateBusinessItem: "/api/businessitem/{id}",
+                deleteBusinessItem: "/api/businessitem/{id}",
+                getBusinessItem: "/api/businessitem/{id}",
+                getBusinessItemsSearch: "/api/businessitem?searchText={searchText}",
+                getBusinessItemsSearchByWorkPackage: "/api/businessitem?workPackageId={workPackageId}",
+                getBusinessItemsSearchByStep: "/api/businessitem?stepId={stepId}",
+                showBusinessItems: "/BusinessItem",
+                showBusinessItem: "/BusinessItem/View/{id}",
+
+                getHouses: "/api/house"
+
+            };
+            window.urls = urls;
+
+        })();
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
