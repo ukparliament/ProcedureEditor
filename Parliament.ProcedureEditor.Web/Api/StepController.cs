@@ -132,7 +132,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 where Id=@Id",
                 new
                 {
-                    ProcedureStepName = step.ProcedureStepName,
+                    ProcedureStepName = step.ProcedureStepName.Trim(),
                     ProcedureStepDescription = step.ProcedureStepDescription,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
@@ -168,7 +168,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     @ModifiedBy,@ModifiedAt,@TripleStoreId)",
                 new
                 {
-                    ProcedureStepName = step.ProcedureStepName,
+                    ProcedureStepName = step.ProcedureStepName.Trim(),
                     ProcedureStepDescription = step.ProcedureStepDescription,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,

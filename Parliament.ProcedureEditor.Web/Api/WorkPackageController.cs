@@ -103,7 +103,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 where Id=@Id",
                 new
                 {
-                    ProcedureWorkPackageableThingName = workPackageable.ProcedureWorkPackageableThingName,
+                    ProcedureWorkPackageableThingName = workPackageable.ProcedureWorkPackageableThingName.Trim(),
                     StatutoryInstrumentNumber=workPackageable.StatutoryInstrumentNumber,
                     StatutoryInstrumentNumberPrefix = workPackageable.StatutoryInstrumentNumberPrefix,
                     StatutoryInstrumentNumberYear = workPackageable.StatutoryInstrumentNumberYear,
@@ -142,7 +142,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     @TripleStoreId,@ProcedureWorkPackageTripleStoreId)",
                 new
                 {
-                    ProcedureWorkPackageableThingName = workPackageable.ProcedureWorkPackageableThingName,
+                    ProcedureWorkPackageableThingName = workPackageable.ProcedureWorkPackageableThingName.Trim(),
                     StatutoryInstrumentNumber = workPackageable.StatutoryInstrumentNumber,
                     StatutoryInstrumentNumberPrefix = workPackageable.StatutoryInstrumentNumberPrefix,
                     StatutoryInstrumentNumberYear = workPackageable.StatutoryInstrumentNumberYear,

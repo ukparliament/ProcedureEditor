@@ -42,7 +42,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 where Id=@Id",
                 new
                 {
-                    ProcedureName = procedure.ProcedureName,
+                    ProcedureName = procedure.ProcedureName.Trim(),
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
@@ -62,7 +62,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 new
                 {
                     TripleStoreId = tripleStoreId,
-                    ProcedureName = procedure.ProcedureName,
+                    ProcedureName = procedure.ProcedureName.Trim(),
                     ModifiedBy = EMail,
                     ModifiedAt = DateTime.UtcNow
                 });
