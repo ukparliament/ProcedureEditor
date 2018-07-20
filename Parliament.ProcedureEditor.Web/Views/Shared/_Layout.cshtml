@@ -20,6 +20,7 @@
             <div class="navbar-nav mx-auto border-bottom">
                 <a href="/Procedure" class="nav-item nav-link">Procedures</a>
                 <a href="/WorkPackage" class="nav-item nav-link">Work packages</a>
+                <a href="/WorkPackagePreceding" class="nav-item nav-link">Work package precedings</a>
                 <a href="/BusinessItem" class="nav-item nav-link">Business items</a>
                 <a href="/Route" class="nav-item nav-link">Routes</a>
                 <a href="/Step" class="nav-item nav-link">Steps</a>
@@ -94,7 +95,15 @@
                 showBusinessItems: "/BusinessItem",
                 showBusinessItem: "/BusinessItem/View/{id}",
 
-                getHouses: "/api/house"
+                getHouses: "/api/house",
+
+                getWorkPackageablePrecedings: "/api/workpackageablepreceding",
+                getWorkPackageablePreceding: "/api/workpackageablepreceding/{id}",
+                addWorkPackageablePreceding: "/api/workpackageablepreceding",
+                updateWorkPackageablePreceding: "/api/workpackageablepreceding/{id}",
+                deleteWorkPackageablePreceding: "/api/workpackageablepreceding/{id}",
+                showWorkPackageablePrecedings: "/WorkPackagePreceding",
+                showWorkPackageablePreceding: "/WorkPackagePreceding/View/{id}"
 
             };
             window.urls = urls;

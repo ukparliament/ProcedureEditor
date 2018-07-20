@@ -30,6 +30,7 @@
                 <ul class="list-group list-group-flush" data-bind="visible:filteredWorkPackages().length>0, foreach: filteredWorkPackages">
                     <li class="list-group-item">
                         <span data-bind="text: ProcedureWorkPackageableThingName"></span>
+                        <p data-bind="text: ProcedureName"></p>
                         <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectWorkPackage">Select</button>
                     </li>
                 </ul>

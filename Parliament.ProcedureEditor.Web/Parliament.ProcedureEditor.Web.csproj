@@ -194,10 +194,13 @@
     <Content Include="Scripts\Views\stepview.js" />
     <Content Include="Scripts\Views\stepedit.js" />
     <Content Include="Scripts\Views\steplist.js" />
+    <Content Include="Scripts\Views\workpackageableprecedingedit.js" />
+    <Content Include="Scripts\Views\workpackageableprecedinglist.js" />
     <Content Include="Scripts\Views\workpackagelist.js" />
     <Content Include="Scripts\Views\workpackageedit.js" />
     <Content Include="Scripts\Views\search.js" />
     <Content Include="Scripts\Views\popup.js" />
+    <Content Include="Scripts\Views\workpackageableprecedingview.js" />
     <Content Include="Scripts\Views\workpackageview.js" />
     <Content Include="Scripts\Views\procedureview.js" />
     <Content Include="Scripts\Views\procedureedit.js" />
@@ -215,6 +218,7 @@
     <Compile Include="Api\StepController.cs" />
     <Compile Include="Api\RouteTypeController.cs" />
     <Compile Include="Api\WorkPackageableTypeController.cs" />
+    <Compile Include="Api\WorkPackageablePrecedingController.cs" />
     <Compile Include="Api\WorkPackageController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Models\LayingBody.cs" />
@@ -225,6 +229,7 @@
     <Compile Include="Models\Step.cs" />
     <Compile Include="Models\RouteType.cs" />
     <Compile Include="Models\House.cs" />
+    <Compile Include="Models\WorkPackageablePreceding.cs" />
     <Compile Include="Models\WorkPackageableType.cs" />
     <Compile Include="Models\WorkPackageable.cs" />
     <Compile Include="Global.asax.cs">
@@ -269,6 +274,9 @@
     <Content Include="Views\Base\BusinessItem\Edit.cshtml" />
     <Content Include="Views\Base\BusinessItem\Index.cshtml" />
     <Content Include="Views\Base\BusinessItem\View.cshtml" />
+    <Content Include="Views\Base\WorkPackagePreceding\Edit.cshtml" />
+    <Content Include="Views\Base\WorkPackagePreceding\Index.cshtml" />
+    <Content Include="Views\Base\WorkPackagePreceding\View.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

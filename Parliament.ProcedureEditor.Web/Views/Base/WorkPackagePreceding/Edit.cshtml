@@ -1,0 +1,74 @@
+﻿@model int?
+
+<input id="workPackageablePrecedingId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        @if (Model.HasValue)
+        {
+            <h2>Edit work package preceding</h2>
+        }
+        else
+        {
+            <h2>New work package preceding</h2>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Preceding*</label>
+                <div class="input-group" data-bind="visible: precedingProcedureWorkPackageableThingId()!==null">
+                    <span type="text" class="form-control" data-bind="text: precedingProcedureWorkPackageableThingName()"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removePreceding">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: precedingProcedureWorkPackageableThingId()===null, textInput: searchPrecedingText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredPrecedings().length>0, foreach: filteredPrecedings">
+                    <li class="list-group-item">
+                        <span data-bind="text: ProcedureWorkPackageableThingName"></span>
+                        <p data-bind="text: ProcedureName"></p>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectPreceding">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Following*</label>
+                <div class="input-group" data-bind="visible: followingProcedureWorkPackageableThingId()!==null">
+                    <span type="text" class="form-control" data-bind="text: followingProcedureWorkPackageableThingName()"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeFollowing">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: followingProcedureWorkPackageableThingId()===null, textInput: searchFollowingText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredFollowing().length>0, foreach: filteredFollowing">
+                    <li class="list-group-item">
+                        <span data-bind="text: ProcedureWorkPackageableThingName"></span>
+                        <p data-bind="text: ProcedureName"></p>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectFollowing">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
+        </form>
+    </div>
+</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageablePreceding, actionText: 'Delete'">
+    @{
+        Html.RenderPartial("Popup");
+    }
+</popup>
+
+@section scripts{
+    <script src="~/Scripts/Views/workpackageableprecedingedit.js"></script>
+    <script src="~/Scripts/Views/popup.js"></script>    
+}

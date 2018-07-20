@@ -2,7 +2,7 @@
 
 namespace Parliament.ProcedureEditor.Web.Controllers
 {
-    [RoutePrefix(@"{route:regex((?i)(procedure)|(?i)(workpackage)|(?i)(step)|(?i)(route)|(?i)(businessitem))}")]
+    [RoutePrefix(@"{route:regex((?i)(procedure)|(?i)(workpackage)|(?i)(step)|(?i)(route)|(?i)(businessitem)|(?i)(workpackagepreceding))}")]
     public class BaseController : Controller
     {
         [Route]

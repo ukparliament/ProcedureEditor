@@ -44,7 +44,7 @@
             });
         };
 
-        if (self.procedureWorkPackageId() != null)
+        if (self.procedureWorkPackageId() !== null)
             self.getSteps();
 
         $.get(window.urls.getLayingBodies, function (data) {

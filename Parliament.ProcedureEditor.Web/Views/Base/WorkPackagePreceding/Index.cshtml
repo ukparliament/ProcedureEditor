@@ -1,0 +1,25 @@
+﻿<section>
+    <div class="container">
+        <h2>Work package precedings</h2>
+        <a href="/WorkPackagePreceding/Edit" class="btn btn-outline-primary btn-sm">Add work package preceding</a>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <ul class="list-group list-group-flush" data-bind="visible:workPackageablePrecedings().length>0, foreach: workPackageablePrecedings">
+            <li class="list-group-item">
+                <a data-bind="attr: {href: window.urls.showWorkPackageablePreceding.replace('{id}',Id)}">
+                    <h5>Preceding: <span data-bind="text: PrecedingProcedureWorkPackageableThingName"></span></h5>
+                    <h5>Following: <span data-bind="text: FollowingProcedureWorkPackageableThingName"></span></h5>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+
+
+@section scripts{
+    <script src="~/Scripts/Views/workpackageableprecedinglist.js"></script>
+}
