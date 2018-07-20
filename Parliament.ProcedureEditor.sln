@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parliament.ProcedureEditor.Web", "Parliament.ProcedureEditor.Web\Parliament.ProcedureEditor.Web.csproj", "{988A6E1A-4869-4986-9BB5-2231400421EE}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Parliament.ProcedureEditor.SqlSchema", "Parliament.ProcedureEditor.SqlSchema\Parliament.ProcedureEditor.SqlSchema.sqlproj", "{48622F26-2079-4C6E-B1DB-1D30C45BD261}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,12 @@ Global
 		{988A6E1A-4869-4986-9BB5-2231400421EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{988A6E1A-4869-4986-9BB5-2231400421EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{988A6E1A-4869-4986-9BB5-2231400421EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48622F26-2079-4C6E-B1DB-1D30C45BD261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48622F26-2079-4C6E-B1DB-1D30C45BD261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48622F26-2079-4C6E-B1DB-1D30C45BD261}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{48622F26-2079-4C6E-B1DB-1D30C45BD261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48622F26-2079-4C6E-B1DB-1D30C45BD261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48622F26-2079-4C6E-B1DB-1D30C45BD261}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
