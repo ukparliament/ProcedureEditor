@@ -6,9 +6,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Web.Http;
-using static Dapper.SqlMapper;
 
 namespace Parliament.ProcedureEditor.Web.Api
 {
@@ -47,9 +45,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             get
             {
-                return "test";
-                return (User.Identity as ClaimsIdentity)
-                    ?.FindFirst(System.IdentityModel.Claims.ClaimTypes.Email).Value;
+                return User.Identity.Name;
             }
         }
 
@@ -82,7 +78,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    using (GridReader grid = connection.QueryMultiple(command))
+                    using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
                     {
                         resultT = grid.Read<T>().ToList();
                         resultK = grid.Read<K>().ToList();
@@ -124,7 +120,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    using (GridReader grid = connection.QueryMultiple(command))
+                    using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
                     {
                         resultT = grid.Read<T>().SingleOrDefault();
                         resultK = grid.Read<K>().ToList();

@@ -13,8 +13,8 @@ namespace Parliament.ProcedureEditor.Web
         protected void Application_Start()
         {
             GlobalConfiguration.Configuration.Services.Add(typeof(IExceptionLogger), new AIExceptionLogger());
-            //GlobalFilters.Filters.Add(new System.Web.Mvc.AuthorizeAttribute());
-            //GlobalConfiguration.Configuration.Filters.Add(new System.Web.Http.AuthorizeAttribute());
+            GlobalFilters.Filters.Add(new System.Web.Mvc.AuthorizeAttribute());
+            GlobalConfiguration.Configuration.Filters.Add(new System.Web.Http.AuthorizeAttribute());
             RouteTable.Routes.MapMvcAttributeRoutes();
             GlobalConfiguration.Configuration.Routes.MapHttpRoute("api", "api/{controller}/{id}", new
             {

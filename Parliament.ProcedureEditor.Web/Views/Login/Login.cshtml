@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedure Editor</title>
+    <link rel="stylesheet" href="~/Content/main.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Procedure Editor</h1>
+        </div>
+    </header>
+    
+    <main>
+        <section>
+            <div class="container">
+                <form method="post" action="Login">
+                    @Html.AntiForgeryToken()
+                    <h5 id="invalidText" class="text-danger" style="display:none">Invalid email or password.</h5>
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input name="EMail" type="email" class="form-control" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input name="Password" type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <h6>UK Parliament</h6>
+        </div>
+    </footer>
+</body>
+</html>
