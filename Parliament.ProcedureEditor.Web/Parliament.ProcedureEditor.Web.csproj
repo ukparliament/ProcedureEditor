@@ -208,7 +208,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AIExceptionLogger.cs" />
+    <Compile Include="AIInitializer.cs" />
     <Compile Include="Api\BaseApiController.cs" />
     <Compile Include="Api\ProcedureController.cs" />
     <Compile Include="Api\RouteController.cs" />
