@@ -35,7 +35,7 @@ namespace Parliament.ProcedureEditor.Web.Controllers
         }
 
         [Route("logout")]
-        public ActionResult LogOut()
+        public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Login");
