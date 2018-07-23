@@ -61,7 +61,6 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
-    <Folder Include="Security\" />
     <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
@@ -77,22 +76,11 @@
     <Build Include="dbo\Tables\ProcedureWorkPackageableThingType.sql" />
     <Build Include="dbo\Tables\ProcedureBusinessItem.sql" />
     <Build Include="dbo\Tables\ProcedureBusinessItemProcedureStep.sql" />
-    <Build Include="Security\orchestration.sql" />
-    <Build Include="Security\powerapp.sql" />
-    <Build Include="Security\RoleMemberships.sql" />
     <Build Include="dbo\Stored Procedures\DeleteStep.sql" />
     <Build Include="dbo\Stored Procedures\DeleteBusinessItem.sql" />
     <Build Include="dbo\Stored Procedures\DeleteRoute.sql" />
     <Build Include="dbo\Stored Procedures\DeleteWorkPackageable.sql" />
     <Build Include="dbo\Stored Procedures\DeleteWorkPackageablePreceding.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureWorkPackageableThingPreceding-Obsolete.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureWorkPackageableThing-Obsolete.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureStepHouse-Obsolete.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureRoute-Obsolete.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureBusinessItemProcedureWorkPackage-Obsolete.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureBusinessItemProcedureStep-Obsolete.sql" />
-    <Build Include="dbo\Stored Procedures\ImportProcedureBusinessItem-Obsolete.sql" />
     <Build Include="dbo\Stored Procedures\DeleteProcedure.sql" />
-    <Build Include="dbo\Stored Procedures\ClearDatabaseBeforeImport-Obsolete.sql" />
   </ItemGroup>
 </Project>
