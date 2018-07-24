@@ -31,6 +31,7 @@
                     <li class="list-group-item">
                         <span data-bind="text: ProcedureWorkPackageableThingName"></span>
                         <p data-bind="text: ProcedureName"></p>
+                        <p data-bind="text: isNaN(Date.parse(MostRecentBusinessItemDate))?'N/A':new Date(MostRecentBusinessItemDate).toLocaleDateString('en-GB')"></p>
                         <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectWorkPackage">Select</button>
                     </li>
                 </ul>
