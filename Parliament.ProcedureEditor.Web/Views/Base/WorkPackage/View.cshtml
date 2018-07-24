@@ -11,7 +11,12 @@
         <h3 data-bind="visible: (workPackageable().StatutoryInstrumentNumber||'').length>0">Number: <span data-bind="text: workPackageable().StatutoryInstrumentNumber"></span></h3>
         <h3 data-bind="visible: workPackageable().StatutoryInstrumentNumberYear!==null">Year: <span data-bind="text: workPackageable().StatutoryInstrumentNumberYear"></span></h3>
         <a href="/WorkPackage/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
+        <a data-bind="attr:{ href:'https://beta.parliament.uk/work-packages/'+workPackageable().ProcedureWorkPackageTripleStoreId}" class="btn btn-outline-secondary btn-sm" target="_blank">Website</a>
     </div>
+</section>
+
+<section id="graphviz" class="embed-responsive embed-responsive-16by9">
+    <iframe class="embed-responsive-item" data-bind="attr: {src: 'https://procedures.azurewebsites.net/workpackagesgraphviz/'+ workPackageable().ProcedureWorkPackageTripleStoreId}"></iframe>
 </section>
 
 <section>
