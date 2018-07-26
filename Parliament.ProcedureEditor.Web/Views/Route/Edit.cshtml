@@ -1,5 +1,9 @@
 ﻿@model int?
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <input id="routeId" type="hidden" value="@Model" />
 <section>
     <div class="container">
@@ -67,6 +71,9 @@
                 <ul class="list-group list-group-flush" data-bind="visible:filteredToSteps().length>0, foreach: filteredToSteps">
                     <li class="list-group-item">
                         <span data-bind="text: ProcedureStepName"></span>
+                        <ul class="list-inline" data-bind="foreach: HouseNames">
+                            <li class="list-inline-item" data-bind="text: $data"></li>
+                        </ul>
                         <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectToStep">Select</button>
                     </li>
                 </ul>

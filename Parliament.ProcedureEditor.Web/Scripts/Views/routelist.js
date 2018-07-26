@@ -3,7 +3,7 @@
         var self = this;
         self.routes = ko.observableArray([]);
 
-        $.get(window.urls.getRoutes, function (data) {
+        $.getJSON(window.urls.getRoutes, function (data) {
             self.routes(data);
         });
 

@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,15 @@ namespace Parliament.ProcedureEditor.Web.Api
 
     public class WorkPackageablePrecedingController : BaseApiController
     {
+        [HttpGet]
+        [ContentNegotiation("workpackagepreceding", ContentType.HTML)]
+        public IHttpActionResult GetView()
+        {
+            return RenderView("Index");
+        }
+
+        [HttpGet]
+        [ContentNegotiation("workpackagepreceding", ContentType.JSON)]
         public List<WorkPackageablePreceding> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select p.Id, p.PrecedingProcedureWorkPackageableThingId,
@@ -21,6 +31,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItems<WorkPackageablePreceding>(command);
         }
 
+        [HttpGet]
+        [ContentNegotiation("workpackagepreceding/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetView(int id)
+        {
+            return RenderView("View", id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("workpackagepreceding/{id:int}", ContentType.JSON)]
         public WorkPackageablePreceding Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select p.Id, p.PrecedingProcedureWorkPackageableThingId,
@@ -35,6 +54,22 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItem<WorkPackageablePreceding>(command);
         }
 
+        [HttpGet]
+        [ContentNegotiation("workpackagepreceding/edit/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetEdit(int id)
+        {
+            return RenderView("Edit", id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("workpackagepreceding/add", ContentType.HTML)]
+        public IHttpActionResult GetAdd()
+        {
+            return RenderView("Edit");
+        }
+
+        [HttpPut]
+        [ContentNegotiation("workpackagepreceding/{id:int}", ContentType.JSON)]
         public bool Put(int id, [FromBody]WorkPackageablePreceding workPackageablePreceding)
         {
             if ((workPackageablePreceding == null) ||
@@ -58,6 +93,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(command);
         }
 
+        [HttpPost]
+        [ContentNegotiation("workpackagepreceding", ContentType.JSON)]
         public bool Post([FromBody]WorkPackageablePreceding workPackageablePreceding)
         {
             if ((workPackageablePreceding == null) ||
@@ -79,6 +116,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(command);
         }
 
+        [HttpDelete]
+        [ContentNegotiation("workpackagepreceding/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
             DynamicParameters parameters = new DynamicParameters();

@@ -6,7 +6,7 @@
     };
 
     var routeId = $("#routeId").val();
-    $.get(window.urls.getRoute.replace("{id}", routeId), function (data) {
+    $.getJSON(window.urls.getRoute.replace("{id}", routeId), function (data) {
         var vm = new viewModel(data);
         ko.applyBindings(vm);
     });

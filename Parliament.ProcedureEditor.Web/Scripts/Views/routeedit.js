@@ -28,11 +28,11 @@
         self.fromProcedureStepName = ko.observable("");
         self.toProcedureStepName = ko.observable("");
 
-        $.get(window.urls.getRouteTypes, function (data) {
+        $.getJSON(window.urls.getRouteTypes, function (data) {
             self.routeTypes(data);
         });
 
-        $.get(window.urls.getSteps, function (data) {
+        $.getJSON(window.urls.getSteps, function (data) {
             self.steps(data);
             if (self.fromProcedureStepId() !== null) {
                 var id = self.fromProcedureStepId();
@@ -50,7 +50,7 @@
             }
         });
 
-        $.get(window.urls.getProcedures, function (data) {
+        $.getJSON(window.urls.getProcedures, function (data) {
             self.procedures(data);
         });
 
@@ -109,6 +109,7 @@
             if (Number.isNaN(Number.parseInt(self.route.Id)))
                 $.ajax(window.urls.addRoute, {
                     method: "POST",
+                    dataType: "json",
                     data: {
                         ProcedureId: self.procedureId(),
                         FromProcedureStepId: self.fromProcedureStepId(),
@@ -126,6 +127,7 @@
             else
                 $.ajax(window.urls.updateRoute.replace("{id}", self.route.Id), {
                     method: "PUT",
+                    dataType: "json",
                     data: {
                         ProcedureId: self.procedureId(),
                         FromProcedureStepId: self.fromProcedureStepId(),
@@ -148,7 +150,8 @@
 
         self.deleteProcedure = function () {
             $.ajax(window.urls.deleteRoute.replace("{id}", self.route.Id), {
-                method: "DELETE"
+                method: "DELETE",
+                dataType: "json"
             }).done(function (data) {
                 self.isDeletePopupVisible(false);
                 if (data === true)
@@ -163,7 +166,7 @@
 
     var routeId = $("#routeId").val();
     if (Number.isNaN(Number.parseInt(routeId)) === false)
-        $.get(window.urls.getRoute.replace("{id}", routeId), function (data) {
+        $.getJSON(window.urls.getRoute.replace("{id}", routeId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

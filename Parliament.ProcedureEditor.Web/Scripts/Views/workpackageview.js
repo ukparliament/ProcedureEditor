@@ -5,12 +5,12 @@
         self.businessItems = ko.observableArray([]);
 
 
-        $.get(window.urls.getBusinessItemsSearchByWorkPackage.replace("{workPackageId}", workPackageable.Id), function (data) {
+        $.getJSON(window.urls.getBusinessItemsSearchByWorkPackage.replace("{workPackageId}", workPackageable.Id), function (data) {
             enhanceBusinessItems(data);
         });
 
         var enhanceBusinessItems = function (bi) {
-            $.get(window.urls.getSteps, function (data) {
+            $.getJSON(window.urls.getSteps, function (data) {
                 var steps = {};
                 data.forEach(function (val) {
                     steps["Id" + val.Id] = {
@@ -34,7 +34,7 @@
     };
 
     var workPackageableId = $("#workPackageableId").val();
-    $.get(window.urls.getWorkPackage.replace("{id}", workPackageableId), function (data) {
+    $.getJSON(window.urls.getWorkPackage.replace("{id}", workPackageableId), function (data) {
         var vm = new viewModel(data);
         ko.applyBindings(vm);
     });

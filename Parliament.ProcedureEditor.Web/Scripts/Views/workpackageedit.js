@@ -34,12 +34,12 @@
         self.procedureId = ko.observable(self.workPackageable.ProcedureId);
 
         self.procedures = ko.observableArray([]);
-        $.get(window.urls.getProcedures, function (data) {
+        $.getJSON(window.urls.getProcedures, function (data) {
             self.procedures(data);
         });
 
         self.types = ko.observableArray([]);
-        $.get(window.urls.getWorkPackageTypes, function (data) {
+        $.getJSON(window.urls.getWorkPackageTypes, function (data) {
             self.types(data);
         });
 
@@ -79,6 +79,7 @@
             if (Number.isNaN(Number.parseInt(self.workPackageable.Id)))
                 $.ajax(window.urls.addWorkPackage, {
                     method: "POST",
+                    dataType: "json",
                     data: {
                         ProcedureWorkPackageableThingName: self.procedureWorkPackageableThingName(),
                         StatutoryInstrumentNumber: self.statutoryInstrumentNumber(),
@@ -102,6 +103,7 @@
             else
                 $.ajax(window.urls.updateWorkPackage.replace("{id}", self.workPackageable.Id), {
                     method: "PUT",
+                    dataType: "json",
                     data: {
                         ProcedureWorkPackageableThingName: self.procedureWorkPackageableThingName(),
                         StatutoryInstrumentNumber: self.statutoryInstrumentNumber(),
@@ -130,7 +132,8 @@
 
         self.deleteWorkPackageable = function () {
             $.ajax(window.urls.deleteWorkPackage.replace("{id}", self.workPackageable.Id), {
-                method: "DELETE"
+                method: "DELETE",
+                dataType: "json"
             }).done(function (data) {
                 self.isDeletePopupVisible(false);
                 if (data === true)
@@ -145,7 +148,7 @@
 
     var workPackageableId = $("#workPackageableId").val();
     if (Number.isNaN(Number.parseInt(workPackageableId)) === false)
-        $.get(window.urls.getWorkPackage.replace("{id}", workPackageableId), function (data) {
+        $.getJSON(window.urls.getWorkPackage.replace("{id}", workPackageableId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

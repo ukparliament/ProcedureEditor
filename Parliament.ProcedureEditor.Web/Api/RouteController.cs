@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,8 @@ namespace Parliament.ProcedureEditor.Web.Api
     public class RouteController : BaseApiController
     {
         [HttpGet]
-        public List<Route> Search([FromUri]string searchText)
+        [ContentNegotiation("route", ContentType.JSON)]
+        public List<Route> Search(string searchText)
         {
             CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
@@ -26,7 +28,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        public List<Route> SearchByProcedure([FromUri]int procedureId)
+        [ContentNegotiation("route", ContentType.JSON)]
+        public List<Route> SearchByProcedure(int procedureId)
         {
             CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
@@ -42,7 +45,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        public List<Route> SearchByStep([FromUri]int stepId)
+        [ContentNegotiation("route", ContentType.JSON)]
+        public List<Route> SearchByStep(int stepId)
         {
             CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
@@ -57,6 +61,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItems<Route>(command);
         }
 
+        [HttpGet]
+        [ContentNegotiation("route", ContentType.HTML)]
+        public IHttpActionResult GetView()
+        {
+            return RenderView("Index");
+        }
+
+        [HttpGet]
+        [ContentNegotiation("route", ContentType.JSON)]
         public List<Route> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
@@ -70,6 +83,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItems<Route>(command);
         }
 
+        [HttpGet]
+        [ContentNegotiation("route/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetView(int id)
+        {
+            return RenderView("View",id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public Route Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
@@ -85,6 +107,22 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItem<Route>(command);
         }
 
+        [HttpGet]
+        [ContentNegotiation("route/edit/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetEdit(int id)
+        {
+            return RenderView("Edit",id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("route/add", ContentType.HTML)]
+        public IHttpActionResult GetAdd()
+        {
+            return RenderView("Edit");
+        }
+
+        [HttpPut]
+        [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public bool Put(int id, [FromBody]Route route)
         {
             if ((route == null) || (route.ProcedureId == 0) ||
@@ -112,6 +150,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(command);
         }
 
+        [HttpPost]
+        [ContentNegotiation("route", ContentType.JSON)]
         public bool Post([FromBody]Route route)
         {
             if ((route == null) || (route.ProcedureId == 0) ||
@@ -139,6 +179,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(command);
         }
 
+        [HttpDelete]
+        [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
             DynamicParameters parameters = new DynamicParameters();

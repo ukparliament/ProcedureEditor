@@ -1,5 +1,9 @@
 ﻿@model int
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <input id="workPackageableId" type="hidden" value="@Model" />
 <section>
     <div class="container">
@@ -33,7 +37,7 @@
                             </ul>
                         </li>
                     </ul>
-                    <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate))?'N/A':new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>                    
+                    <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate))?'N/A':new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>
                 </a>
             </li>
         </ul>

@@ -1,4 +1,8 @@
-﻿<section>
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
     <div class="container">
         <h2 data-bind="visible: procedures().length>0" style="display:none">Procedures</h2>
         <h2 data-bind="visible: procedures().length===0" style="display:none">No procedures</h2>
@@ -17,7 +21,7 @@
 
 <section>
     <div class="container">
-        <a href="/Procedure/Edit" class="btn btn-outline-primary btn-sm">Add procedure</a>
+        <a href="/Procedure/Add" class="btn btn-outline-primary btn-sm">Add procedure</a>
     </div>
 </section>
 

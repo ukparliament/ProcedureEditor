@@ -210,6 +210,10 @@
   <ItemGroup>
     <Compile Include="AIInitializer.cs" />
     <Compile Include="Api\BaseApiController.cs" />
+    <Compile Include="Api\Configuration\HtmlContentActionResult.cs" />
+    <Compile Include="Api\Configuration\ContentNegotiationConstraint.cs" />
+    <Compile Include="Api\Configuration\ContentType.cs" />
+    <Compile Include="Api\AuthenticationController.cs" />
     <Compile Include="Api\ProcedureController.cs" />
     <Compile Include="Api\RouteController.cs" />
     <Compile Include="Api\HouseController.cs" />
@@ -220,8 +224,8 @@
     <Compile Include="Api\WorkPackageableTypeController.cs" />
     <Compile Include="Api\WorkPackageablePrecedingController.cs" />
     <Compile Include="Api\WorkPackageController.cs" />
-    <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Api\Configuration\ContentNegotiationAttribute.cs" />
+    <Compile Include="Controllers\MvcController.cs" />
     <Compile Include="Models\LayingBody.cs" />
     <Compile Include="Models\StepHouse.cs" />
     <Compile Include="Models\BusinessItemStep.cs" />
@@ -249,12 +253,12 @@
     </None>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Base\Procedure\Index.cshtml" />
-    <Content Include="Views\Base\Procedure\View.cshtml" />
+    <Content Include="Views\Procedure\Index.cshtml" />
+    <Content Include="Views\Procedure\View.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
-    <Content Include="Views\Base\Procedure\Edit.cshtml" />
+    <Content Include="Views\Procedure\Edit.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -264,24 +268,24 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Base\WorkPackage\View.cshtml" />
+    <Content Include="Views\WorkPackage\View.cshtml" />
     <Content Include="Views\Shared\Popup.cshtml" />
     <Content Include="Views\Shared\Search.cshtml" />
-    <Content Include="Views\Base\WorkPackage\Edit.cshtml" />
-    <Content Include="Views\Base\WorkPackage\Index.cshtml" />
-    <Content Include="Views\Base\Step\Index.cshtml" />
-    <Content Include="Views\Base\Step\Edit.cshtml" />
-    <Content Include="Views\Base\Step\View.cshtml" />
-    <Content Include="Views\Base\Route\Edit.cshtml" />
-    <Content Include="Views\Base\Route\Index.cshtml" />
-    <Content Include="Views\Base\Route\View.cshtml" />
-    <Content Include="Views\Base\BusinessItem\Edit.cshtml" />
-    <Content Include="Views\Base\BusinessItem\Index.cshtml" />
-    <Content Include="Views\Base\BusinessItem\View.cshtml" />
-    <Content Include="Views\Base\WorkPackagePreceding\Edit.cshtml" />
-    <Content Include="Views\Base\WorkPackagePreceding\Index.cshtml" />
-    <Content Include="Views\Base\WorkPackagePreceding\View.cshtml" />
-    <Content Include="Views\Login\Login.cshtml" />
+    <Content Include="Views\WorkPackage\Edit.cshtml" />
+    <Content Include="Views\WorkPackage\Index.cshtml" />
+    <Content Include="Views\Step\Index.cshtml" />
+    <Content Include="Views\Step\Edit.cshtml" />
+    <Content Include="Views\Step\View.cshtml" />
+    <Content Include="Views\Route\Edit.cshtml" />
+    <Content Include="Views\Route\Index.cshtml" />
+    <Content Include="Views\Route\View.cshtml" />
+    <Content Include="Views\BusinessItem\Edit.cshtml" />
+    <Content Include="Views\BusinessItem\Index.cshtml" />
+    <Content Include="Views\BusinessItem\View.cshtml" />
+    <Content Include="Views\WorkPackageablePreceding\Edit.cshtml" />
+    <Content Include="Views\WorkPackageablePreceding\Index.cshtml" />
+    <Content Include="Views\WorkPackageablePreceding\View.cshtml" />
+    <Content Include="Views\Authentication\Login.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

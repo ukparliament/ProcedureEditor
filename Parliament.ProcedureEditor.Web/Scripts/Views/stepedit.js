@@ -20,7 +20,7 @@
         self.warningText = "Are you sure you wish to delete " + self.step.TripleStoreId + " step?";
         self.houses = ko.observableArray();
 
-        $.get(window.urls.getHouses, function (data) {
+        $.getJSON(window.urls.getHouses, function (data) {
             self.houses(data);
         });
 
@@ -32,6 +32,7 @@
             if (Number.isNaN(Number.parseInt(self.step.Id)))
                 $.ajax(window.urls.addStep, {
                     method: "POST",
+                    dataType: "json",
                     data: {
                         ProcedureStepName: self.procedureStepName(),
                         ProcedureStepDescription: self.procedureStepDescription(),
@@ -48,6 +49,7 @@
             else
                 $.ajax(window.urls.updateStep.replace("{id}", self.step.Id), {
                     method: "PUT",
+                    dataType: "json",
                     data: {
                         ProcedureStepName: self.procedureStepName(),
                         ProcedureStepDescription: self.procedureStepDescription(),
@@ -69,7 +71,8 @@
 
         self.deleteProcedure = function () {
             $.ajax(window.urls.deleteStep.replace("{id}", self.step.Id), {
-                method: "DELETE"
+                method: "DELETE",
+                dataType: "json"
             }).done(function (data) {
                 self.isDeletePopupVisible(false);
                 if (data === true)
@@ -84,7 +87,7 @@
 
     var stepId = $("#stepId").val();
     if (Number.isNaN(Number.parseInt(stepId)) === false)
-        $.get(window.urls.getStep.replace("{id}", stepId), function (data) {
+        $.getJSON(window.urls.getStep.replace("{id}", stepId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

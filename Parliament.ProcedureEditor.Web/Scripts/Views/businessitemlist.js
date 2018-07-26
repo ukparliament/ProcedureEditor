@@ -3,12 +3,12 @@
         var self = this;
         self.businessItems = ko.observableArray([]);
 
-        $.get(window.urls.getBusinessItems, function (data) {
+        $.getJSON(window.urls.getBusinessItems, function (data) {
             enhanceBusinessItems(data);
         });
 
         var enhanceBusinessItems = function (bi) {
-            $.get(window.urls.getSteps, function (data) {
+            $.getJSON(window.urls.getSteps, function (data) {
                 var steps = {};
                 data.forEach(function (val) {
                     steps["Id" + val.Id] = {

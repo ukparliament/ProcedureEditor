@@ -23,6 +23,7 @@
             if (Number.isNaN(Number.parseInt(self.procedure.Id)))
                 $.ajax(window.urls.addProcedure, {
                     method: "POST",
+                    dataType: "json",
                     data: {
                         ProcedureName: self.procedureName()
                     }
@@ -37,6 +38,7 @@
             else
                 $.ajax(window.urls.updateProcedure.replace("{id}", self.procedure.Id), {
                     method: "PUT",
+                    dataType: "json",
                     data: {
                         ProcedureName: self.procedureName()
                     }
@@ -56,7 +58,8 @@
 
         self.deleteProcedure = function () {
             $.ajax(window.urls.deleteProcedure.replace("{id}", self.procedure.Id), {
-                method: "DELETE"
+                method: "DELETE",
+                dataType: "json"
             }).done(function (data) {
                 self.isDeletePopupVisible(false);
                 if (data === true)
@@ -71,7 +74,7 @@
 
     var procedureId = $("#procedureId").val();
     if (Number.isNaN(Number.parseInt(procedureId)) === false)
-        $.get(window.urls.getProcedure.replace("{id}", procedureId), function (data) {
+        $.getJSON(window.urls.getProcedure.replace("{id}", procedureId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

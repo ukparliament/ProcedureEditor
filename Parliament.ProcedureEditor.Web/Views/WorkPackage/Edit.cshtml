@@ -1,5 +1,9 @@
 ﻿@model int?
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <input id="workPackageableId" type="hidden" value="@Model" />
 <section>
     <div class="container">
@@ -92,7 +96,7 @@
                         <label>Year</label>
                         <input type="number" class="form-control" data-bind="textInput: year" />
                     </div>
-                </div>                
+                </div>
             </div>
             @if (Model.HasValue)
             {
@@ -123,5 +127,5 @@
 
 @section scripts{
     <script src="~/Scripts/Views/workpackageedit.js"></script>
-    <script src="~/Scripts/Views/popup.js"></script>    
+    <script src="~/Scripts/Views/popup.js"></script>
 }

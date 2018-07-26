@@ -20,7 +20,7 @@
         self.searchFollowingText = ko.observable("");
 
         self.workPackageables = [];
-        $.get(window.urls.getWorkPackages, function (data) {
+        $.getJSON(window.urls.getWorkPackages, function (data) {
             self.workPackageables=data;
         });
 
@@ -80,6 +80,7 @@
             if (Number.isNaN(Number.parseInt(self.workPackageablePreceding.Id)))
                 $.ajax(window.urls.addWorkPackageablePreceding, {
                     method: "POST",
+                    dataType: "json",
                     data: {
                         PrecedingProcedureWorkPackageableThingId: self.precedingProcedureWorkPackageableThingId(),
                         FollowingProcedureWorkPackageableThingId: self.followingProcedureWorkPackageableThingId()
@@ -95,6 +96,7 @@
             else
                 $.ajax(window.urls.updateWorkPackageablePreceding.replace("{id}", self.workPackageablePreceding.Id), {
                     method: "PUT",
+                    dataType: "json",
                     data: {
                         PrecedingProcedureWorkPackageableThingId: self.precedingProcedureWorkPackageableThingId(),
                         FollowingProcedureWorkPackageableThingId: self.followingProcedureWorkPackageableThingId()
@@ -115,7 +117,8 @@
 
         self.deleteWorkPackageablePreceding = function () {
             $.ajax(window.urls.deleteWorkPackageablePreceding.replace("{id}", self.workPackageablePreceding.Id), {
-                method: "DELETE"
+                method: "DELETE",
+                dataType: "json"
             }).done(function (data) {
                 self.isDeletePopupVisible(false);
                 if (data === true)
@@ -130,7 +133,7 @@
 
     var workPackageablePrecedingId = $("#workPackageablePrecedingId").val();
     if (Number.isNaN(Number.parseInt(workPackageablePrecedingId)) === false)
-        $.get(window.urls.getWorkPackageablePreceding.replace("{id}", workPackageablePrecedingId), function (data) {
+        $.getJSON(window.urls.getWorkPackageablePreceding.replace("{id}", workPackageablePrecedingId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

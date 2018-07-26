@@ -1,7 +1,11 @@
-﻿<section>
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
     <div class="container">
         <h2>Routes</h2>
-        <a href="/Route/Edit" class="btn btn-outline-primary btn-sm">Add route</a>
+        <a href="/Route/Add" class="btn btn-outline-primary btn-sm">Add route</a>
     </div>
 </section>
 
@@ -12,7 +16,7 @@
                 <a data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">
                     <h5 data-bind="text: ProcedureName"></h5>
                     <h6 data-bind="text: ProcedureRouteTypeName"></h6>
-                    <h6>From <span data-bind="text: FromProcedureStepName"></span> to <span data-bind="text: ToProcedureStepName"></span></h6>                    
+                    <h6>From <span data-bind="text: FromProcedureStepName"></span> to <span data-bind="text: ToProcedureStepName"></span></h6>
                 </a>
             </li>
         </ul>

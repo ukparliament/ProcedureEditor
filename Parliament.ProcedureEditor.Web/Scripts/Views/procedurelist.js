@@ -6,7 +6,7 @@
         
     };
 
-    $.get(window.urls.getProcedures, function (data) {
+    $.getJSON(window.urls.getProcedures, function (data) {
         var vm = new viewModel(data);
         ko.applyBindings(vm);
     });

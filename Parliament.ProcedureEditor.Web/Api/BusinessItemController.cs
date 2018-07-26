@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace Parliament.ProcedureEditor.Web.Api
     {
 
         [HttpGet]
-        public List<BusinessItem> Search([FromUri]string searchText)
+        [ContentNegotiation("businessitem", ContentType.JSON)]
+        public List<BusinessItem> Search(string searchText)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.LayingBodyId, b.ProcedureWorkPackageId, b.BusinessItemDate, w.ProcedureWorkPackageableThingName,
@@ -37,7 +39,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        public List<BusinessItem> SearchByWorkPackage([FromUri]int workPackageId)
+        [ContentNegotiation("businessitem", ContentType.JSON)]
+        public List<BusinessItem> SearchByWorkPackage(int workPackageId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.LayingBodyId, b.ProcedureWorkPackageId, b.BusinessItemDate, w.ProcedureWorkPackageableThingName,
@@ -62,7 +65,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        public List<BusinessItem> SearchByStep([FromUri]int stepId)
+        [ContentNegotiation("businessitem", ContentType.JSON)]
+        public List<BusinessItem> SearchByStep(int stepId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.LayingBodyId, b.ProcedureWorkPackageId, b.BusinessItemDate, w.ProcedureWorkPackageableThingName,
@@ -87,6 +91,14 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
+        [ContentNegotiation("businessitem", ContentType.HTML)]
+        public IHttpActionResult GetView()
+        {
+            return RenderView("Index");
+        }
+
+        [HttpGet]
+        [ContentNegotiation("businessitem", ContentType.JSON)]
         public List<BusinessItem> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
@@ -110,6 +122,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return tuple.Item1;
         }
 
+        [HttpGet]
+        [ContentNegotiation("businessitem/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetView(int id)
+        {
+            return RenderView("View", id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("businessitem/{id:int}", ContentType.JSON)]
         public BusinessItem Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
@@ -130,6 +151,22 @@ namespace Parliament.ProcedureEditor.Web.Api
             return tuple.Item1;
         }
 
+        [HttpGet]
+        [ContentNegotiation("businessitem/edit/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetEdit(int id)
+        {
+            return RenderView("Edit", id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("businessitem/add", ContentType.HTML)]
+        public IHttpActionResult GetAdd()
+        {
+            return RenderView("Edit");
+        }
+
+        [HttpPut]
+        [ContentNegotiation("businessitem/{id:int}", ContentType.JSON)]
         public bool Put(int id, [FromBody]BusinessItem businessItem)
         {
             if ((businessItem == null) ||
@@ -168,6 +205,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(updates.ToArray());
         }
 
+        [HttpPost]
+        [ContentNegotiation("businessitem", ContentType.JSON)]
         public bool Post([FromBody]BusinessItem businessItem)
         {
             if ((businessItem == null) ||
@@ -204,6 +243,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(updates.ToArray());
         }
 
+        [HttpDelete]
+        [ContentNegotiation("businessitem/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
             DynamicParameters parameters = new DynamicParameters();

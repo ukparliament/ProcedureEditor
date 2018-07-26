@@ -1,8 +1,6 @@
 ﻿using Microsoft.ApplicationInsights.Extensibility;
 using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace Parliament.ProcedureEditor.Web
 {
@@ -13,13 +11,20 @@ namespace Parliament.ProcedureEditor.Web
         protected void Application_Start()
         {
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new AIInitializer());
-            GlobalFilters.Filters.Add(new System.Web.Mvc.AuthorizeAttribute());
+
             GlobalConfiguration.Configuration.Filters.Add(new System.Web.Http.AuthorizeAttribute());
-            RouteTable.Routes.MapMvcAttributeRoutes();
-            GlobalConfiguration.Configuration.Routes.MapHttpRoute("api", "api/{controller}/{id}", new
+            GlobalConfiguration.Configuration.MapHttpAttributeRoutes();
+            GlobalConfiguration.Configuration.EnsureInitialized();
+        }
+
+        protected void Application_AuthenticateRequest()
+        {
+            if ((Context.Request.IsAuthenticated == false) && 
+                (Context.Request.Path.Contains("/login") == false) &&
+                (Context.Request.HttpMethod!="POST"))
             {
-                id = RouteParameter.Optional
-            });
+                Context.Response.Redirect("~/login");
+            }
         }
 
     }

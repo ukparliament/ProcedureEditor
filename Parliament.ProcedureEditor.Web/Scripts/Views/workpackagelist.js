@@ -3,7 +3,7 @@
         var self = this;
         self.workPackageables = ko.observableArray([]);
 
-        $.get(window.urls.getWorkPackages, function (data) {
+        $.getJSON(window.urls.getWorkPackages, function (data) {
             self.workPackageables(data);
         });
     };

@@ -1,5 +1,9 @@
 ﻿@model int?
 
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <input id="workPackageablePrecedingId" type="hidden" value="@Model" />
 <section>
     <div class="container">
@@ -70,5 +74,5 @@
 
 @section scripts{
     <script src="~/Scripts/Views/workpackageableprecedingedit.js"></script>
-    <script src="~/Scripts/Views/popup.js"></script>    
+    <script src="~/Scripts/Views/popup.js"></script>
 }

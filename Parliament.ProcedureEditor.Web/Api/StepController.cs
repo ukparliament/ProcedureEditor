@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,8 @@ namespace Parliament.ProcedureEditor.Web.Api
     public class StepController : BaseApiController
     {
         [HttpGet]
-        public List<Step> Search([FromUri]string searchText)
+        [ContentNegotiation("step", ContentType.JSON)]
+        public List<Step> Search(string searchText)
         {
             CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, ProcedureStepName,
                 ProcedureStepDescription from ProcedureStep
@@ -39,7 +41,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        public List<Step> Search([FromUri]int workPackageId)
+        [ContentNegotiation("step", ContentType.JSON)]
+        public List<Step> Search(int workPackageId)
         {
             CommandDefinition command = new CommandDefinition(@"select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackageableThing wp
                 join ProcedureRoute r on r.ProcedureId=wp.ProcedureId and r.IsDeleted=0
@@ -72,6 +75,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return tuple.Item1;
         }
 
+        [HttpGet]
+        [ContentNegotiation("step", ContentType.HTML)]
+        public IHttpActionResult GetView()
+        {
+            return RenderView("Index");
+        }
+
+        [HttpGet]
+        [ContentNegotiation("step", ContentType.JSON)]
         public List<Step> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName,
@@ -96,6 +108,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return tuple.Item1;
         }
 
+        [HttpGet]
+        [ContentNegotiation("step/{id:int}", ContentType.JSON)]
+        public IHttpActionResult GetView(int id)
+        {
+            return RenderView("View", id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("step/{id:int}", ContentType.JSON)]
         public Step Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, ProcedureStepName,
@@ -118,6 +139,22 @@ namespace Parliament.ProcedureEditor.Web.Api
             return tuple.Item1;
         }
 
+        [HttpGet]
+        [ContentNegotiation("step/edit/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetEdit(int id)
+        {
+            return RenderView("Edit", id);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("step/add", ContentType.HTML)]
+        public IHttpActionResult GetAdd()
+        {
+            return RenderView("Edit");
+        }
+
+        [HttpPut]
+        [ContentNegotiation("step/{id:int}", ContentType.JSON)]
         public bool Put(int id, [FromBody]Step step)
         {
             if ((step == null) ||
@@ -152,6 +189,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(updates.ToArray());
         }
 
+        [HttpPost]
+        [ContentNegotiation("step", ContentType.JSON)]
         public bool Post([FromBody]Step step)
         {
             if ((step == null) ||
@@ -186,6 +225,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Execute(updates.ToArray());
         }
 
+        [HttpDelete]
+        [ContentNegotiation("step/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
             DynamicParameters parameters = new DynamicParameters();

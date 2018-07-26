@@ -33,7 +33,7 @@
         self.layingBodyName = ko.observable("");
 
         self.getSteps = function () {
-            $.get(window.urls.getStepsSearchByWorkPackage.replace("{workPackageId}", self.procedureWorkPackageId()), function (data) {
+            $.getJSON(window.urls.getStepsSearchByWorkPackage.replace("{workPackageId}", self.procedureWorkPackageId()), function (data) {
                 self.workPackageSteps(data);
                 self.steps.remove(function (val) {
                     return self.workPackageSteps().filter(function (item) {
@@ -47,7 +47,7 @@
         if (self.procedureWorkPackageId() !== null)
             self.getSteps();
 
-        $.get(window.urls.getLayingBodies, function (data) {
+        $.getJSON(window.urls.getLayingBodies, function (data) {
             self.layingBodies = data;
             if ((self.layingBodyId() !== null) && (self.layingBodyId() !== 0)) {
                 var id = self.layingBodyId();
@@ -58,7 +58,7 @@
             }
         });
 
-        $.get(window.urls.getWorkPackages, function (data) {
+        $.getJSON(window.urls.getWorkPackages, function (data) {
             self.workPackageables = data;
         });
 
@@ -175,6 +175,7 @@
             if (Number.isNaN(Number.parseInt(self.businessItem.Id)))
                 $.ajax(window.urls.addBusinessItem, {
                     method: "POST",
+                    dataType: "json",
                     data: {
                         WebLink: self.webLink(),
                         LayingBodyId: self.layingBodyId(),
@@ -184,7 +185,7 @@
                     }
                 }).done(function (data) {
                     if (data === true)
-                        window.location = window.urls.showBusinessItems;
+                        window.location = window.urls.showWorkPackage.replace("{id}", self.procedureWorkPackageId());
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {
@@ -193,6 +194,7 @@
             else
                 $.ajax(window.urls.updateBusinessItem.replace("{id}", self.businessItem.Id), {
                     method: "PUT",
+                    dataType: "json",
                     data: {
                         WebLink: self.webLink(),
                         LayingBodyId: self.layingBodyId(),
@@ -202,7 +204,7 @@
                     }
                 }).done(function (data) {
                     if (data === true)
-                        window.location = window.urls.showBusinessItems;
+                        window.location = window.urls.showWorkPackage.replace("{id}", self.procedureWorkPackageId());
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {
@@ -216,7 +218,8 @@
 
         self.deleteBusinessItem = function () {
             $.ajax(window.urls.deleteBusinessItem.replace("{id}", self.businessItem.Id), {
-                method: "DELETE"
+                method: "DELETE",
+                dataType: "json"
             }).done(function (data) {
                 self.isDeletePopupVisible(false);
                 if (data === true)
@@ -231,7 +234,7 @@
 
     var businessItemId = $("#businessItemId").val();
     if (Number.isNaN(Number.parseInt(businessItemId)) === false)
-        $.get(window.urls.getBusinessItem.replace("{id}", businessItemId), function (data) {
+        $.getJSON(window.urls.getBusinessItem.replace("{id}", businessItemId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

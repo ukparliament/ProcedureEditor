@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.ApplicationInsights;
+using Parliament.ProcedureEditor.Web.Api.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,6 +15,11 @@ namespace Parliament.ProcedureEditor.Web.Api
     {
         internal TelemetryClient telemetryClient = new TelemetryClient(new Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration(ConfigurationManager.AppSettings["ApplicationInsightsInstrumentationKey"]));
         private readonly string connectionString = ConfigurationManager.ConnectionStrings["Sql"].ConnectionString;
+
+        internal HtmlContentActionResult RenderView(string viewName, object model = null)
+        {
+            return new HtmlContentActionResult(Request, ControllerContext.ControllerDescriptor.ControllerName, viewName, model);
+        }
 
         internal string GetTripleStoreId()
         {

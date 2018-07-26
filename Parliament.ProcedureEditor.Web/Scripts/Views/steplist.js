@@ -3,7 +3,7 @@
         var self = this;
         self.steps = ko.observableArray([]);
 
-        $.get(window.urls.getSteps, function (data) {
+        $.getJSON(window.urls.getSteps, function (data) {
             self.steps(data);
         });
     };
