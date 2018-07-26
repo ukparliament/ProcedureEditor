@@ -155,14 +155,21 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("businessitem/edit/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetEdit(int id)
         {
-            return RenderView("Edit", id);
+            return RenderView("Edit", new BusinessItemEditParameters() { BusinessItemId = id });
         }
 
         [HttpGet]
         [ContentNegotiation("businessitem/add", ContentType.HTML)]
         public IHttpActionResult GetAdd()
         {
-            return RenderView("Edit");
+            return RenderView("Edit", new BusinessItemEditParameters());
+        }
+
+        [HttpGet]
+        [ContentNegotiation("businessitem/add", ContentType.HTML)]
+        public IHttpActionResult GetAdd(int workPackageId)
+        {
+            return RenderView("Edit",new BusinessItemEditParameters() { WorkPackageableId = workPackageId });
         }
 
         [HttpPut]

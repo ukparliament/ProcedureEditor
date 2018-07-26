@@ -226,6 +226,7 @@
     <Compile Include="Api\WorkPackageController.cs" />
     <Compile Include="Api\Configuration\ContentNegotiationAttribute.cs" />
     <Compile Include="Controllers\MvcController.cs" />
+    <Compile Include="Models\BusinessItemEditParameters.cs" />
     <Compile Include="Models\LayingBody.cs" />
     <Compile Include="Models\StepHouse.cs" />
     <Compile Include="Models\BusinessItemStep.cs" />

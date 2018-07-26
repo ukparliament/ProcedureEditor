@@ -1,19 +1,8 @@
 ﻿(function () {
     var viewModel = function (businessItem) {
         var self = this;
-        if (businessItem === null)
-            self.businessItem = {
-                Id: null,
-                TripleStoreId: null,
-                WebLink: null,
-                LayingBodyId: null,
-                ProcedureWorkPackageId: null,
-                ProcedureWorkPackageableThingName: null,
-                BusinessItemDate: null,
-                Steps: []
-            };
-        else
-            self.businessItem = businessItem;
+
+        self.businessItem = businessItem;
 
         self.isNotValidResponse = ko.observable(false);
         self.webLink = ko.observable(self.businessItem.WebLink || "");
@@ -44,8 +33,12 @@
             });
         };
 
-        if (self.procedureWorkPackageId() !== null)
+        if (self.procedureWorkPackageId() !== null) {
             self.getSteps();
+            $.getJSON(window.urls.getWorkPackage.replace("{id}", self.procedureWorkPackageId()), function (data) {
+                self.procedureWorkPackageableThingName(data.ProcedureWorkPackageableThingName);
+            });
+        }
 
         $.getJSON(window.urls.getLayingBodies, function (data) {
             self.layingBodies = data;
@@ -233,13 +226,24 @@
     };
 
     var businessItemId = $("#businessItemId").val();
+    var workPackageableId = $("#workPackageableId").val();
     if (Number.isNaN(Number.parseInt(businessItemId)) === false)
         $.getJSON(window.urls.getBusinessItem.replace("{id}", businessItemId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });
     else {
-        var vm = new viewModel(null);
+        var bi = {
+            Id: null,
+            TripleStoreId: null,
+            WebLink: null,
+            LayingBodyId: null,
+            ProcedureWorkPackageId: Number.isNaN(Number.parseInt(workPackageableId)) ? null : workPackageableId,
+            ProcedureWorkPackageableThingName: null,
+            BusinessItemDate: null,
+            Steps: []
+        };
+        var vm = new viewModel(bi);
         ko.applyBindings(vm);
     }
 })();

@@ -1,13 +1,14 @@
-﻿@model int?
+﻿@model BusinessItemEditParameters
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input id="businessItemId" type="hidden" value="@Model" />
+<input id="businessItemId" type="hidden" value="@Model.BusinessItemId" />
+<input id="workPackageableId" type="hidden" value="@Model.WorkPackageableId" />
 <section>
     <div class="container">
-        @if (Model.HasValue)
+        @if (Model.BusinessItemId.HasValue)
         {
             <h2>Edit business item</h2>
         }
@@ -41,7 +42,7 @@
                 </ul>
             </div>
             <div class="form-group">
-                <label>Step*</label>                
+                <label>Step*</label>
                 <dl data-bind="foreach: computedSteps">
                     <dd>
                         <div class="input-group">
@@ -100,7 +101,7 @@
                     </div>
                 </div>
             </div>
-            @if (Model.HasValue)
+            @if (Model.BusinessItemId.HasValue)
             {
                 <div class="form-group">
                     <label>Id</label>
@@ -108,8 +109,8 @@
                 </div>
             }
             <section>
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
-                @if (Model.HasValue)
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.BusinessItemId.HasValue ? "Update" : "Add")</button>
+                @if (Model.BusinessItemId.HasValue)
                 {
                     <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
                 }
