@@ -185,6 +185,7 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Scripts\Views\solrstatutoryinstrumentlist.js" />
     <Content Include="Scripts\Views\routeedit.js" />
     <Content Include="Scripts\Views\routelist.js" />
     <Content Include="Scripts\Views\routeview.js" />
@@ -196,6 +197,7 @@
     <Content Include="Scripts\Views\steplist.js" />
     <Content Include="Scripts\Views\workpackageableprecedingedit.js" />
     <Content Include="Scripts\Views\workpackageableprecedinglist.js" />
+    <Content Include="Scripts\Views\solrstatutoryinstrumentedit.js" />
     <Content Include="Scripts\Views\workpackagelist.js" />
     <Content Include="Scripts\Views\workpackageedit.js" />
     <Content Include="Scripts\Views\search.js" />
@@ -205,7 +207,9 @@
     <Content Include="Scripts\Views\procedureview.js" />
     <Content Include="Scripts\Views\procedureedit.js" />
     <Content Include="Scripts\Views\procedurelist.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIInitializer.cs" />
@@ -219,6 +223,7 @@
     <Compile Include="Api\HouseController.cs" />
     <Compile Include="Api\BusinessItemController.cs" />
     <Compile Include="Api\LayingBodyController.cs" />
+    <Compile Include="Api\SolrStatutoryInstrumentController.cs" />
     <Compile Include="Api\StepController.cs" />
     <Compile Include="Api\RouteTypeController.cs" />
     <Compile Include="Api\WorkPackageableTypeController.cs" />
@@ -228,6 +233,7 @@
     <Compile Include="Controllers\MvcController.cs" />
     <Compile Include="Models\BusinessItemEditParameters.cs" />
     <Compile Include="Models\LayingBody.cs" />
+    <Compile Include="Models\SolrStatutoryInstrument.cs" />
     <Compile Include="Models\StepHouse.cs" />
     <Compile Include="Models\BusinessItemStep.cs" />
     <Compile Include="Models\BusinessItem.cs" />
@@ -287,6 +293,8 @@
     <Content Include="Views\WorkPackageablePreceding\Index.cshtml" />
     <Content Include="Views\WorkPackageablePreceding\View.cshtml" />
     <Content Include="Views\Authentication\Login.cshtml" />
+    <Content Include="Views\SolrStatutoryInstrument\Index.cshtml" />
+    <Content Include="Views\SolrStatutoryInstrument\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

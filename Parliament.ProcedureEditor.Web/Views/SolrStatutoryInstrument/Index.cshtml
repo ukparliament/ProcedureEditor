@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <div class="container">
+        <h2 data-bind="visible: statutoryInstruments().length>0" style="display:none">Statutory instruments imported from Solr</h2>
+        <h2 data-bind="visible: statutoryInstruments().length===0" style="display:none">No statutory instruments imported from Solr</h2>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <ul class="list-group list-group-flush" data-bind="foreach: statutoryInstruments">
+            <li class="list-group-item">
+                <h5 data-bind="text: Title"></h5>
+                <h6 data-bind="visible: SIProcedure!=null"><span>Procedure: </span><span data-bind="text: SIProcedure"></span></h6>
+                <h6 data-bind="visible: SIPrefix!=null"><span>Prefix: </span><span data-bind="text: SIPrefix"></span></h6>
+                <h6 data-bind="visible: SINumber!=null"><span>Number: </span><span data-bind="text: SINumber"></span></h6>
+                <h6 data-bind="visible: WebUrl!=null"><span>Link: </span><span data-bind="text: WebUrl"></span></h6>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:'/SolrStatutoryInstrument/Edit/'+Id }">Edit</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.deleteStatutoryInstrument">Delete</button>
+            </li>
+        </ul>
+    </div>
+</section>
+
+
+@section scripts{
+    <script src="~/Scripts/Views/solrstatutoryinstrumentlist.js"></script>
+}
