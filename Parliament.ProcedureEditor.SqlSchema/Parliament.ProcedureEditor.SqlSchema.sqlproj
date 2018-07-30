@@ -61,7 +61,6 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
-    <Folder Include="dbo\Stored Procedures\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\House.sql" />
@@ -76,11 +75,5 @@
     <Build Include="dbo\Tables\ProcedureWorkPackageableThingType.sql" />
     <Build Include="dbo\Tables\ProcedureBusinessItem.sql" />
     <Build Include="dbo\Tables\ProcedureBusinessItemProcedureStep.sql" />
-    <Build Include="dbo\Stored Procedures\DeleteStep.sql" />
-    <Build Include="dbo\Stored Procedures\DeleteBusinessItem.sql" />
-    <Build Include="dbo\Stored Procedures\DeleteRoute.sql" />
-    <Build Include="dbo\Stored Procedures\DeleteWorkPackageable.sql" />
-    <Build Include="dbo\Stored Procedures\DeleteWorkPackageablePreceding.sql" />
-    <Build Include="dbo\Stored Procedures\DeleteProcedure.sql" />
   </ItemGroup>
 </Project>

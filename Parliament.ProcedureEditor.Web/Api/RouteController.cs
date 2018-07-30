@@ -183,17 +183,18 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@ModifiedBy", EMail);
-            parameters.Add("@RouteId", id);
-            parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
-            CommandDefinition command = new CommandDefinition("DeleteRoute",
-                parameters,
-                commandType: System.Data.CommandType.StoredProcedure);
-            if (Execute(command))
-                return parameters.Get<bool>("@IsSuccess");
-            else
-                return false;
+            CommandDefinition command = new CommandDefinition(@"update ProcedureRoute
+                set IsDeleted=1,
+                    ModifiedBy=@ModifiedBy,
+                    ModifiedAt=@ModifiedAt
+                where Id=@Id",
+                new
+                {
+                    ModifiedBy = EMail,
+                    ModifiedAt = DateTimeOffset.UtcNow,
+                    Id = id
+                });
+            return Execute(command);
         }
     }
 

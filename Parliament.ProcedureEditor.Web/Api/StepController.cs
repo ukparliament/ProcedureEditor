@@ -109,7 +109,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        [ContentNegotiation("step/{id:int}", ContentType.JSON)]
+        [ContentNegotiation("step/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetView(int id)
         {
             return RenderView("View", id);
@@ -229,17 +229,22 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("step/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@ModifiedBy", EMail);
-            parameters.Add("@StepId", id);
-            parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
-            CommandDefinition command = new CommandDefinition("DeleteStep",
-                parameters,
-                commandType: System.Data.CommandType.StoredProcedure);
-            if (Execute(command))
-                return parameters.Get<bool>("@IsSuccess");
-            else
-                return false;
+            List<CommandDefinition> updates = new List<CommandDefinition>();
+
+            updates.Add(new CommandDefinition(@"update ProcedureStep
+                set IsDeleted=1,
+                    ModifiedBy=@ModifiedBy,
+                    ModifiedAt=@ModifiedAt
+                where Id=@Id",
+                new
+                {
+                    ModifiedBy = EMail,
+                    ModifiedAt = DateTimeOffset.UtcNow,
+                    Id = id
+                }));
+            updates.Add(new CommandDefinition(@"delete from ProcedureStepHouse where ProcedureStepId=@Id",
+                new { Id = id }));            
+            return Execute(updates.ToArray());
         }
     }
 
