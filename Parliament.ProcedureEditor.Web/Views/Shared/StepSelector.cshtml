@@ -1,0 +1,16 @@
+﻿<div class="input-group" data-bind="visible: procedureStepId()!==null">
+    <span class="form-control" data-bind="text: procedureStepName"></span>
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeStep">Remove</button>
+    </div>
+</div>
+<input class="form-control" data-bind="visible: procedureStepId()===null, textInput: searchStepText" />
+<ul class="list-group list-group-flush" data-bind="visible:filteredSteps().length>0, foreach: filteredSteps">
+    <li class="list-group-item">
+        <h6 data-bind="text: ProcedureStepName"></h6>
+        <ul class="list-inline" data-bind="foreach: HouseNames">
+            <li class="list-inline-item"><small data-bind="text: $data"></small></li>
+        </ul>
+        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectStep">Select</button>
+    </li>
+</ul>

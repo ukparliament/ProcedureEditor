@@ -66,37 +66,19 @@
             </div>
             <div class="form-group">
                 <label>Coming into force date</label>
-                <div class="form-row" data-bind="with: forceDate">
-                    <div class="form-group col-md-1">
-                        <label>Day</label>
-                        <input type="number" class="form-control" data-bind="textInput: day" />
-                    </div>
-                    <div class="form-group col-md-1">
-                        <label>Month</label>
-                        <input type="number" class="form-control" data-bind="textInput: month" />
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Year</label>
-                        <input type="number" class="form-control" data-bind="textInput: year" />
-                    </div>
-                </div>
+                <date-entry params="date: comingIntoForceDate"></date-entry>
             </div>
             <div class="form-group">
                 <label>Time limit for objection end date</label>
-                <div class="form-row" data-bind="with: objectionDate">
-                    <div class="form-group col-md-1">
-                        <label>Day</label>
-                        <input type="number" class="form-control" data-bind="textInput: day" />
-                    </div>
-                    <div class="form-group col-md-1">
-                        <label>Month</label>
-                        <input type="number" class="form-control" data-bind="textInput: month" />
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Year</label>
-                        <input type="number" class="form-control" data-bind="textInput: year" />
-                    </div>
-                </div>
+                <date-entry params="date: timeLimitForObjectionEndDate"></date-entry>
+            </div>
+            <div class="form-group">
+                <label>Made date</label>
+                <date-entry params="date: madeDate"></date-entry>
+            </div>
+            <div class="form-group">
+                <label>Withdrawal date</label>
+                <date-entry params="date: withdrawalDate"></date-entry>
             </div>
             @if (Model.HasValue)
             {
@@ -119,13 +101,8 @@
         </form>
     </div>
 </section>
-<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageable, actionText: 'Delete'">
-    @{
-        Html.RenderPartial("Popup");
-    }
-</popup>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageable, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/workpackageedit.js"></script>
-    <script src="~/Scripts/Views/popup.js"></script>
+    <script data-main="/Scripts/Views/workpackageedit.js" src="~/Scripts/require.js"></script>
 }

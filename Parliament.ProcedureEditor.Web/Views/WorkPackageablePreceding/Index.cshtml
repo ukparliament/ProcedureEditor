@@ -11,19 +11,20 @@
 
 <section>
     <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
         <ul class="list-group list-group-flush" data-bind="visible:workPackageablePrecedings().length>0, foreach: workPackageablePrecedings">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showWorkPackageablePreceding.replace('{id}',Id)}">
-                    <h5>Preceding: <span data-bind="text: PrecedingProcedureWorkPackageableThingName"></span></h5>
-                    <h5>Following: <span data-bind="text: FollowingProcedureWorkPackageableThingName"></span></h5>
-                </a>
+                <h5>Preceding: <span data-bind="text: PrecedingProcedureWorkPackageableThingName"></span></h5>
+                <h5>Following: <span data-bind="text: FollowingProcedureWorkPackageableThingName"></span></h5>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showWorkPackageablePreceding.replace('{id}',Id)}">Select</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
     </div>
 </section>
 
-
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageablePreceding, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/workpackageableprecedinglist.js"></script>
+    <script data-main="/Scripts/Views/workpackageableprecedinglist.js" src="~/Scripts/require.js"></script>
 }

@@ -6,8 +6,6 @@
     <title>Procedure Editor</title>
     <link rel="stylesheet" href="~/Content/main.css">
     <link rel="stylesheet" href="~/Content/bootstrap.min.css">
-    <script src="~/Scripts/jquery-3.3.1.min.js" type="text/javascript"></script>
-    <script src="~/Scripts/knockout-3.4.2.js" type="text/javascript"></script>
 </head>
 <body>
     <header>
@@ -22,10 +20,10 @@
                 <a href="/Procedure" class="nav-item nav-link">Procedures</a>
                 <a href="/WorkPackage" class="nav-item nav-link">Work packages</a>
                 <a href="/WorkPackagePreceding" class="nav-item nav-link">Work package precedings</a>
-                <a href="/SolrStatutoryInstrument" class="nav-item nav-link">Solr statutory instruments</a>
                 <a href="/BusinessItem" class="nav-item nav-link">Business items</a>
                 <a href="/Route" class="nav-item nav-link">Routes</a>
                 <a href="/Step" class="nav-item nav-link">Steps</a>
+                <a href="/SolrFeed" class="nav-item nav-link">Solr feed</a>
             </div>
         </div>
     </nav>
@@ -37,86 +35,6 @@
             <h6>UK Parliament</h6>
         </div>
     </footer>
-    <script>
-        (function () {
-            var urls = {
-                getProcedures: "/procedure",
-                addProcedure: "/procedure",
-                updateProcedure: "/procedure/{id}",
-                deleteProcedure: "/procedure/{id}",
-                getProcedure: "/procedure/{id}",
-                showProcedures: "/Procedure",
-                showProcedure: "/Procedure/{id}",
-
-                getWorkPackages: "/workpackage",
-                getWorkPackagesSearchByProcedure: "/workpackage?procedureId={procedureId}",
-                getWorkPackagesSearch: "/workpackage?searchText={searchText}",
-                getWorkPackage: "/workpackage/{id}",
-                addWorkPackage: "/workpackage",
-                updateWorkPackage: "/workpackage/{id}",
-                deleteWorkPackage: "/workpackage/{id}",
-                showWorkPackages: "/WorkPackage",
-                showWorkPackage: "/WorkPackage/{id}",
-
-                getWorkPackageTypes: "/workpackageabletype",
-
-                getRoutes: "/route",
-                addRoute: "/route",
-                updateRoute: "/route/{id}",
-                deleteRoute: "/route/{id}",
-                getRoute: "/route/{id}",
-                getRoutesSearch: "/route?searchText={searchText}",
-                getRoutesSearchByProcedure: "/route?procedureId={procedureId}",
-                getRoutesSearchByStep: "/route?stepId={stepId}",
-                showRoutes: "/Route",
-                showRoute: "/Route/{id}",
-
-                getRouteTypes: "/routetype",
-
-                getSteps: "/step",
-                addStep: "/step",
-                updateStep: "/step/{id}",
-                deleteStep: "/step/{id}",
-                getStep: "/step/{id}",
-                getStepsSearch: "/step?searchText={searchText}",
-                getStepsSearchByWorkPackage: "/step?workPackageId={workPackageId}",
-                showSteps: "/Step",
-                showStep: "/Step/{id}",
-
-                getLayingBodies: "/layingbody",
-
-                getBusinessItems: "/businessitem",
-                addBusinessItem: "/businessitem",
-                updateBusinessItem: "/businessitem/{id}",
-                deleteBusinessItem: "/businessitem/{id}",
-                getBusinessItem: "/businessitem/{id}",
-                getBusinessItemsSearch: "/businessitem?searchText={searchText}",
-                getBusinessItemsSearchByWorkPackage: "/businessitem?workPackageId={workPackageId}",
-                getBusinessItemsSearchByStep: "/businessitem?stepId={stepId}",
-                showBusinessItems: "/BusinessItem",
-                showBusinessItem: "/BusinessItem/{id}",
-
-                getHouses: "/house",
-
-                getWorkPackageablePrecedings: "/workpackagepreceding",
-                getWorkPackageablePreceding: "/workpackagepreceding/{id}",
-                addWorkPackageablePreceding: "/workpackagepreceding",
-                updateWorkPackageablePreceding: "/workpackagepreceding/{id}",
-                deleteWorkPackageablePreceding: "/workpackagepreceding/{id}",
-                showWorkPackageablePrecedings: "/WorkPackagePreceding",
-                showWorkPackageablePreceding: "/WorkPackagePreceding/{id}",
-
-                getSolrStatutoryInstruments: "/solrstatutoryinstrument",
-                getSolrStatutoryInstrument: "/solrstatutoryinstrument/{id}",
-                addSolrStatutoryInstrument: "/solrstatutoryinstrument/{id}",
-                deleteSolrStatutoryInstrument: "/solrstatutoryinstrument/{id}",
-                showSolrStatutoryInstruments: "/SolrStatutoryInstrument"
-
-            };
-            window.urls = urls;
-
-        })();
-    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -11,20 +11,19 @@
 
 <section>
     <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
         <ul class="list-group list-group-flush" data-bind="visible:workPackageables().length>0, foreach: workPackageables">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showWorkPackage.replace('{id}',Id)}">
-                    <h5 data-bind="text: ProcedureWorkPackageableThingName"></h5>
-                    <h6 data-bind="text: ProcedureName"></h6>
-                    <h6>Date of the most recent business item: <span data-bind="text:isNaN(Date.parse(MostRecentBusinessItemDate))?'N/A':new Date(MostRecentBusinessItemDate).toLocaleDateString('en-GB')"></span></h6>
-                </a>
+                <work-package-list-item params="workPackageable: $data"></work-package-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showWorkPackage.replace('{id}',Id)}">Select</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
     </div>
 </section>
 
-
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageable, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/workpackagelist.js"></script>
+    <script data-main="/Scripts/Views/workpackagelist.js" src="~/Scripts/require.js"></script>
 }

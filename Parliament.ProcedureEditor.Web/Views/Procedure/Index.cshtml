@@ -6,25 +6,25 @@
     <div class="container">
         <h2 data-bind="visible: procedures().length>0" style="display:none">Procedures</h2>
         <h2 data-bind="visible: procedures().length===0" style="display:none">No procedures</h2>
+        <a href="/Procedure/Add" class="btn btn-outline-primary btn-sm">Add procedure</a>
     </div>
 </section>
 
 <section>
     <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
         <ul class="list-group list-group-flush" data-bind="foreach: procedures">
             <li class="list-group-item">
-                <a data-bind="text: ProcedureName, attr:{href: window.urls.showProcedure.replace('{id}',Id)}"></a>
+                <h5 data-bind="text: ProcedureName"></h5>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href: window.urls.showProcedure.replace('{id}',Id)}">Select</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
     </div>
 </section>
 
-<section>
-    <div class="container">
-        <a href="/Procedure/Add" class="btn btn-outline-primary btn-sm">Add procedure</a>
-    </div>
-</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteProcedure, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/procedurelist.js"></script>
+    <script data-main="/Scripts/Views/procedurelist.js" src="~/Scripts/require.js"></script>
 }

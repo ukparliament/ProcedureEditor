@@ -1,0 +1,11 @@
+﻿<ul class="list-unstyled" data-bind="foreach: steps">
+    <li>
+        <h5 data-bind="text: ProcedureStepName"></h5>
+        <ul class="list-inline" data-bind="foreach: HouseNames">
+            <li class="list-inline-item"><h6 data-bind="text: $data"></h6></li>
+        </ul>
+    </li>
+</ul>
+<h6 data-bind="text: procedureWorkPackageableThingName"></h6>
+<h6 data-bind="text: procedureName"></h6>
+<h6 data-bind="text: businessItemDate"></h6>

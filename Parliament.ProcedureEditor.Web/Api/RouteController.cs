@@ -79,7 +79,8 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join [Procedure] p on p.Id=r.ProcedureId
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
-                join ProcedureStep ts on ts.Id=r.ToProcedureStepId");
+                join ProcedureStep ts on ts.Id=r.ToProcedureStepId
+                where r.IsDeleted=0");
             return GetItems<Route>(command);
         }
 

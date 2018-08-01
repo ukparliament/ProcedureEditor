@@ -11,28 +11,19 @@
 
 <section>
     <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
         <ul class="list-group list-group-flush" data-bind="visible:businessItems().length>0, foreach: businessItems">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showBusinessItem.replace('{id}',Id)}">
-                    <ul class="list-unstyled" data-bind="foreach: Steps">
-                        <li>
-                            <h5 data-bind="text: ProcedureStepName"></h5>
-                            <ul class="list-inline" data-bind="foreach: HouseNames">
-                                <li class="list-inline-item"><h6 data-bind="text: $data"></h6></li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h6 data-bind="text: ProcedureWorkPackageableThingName"></h6>
-                    <h6 data-bind="text: ProcedureName"></h6>
-                    <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate))?'N/A':new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>
-                </a>
+                <business-item-list-item params="businessItem: $data"></business-item-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showBusinessItem.replace('{id}',Id)}">Select</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
     </div>
 </section>
 
-
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteBusinessItem, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/businessitemlist.js"></script>
+    <script data-main="/Scripts/Views/businessitemlist.js" src="~/Scripts/require.js"></script>
 }

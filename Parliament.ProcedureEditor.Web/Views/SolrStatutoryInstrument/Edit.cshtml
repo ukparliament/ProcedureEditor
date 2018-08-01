@@ -7,7 +7,7 @@
 <input id="statutoryInstrumentId" type="hidden" value="@Model" />
 <section>
     <div class="container">
-        <h2>Create work package from statutory instrument</h2>        
+        <h2>Create work package from statutory instrument</h2>
     </div>
 </section>
 
@@ -60,39 +60,13 @@
             </div>
             <div class="form-group">
                 <label>Coming into force date</label>
-                <div class="form-row" data-bind="with: forceDate">
-                    <div class="form-group col-md-1">
-                        <label>Day</label>
-                        <input type="number" class="form-control" data-bind="textInput: day" />
-                    </div>
-                    <div class="form-group col-md-1">
-                        <label>Month</label>
-                        <input type="number" class="form-control" data-bind="textInput: month" />
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Year</label>
-                        <input type="number" class="form-control" data-bind="textInput: year" />
-                    </div>
-                </div>
+                <date-entry params="date: comingIntoForceDate"></date-entry>
             </div>
             <div class="form-group">
                 <label>Time limit for objection end date</label>
-                <div class="form-row" data-bind="with: objectionDate">
-                    <div class="form-group col-md-1">
-                        <label>Day</label>
-                        <input type="number" class="form-control" data-bind="textInput: day" />
-                    </div>
-                    <div class="form-group col-md-1">
-                        <label>Month</label>
-                        <input type="number" class="form-control" data-bind="textInput: month" />
-                    </div>
-                    <div class="form-group col-md-2">
-                        <label>Year</label>
-                        <input type="number" class="form-control" data-bind="textInput: year" />
-                    </div>
-                </div>
+                <date-entry params="date: timeLimitForObjectionEndDate"></date-entry>                
             </div>
-            
+
             <section>
                 <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">Add</button>
             </section>
@@ -101,5 +75,5 @@
 </section>
 
 @section scripts{
-    <script src="~/Scripts/Views/solrstatutoryinstrumentedit.js"></script>    
+    <script data-main="/Scripts/Views/solrstatutoryinstrumentedit.js" src="~/Scripts/require.js"></script>
 }

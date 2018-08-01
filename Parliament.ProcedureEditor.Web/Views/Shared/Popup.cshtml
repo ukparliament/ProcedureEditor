@@ -1,16 +1,14 @@
-﻿<template id="popup">
-    <div class="modal" data-bind="css:{'fade show':isPopupVisible()}, style:{display: isPopupVisible()?'block':'none'}">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p data-bind="text: popupText"></p>
-                </div>
-                <div class="modal-footer text-justify text-left">
-                    <button data-bind="click: close" type="button" class="btn btn-outline-primary btn-sm">Cancel</button>
-                    <button data-bind="click: action, text: actionText" type="button" class="btn btn-outline-secondary btn-sm"></button>
-                </div>
+﻿<div class="modal" data-bind="css:{'fade show':isPopupVisible()}, style:{display: isPopupVisible()?'block':'none'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p data-bind="text: popupText"></p>
+            </div>
+            <div class="modal-footer text-justify text-left">
+                <button data-bind="click: close" type="button" class="btn btn-outline-primary btn-sm">Cancel</button>
+                <button data-bind="click: action, text: actionText" type="button" class="btn btn-outline-secondary btn-sm"></button>
             </div>
         </div>
     </div>
-    <div class="modal-backdrop fade show" data-bind="style:{display: isPopupVisible()?'block':'none'}"></div>
-</template>
+</div>
+<div class="modal-backdrop fade show" data-bind="style:{display: isPopupVisible()?'block':'none'}"></div>

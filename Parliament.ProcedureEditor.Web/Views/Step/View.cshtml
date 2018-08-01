@@ -18,11 +18,8 @@
         <h4>Business items</h4>
         <ul class="list-group list-group-flush" data-bind="visible:businessItems().length>0, foreach: businessItems">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showBusinessItem.replace('{id}',Id)}">
-                    <h5 data-bind="text: ProcedureWorkPackageableThingName"></h5>
-                    <h6 data-bind="text: ProcedureName"></h6>
-                    <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate))?'N/A':new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>
-                </a>
+                <business-item-list-item params="businessItem: $data"></business-item-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showBusinessItem.replace('{id}',Id)}">Select</a>
             </li>
         </ul>
     </div>
@@ -33,16 +30,13 @@
         <h4>Routes</h4>
         <ul class="list-group list-group-flush" data-bind="visible:routes().length>0, foreach: routes">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">
-                    <h5 data-bind="text: ProcedureName"></h5>
-                    <h6 data-bind="text: ProcedureRouteTypeName"></h6>
-                    <h6>From <span data-bind="text: FromProcedureStepName"></span> to <span data-bind="text: ToProcedureStepName"></span></h6>
-                </a>
+                <route-list-item params="route: $data"></route-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">Select</a>
             </li>
         </ul>
     </div>
 </section>
 
 @section scripts{
-    <script src="~/Scripts/Views/stepview.js"></script>
+<script data-main="/Scripts/Views/stepview.js" src="~/Scripts/require.js"></script>
 }

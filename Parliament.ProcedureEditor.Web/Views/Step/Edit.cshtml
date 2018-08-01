@@ -56,13 +56,9 @@
         </form>
     </div>
 </section>
-<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteProcedure, actionText: 'Delete'">
-    @{
-        Html.RenderPartial("Popup");
-    }
-</popup>
+
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteStep, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/stepedit.js"></script>
-    <script src="~/Scripts/Views/popup.js"></script>
+<script data-main="/Scripts/Views/stepedit.js" src="~/Scripts/require.js"></script>
 }

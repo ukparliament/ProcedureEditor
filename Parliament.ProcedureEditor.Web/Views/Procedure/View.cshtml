@@ -18,10 +18,8 @@
         <h4>Work packages</h4>
         <ul class="list-group list-group-flush" data-bind="visible:workPackageables().length>0, foreach: workPackageables">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showWorkPackage.replace('{id}',Id)}">
-                    <h5 data-bind="text: ProcedureWorkPackageableThingName"></h5>
-                    <h6>Date of the most recent business item: <span data-bind="text:isNaN(Date.parse(MostRecentBusinessItemDate))?'N/A':new Date(MostRecentBusinessItemDate).toLocaleDateString('en-GB')"></span></h6>
-                </a>
+                <work-package-list-item params="workPackageable: $data"></work-package-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showWorkPackage.replace('{id}',Id)}">Select</a>
             </li>
         </ul>
     </div>
@@ -32,14 +30,13 @@
         <h4>Routes</h4>
         <ul class="list-group list-group-flush" data-bind="visible:routes().length>0, foreach: routes">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">
-                    <h5><span data-bind="text:ProcedureRouteTypeName"></span> route from <span data-bind="text:FromProcedureStepName"></span> to <span data-bind="text:ToProcedureStepName"></span></h5>
-                </a>
+                <route-list-item params="route: $data"></route-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">Select</a>
             </li>
         </ul>
     </div>
 </section>
 
 @section scripts{
-    <script src="~/Scripts/Views/procedureview.js"></script>
+    <script data-main="/Scripts/Views/procedureview.js" src="~/Scripts/require.js"></script>    
 }

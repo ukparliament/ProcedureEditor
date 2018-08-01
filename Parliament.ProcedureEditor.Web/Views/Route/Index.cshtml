@@ -6,25 +6,25 @@
     <div class="container">
         <h2>Routes</h2>
         <a href="/Route/Add" class="btn btn-outline-primary btn-sm">Add route</a>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
     </div>
 </section>
 
 <section>
     <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
         <ul class="list-group list-group-flush" data-bind="visible:routes().length>0, foreach: routes">
             <li class="list-group-item">
-                <a data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">
-                    <h5 data-bind="text: ProcedureName"></h5>
-                    <h6 data-bind="text: ProcedureRouteTypeName"></h6>
-                    <h6>From <span data-bind="text: FromProcedureStepName"></span> to <span data-bind="text: ToProcedureStepName"></span></h6>
-                </a>
+                <route-list-item params="route: $data"></route-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showRoute.replace('{id}',Id)}">Select</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
     </div>
 </section>
 
-
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteRoute, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script src="~/Scripts/Views/routelist.js"></script>
+    <script data-main="Scripts/Views/routelist.js" src="~/Scripts/require.js"></script>
 }

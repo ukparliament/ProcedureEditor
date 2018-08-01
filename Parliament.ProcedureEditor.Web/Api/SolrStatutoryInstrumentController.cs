@@ -10,25 +10,25 @@ namespace Parliament.ProcedureEditor.Web.Api
     public class SolrStatutoryInstrumentController : BaseApiController
     {
         [HttpGet]
-        [ContentNegotiation("solrstatutoryinstrument", ContentType.HTML)]
+        [ContentNegotiation("solrfeed", ContentType.HTML)]
         public IHttpActionResult GetView()
         {
             return RenderView("Index");
         }
 
         [HttpGet]
-        [ContentNegotiation("solrstatutoryinstrument", ContentType.JSON)]
+        [ContentNegotiation("solrfeed", ContentType.JSON)]
         public List<SolrStatutoryInstrument> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.Title,
                 s.SIPrefix, s.SINumber, s.WebUrl, s.ComingIntoForceNote,
                 s.ComingIntoForceDate, s.MadeDate, s.SIProcedure from SolrStatutoryInstrumentData s
-                where s.IsDeleted=0 or s.TripleStoreId is null");
+                where s.IsDeleted=0 and s.TripleStoreId is null");
             return GetItems<SolrStatutoryInstrument>(command);
         }
 
         [HttpGet]
-        [ContentNegotiation("solrstatutoryinstrument/{id:int}", ContentType.JSON)]
+        [ContentNegotiation("solrfeed/{id:int}", ContentType.JSON)]
         public SolrStatutoryInstrument Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.Title,
@@ -40,14 +40,14 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
-        [ContentNegotiation("solrstatutoryinstrument/edit/{id:int}", ContentType.HTML)]
+        [ContentNegotiation("solrfeed/edit/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetEdit(int id)
         {
             return RenderView("Edit", id);
         }
 
         [HttpPost]
-        [ContentNegotiation("solrstatutoryinstrument/{id:int}", ContentType.JSON)]
+        [ContentNegotiation("solrfeed/{id:int}", ContentType.JSON)]
         public bool Post(int id, [FromBody]WorkPackageable workPackageable)
         {
             if ((workPackageable == null) ||
@@ -92,7 +92,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpDelete]
-        [ContentNegotiation("solrstatutoryinstrument/{id:int}", ContentType.JSON)]
+        [ContentNegotiation("solrfeed/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
             CommandDefinition command = new CommandDefinition(@"update SolrStatutoryInstrumentData
