@@ -4,7 +4,7 @@
             var self = this;
 
             self.steps = params.businessItem.Steps;
-            self.procedureWorkPackageableThingName = params.businessItem.ProcedureWorkPackageableThingName;
+            self.workPackagedThingName = params.businessItem.WorkPackagedThingName;
             self.procedureName = params.businessItem.ProcedureName;
             self.businessItemDate = isNaN(Date.parse(params.businessItem.BusinessItemDate)) ?
                 'N/A' : new Date(params.businessItem.BusinessItemDate).toLocaleDateString('en-GB');

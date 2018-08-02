@@ -1,11 +1,12 @@
 ﻿requirejs(["/Scripts/main.js"], function (main) {
     requirejs(["knockout", "jquery"], function (ko, $) {
-        var viewModel = function (workPackageable) {
+        var viewModel = function (workPackaged) {
             var self = this;
-            self.workPackageable = ko.observable(workPackageable);
+            self.workPackaged = ko.observable(workPackaged);
             self.businessItems = ko.observableArray([]);
+            self.statutoryInstrumentType = self.workPackaged().IsStatutoryInstrument ? "Statutory instrument paper" : "Proposed negative statutory instrument paper";
 
-            $.getJSON(window.urls.getBusinessItemsSearchByWorkPackage.replace("{workPackageId}", workPackageable.Id), function (data) {
+            $.getJSON(window.urls.getBusinessItemsSearchByWorkPackaged.replace("{workPackageId}", workPackaged.Id), function (data) {
                 enhanceBusinessItems(data);
             });
 
@@ -23,7 +24,7 @@
                             Id: val.Id,
                             TripleStoreId: val.TripleStoreId,
                             BusinessItemDate: val.BusinessItemDate,
-                            ProcedureWorkPackageableThingName: val.ProcedureWorkPackageableThingName,
+                            WorkPackagedThingName: val.WorkPackagedThingName,
                             ProcedureName: val.ProcedureName,
                             Steps: val.Steps.map(function (stepId) {
                                 if (steps["Id" + stepId])
@@ -42,8 +43,8 @@
 
         };
 
-        var workPackageableId = $("#workPackageableId").val();
-        $.getJSON(window.urls.getWorkPackage.replace("{id}", workPackageableId), function (data) {
+        var workPackagedId = $("#workPackagedId").val();
+        $.getJSON(window.urls.getWorkPackaged.replace("{id}", workPackagedId), function (data) {
             var vm = new viewModel(data);
             ko.applyBindings(vm);
         });

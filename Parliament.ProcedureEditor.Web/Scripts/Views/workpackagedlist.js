@@ -2,30 +2,30 @@
     requirejs(["knockout", "jquery"], function (ko, $) {
         var viewModel = function () {
             var self = this;
-            self.workPackageablePrecedings = ko.observableArray([]);
+            self.workPackagedList = ko.observableArray([]);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = ko.observable(null);
             self.isNotValidResponse = ko.observable(false);
             self.soonToBeDeleted = null;
 
-            $.getJSON(window.urls.getWorkPackageablePrecedings, function (data) {
-                self.workPackageablePrecedings(data);
+            $.getJSON(window.urls.getWorkPackagedList, function (data) {
+                self.workPackagedList(data);
             });
 
-            self.showDeletePopup = function (workPackageablePreceding) {
-                self.soonToBeDeleted = workPackageablePreceding;
-                self.warningText("Are you sure you wish to delete this work package preceding?");
+            self.showDeletePopup = function (workPackaged) {
+                self.soonToBeDeleted = workPackaged;
+                self.warningText("Are you sure you wish to delete " + workPackaged.TripleStoreId + " work package?");
                 self.isDeletePopupVisible(true);
             };
 
-            self.deleteWorkPackageablePreceding = function () {
-                $.ajax(window.urls.deleteWorkPackageablePreceding.replace("{id}", self.soonToBeDeleted.Id), {
+            self.deleteWorkPackageable = function () {
+                $.ajax(window.urls.deleteWorkPackaged.replace("{id}", self.soonToBeDeleted.Id), {
                     method: "DELETE",
                     dataType: "json"
                 }).done(function (data) {
                     self.isDeletePopupVisible(false);
                     if (data === true)
-                        self.workPackageablePrecedings.remove(self.soonToBeDeleted);
+                        self.workPackagedList.remove(self.soonToBeDeleted);
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {

@@ -44,12 +44,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("step", ContentType.JSON)]
         public List<Step> Search(int workPackageId)
         {
-            CommandDefinition command = new CommandDefinition(@"select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackageableThing wp
+            CommandDefinition command = new CommandDefinition(@"select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackagedThing wp
                 join ProcedureRoute r on r.ProcedureId=wp.ProcedureId and r.IsDeleted=0
                 join ProcedureStep s on s.Id=r.FromProcedureStepId and s.IsDeleted=0
                 where wp.Id=@id
                 union
-                select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackageableThing wp
+                select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackagedThing wp
                 join ProcedureRoute r on r.ProcedureId=wp.ProcedureId and r.IsDeleted=0
                 join ProcedureStep s on s.Id=r.ToProcedureStepId and s.IsDeleted=0
                 where wp.Id=@id;

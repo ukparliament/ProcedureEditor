@@ -5,7 +5,7 @@
 }
 
 <input id="businessItemId" type="hidden" value="@Model.BusinessItemId" />
-<input id="workPackageableId" type="hidden" value="@Model.WorkPackageableId" />
+<input id="workPackagedId" type="hidden" value="@Model.WorkPackagedId" />
 <section>
     <div class="container">
         @if (Model.BusinessItemId.HasValue)
@@ -25,13 +25,13 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Work package*</label>
-                <work-package-selector params="procedureWorkPackageId: procedureWorkPackageId, workPackageables: workPackageables"></work-package-selector>
+                <work-packaged-selector params="procedureWorkPackagedId: procedureWorkPackagedId, workPackagedList: workPackagedList"></work-packaged-selector>
             </div>
             <div class="form-group">
                 <label>Step*</label>
                 <ul class="list-unstyled" data-bind="foreach: businessItemSteps">
                     <li>
-                        <step-selector params="procedureStepId: Id, steps: $parent.workPackageSteps, addCallback: $parent.addStep"></step-selector>
+                        <step-selector params="procedureStepId: Id, steps: $parent.workPackageSteps, addCallback: $parent.addStep, removeCallback: $parent.removeStep"></step-selector>
                     </li>
                 </ul>
             </div>

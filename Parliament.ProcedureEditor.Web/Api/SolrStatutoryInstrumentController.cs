@@ -48,47 +48,36 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpPost]
         [ContentNegotiation("solrfeed/{id:int}", ContentType.JSON)]
-        public bool Post(int id, [FromBody]WorkPackageable workPackageable)
+        public bool Post(int id, [FromBody]WorkPackaged workPackaged)
         {
-            if ((workPackageable == null) ||
-                (string.IsNullOrWhiteSpace(workPackageable.ProcedureWorkPackageableThingName)) ||
-                (workPackageable.ProcedureId == 0))
+            if ((workPackaged == null) ||
+                (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
+                (workPackaged.ProcedureId == 0))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
             if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
                 (string.IsNullOrWhiteSpace(workPackageTripleStoreId)))
                 return false;
-            CommandDefinition commandAdd = new CommandDefinition(@"insert into ProcedureWorkPackageableThing
-                (ProcedureWorkPackageableThingName,StatutoryInstrumentNumber,StatutoryInstrumentNumberPrefix,
-                    StatutoryInstrumentNumberYear,ComingIntoForceNote,WebLink,ProcedureWorkPackageableThingTypeId,
-                    ComingIntoForceDate,TimeLimitForObjectionEndDate,ProcedureId,ModifiedBy,ModifiedAt,
-                    TripleStoreId,ProcedureWorkPackageTripleStoreId)
-                values(@ProcedureWorkPackageableThingName,@StatutoryInstrumentNumber,@StatutoryInstrumentNumberPrefix,
-                    @StatutoryInstrumentNumberYear,@ComingIntoForceNote,@WebLink,@ProcedureWorkPackageableThingTypeId,
-                    @ComingIntoForceDate,@TimeLimitForObjectionEndDate,@ProcedureId,@ModifiedBy,@ModifiedAt,
-                    @TripleStoreId,@ProcedureWorkPackageTripleStoreId)",
-                new
-                {
-                    ProcedureWorkPackageableThingName = workPackageable.ProcedureWorkPackageableThingName.Trim(),
-                    StatutoryInstrumentNumber = workPackageable.StatutoryInstrumentNumber,
-                    StatutoryInstrumentNumberPrefix = workPackageable.StatutoryInstrumentNumberPrefix,
-                    StatutoryInstrumentNumberYear = workPackageable.StatutoryInstrumentNumberYear,
-                    ComingIntoForceNote = workPackageable.ComingIntoForceNote,
-                    WebLink = workPackageable.WebLink,
-                    ProcedureWorkPackageableThingTypeId = workPackageable.ProcedureWorkPackageableThingTypeId,
-                    ComingIntoForceDate = workPackageable.ComingIntoForceDate,
-                    TimeLimitForObjectionEndDate = workPackageable.TimeLimitForObjectionEndDate,
-                    ProcedureId = workPackageable.ProcedureId,
-                    ModifiedBy = EMail,
-                    ModifiedAt = DateTimeOffset.UtcNow,
-                    TripleStoreId = tripleStoreId,
-                    ProcedureWorkPackageTripleStoreId = workPackageTripleStoreId
-                });
-            CommandDefinition commandUpdate = new CommandDefinition(@"update SolrStatutoryInstrumentData
-                set TripleStoreId=@TripleStoreId where Id=@Id",
-                new { TripleStoreId=tripleStoreId, Id = id });
-            return Execute(new CommandDefinition[] { commandAdd, commandUpdate });
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@TripleStoreId", tripleStoreId);
+            parameters.Add("@WebLink", workPackaged.WebLink);
+            parameters.Add("@ProcedureWorkPackageTripleStoreId", workPackageTripleStoreId);
+            parameters.Add("@ProcedureId", workPackaged.ProcedureId);
+            parameters.Add("@IsStatutoryInstrument", workPackaged.IsStatutoryInstrument);
+            parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
+            parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
+            parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
+            parameters.Add("@StatutoryInstrumentNumberYear", workPackaged.StatutoryInstrumentNumberYear);
+            parameters.Add("@ComingIntoForceNote", workPackaged.ComingIntoForceNote);
+            parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
+            parameters.Add("@MadeDate", workPackaged.MadeDate);
+            parameters.Add("@SolarFeedId", id);
+            parameters.Add("@ModifiedBy", EMail);
+            CommandDefinition command = new CommandDefinition("CreateWorkPackaged",
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure);
+            return Execute(command);
         }
 
         [HttpDelete]

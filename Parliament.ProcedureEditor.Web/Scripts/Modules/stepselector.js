@@ -5,6 +5,7 @@
 
             self.procedureStepId = params.procedureStepId;
             self.steps = params.steps;
+            self.removeCallback = params.removeCallback;
             self.addCallback = params.addCallback;
             self.procedureStepName = ko.observable(null);
             self.searchStepText = ko.observable(null);
@@ -16,9 +17,12 @@
             }
 
             self.removeStep = function () {
+                var procedureStepId = self.procedureStepId();
                 self.procedureStepId(null);
                 self.procedureStepName("");
                 self.searchStepText("");
+                if (self.removeCallback)
+                    self.removeCallback(procedureStepId);
             };
 
             self.selectStep = function (data) {

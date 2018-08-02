@@ -1,0 +1,15 @@
+﻿<div class="input-group" data-bind="visible: procedureWorkPackagedId()!==null">
+    <span type="text" class="form-control" data-bind="text: workPackagedThingName"></span>
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeWorkPackaged">Remove</button>
+    </div>
+</div>
+<input class="form-control" data-bind="visible: procedureWorkPackagedId()===null, textInput: searchWorkPackagedText" />
+<ul class="list-group list-group-flush" data-bind="visible:filteredWorkPackagedList().length>0, foreach: filteredWorkPackagedList">
+    <li class="list-group-item">
+        <h6 data-bind="text: WorkPackagedThingName"></h6>
+        <div><small data-bind="text: ProcedureName"></small></div>
+        <div><small data-bind="text: isNaN(Date.parse(MostRecentBusinessItemDate))?'N/A':new Date(MostRecentBusinessItemDate).toLocaleDateString('en-GB')"></small></div>
+        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectWorkPackaged">Select</button>
+    </li>
+</ul>

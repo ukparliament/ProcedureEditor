@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section>
+    <div class="container">
+        <h2>Work package precedings</h2>
+        <a href="/WorkPackagePreceding/Add" class="btn btn-outline-primary btn-sm">Add work package preceding</a>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <ul class="list-group list-group-flush" data-bind="visible:workPackagedPrecedings().length>0, foreach: workPackagedPrecedings">
+            <li class="list-group-item">
+                <h5 data-bind="text: ProcedureStatutoryInstrumentName"></h5>
+                <h5><small>is preceded by</small></h5>
+                <h5 data-bind="text: ProcedureProposedNegativeStatutoryInstrumentName"></h5>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showWorkPackagedPreceding.replace('{id}',Id)}">Select</a>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackagedPreceding, actionText: 'Delete'"></popup>
+
+@section scripts{
+    <script data-main="/Scripts/Views/workpackagedprecedinglist.js" src="~/Scripts/require.js"></script>
+}

@@ -13,7 +13,13 @@
     CONSTRAINT [FK_ProcedureRoute_ProcedureRouteType] FOREIGN KEY ([ProcedureRouteTypeId]) REFERENCES [dbo].[ProcedureRouteType] ([Id]),
     CONSTRAINT [FK_ProcedureRoute_ProcedureStep] FOREIGN KEY ([FromProcedureStepId]) REFERENCES [dbo].[ProcedureStep] ([Id]),
     CONSTRAINT [FK_ProcedureRoute_ProcedureStep1] FOREIGN KEY ([ToProcedureStepId]) REFERENCES [dbo].[ProcedureStep] ([Id]),
-    CONSTRAINT [IX_ProcedureRoute] UNIQUE NONCLUSTERED ([TripleStoreId] ASC),
-    CONSTRAINT [IX_ProcedureRoute_1] UNIQUE NONCLUSTERED ([ProcedureId] ASC, [FromProcedureStepId] ASC, [ToProcedureStepId] ASC)
+    CONSTRAINT [IX_ProcedureRoute] UNIQUE NONCLUSTERED ([TripleStoreId] ASC)
 );
+
+
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_ProcedureRoute_1]
+    ON [dbo].[ProcedureRoute]([ProcedureId] ASC, [FromProcedureStepId] ASC, [ToProcedureStepId] ASC) WHERE ([IsDeleted]=(0));
 

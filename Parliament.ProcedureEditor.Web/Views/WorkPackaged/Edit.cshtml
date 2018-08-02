@@ -1,13 +1,20 @@
-﻿@model int
+﻿@model int?
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input id="statutoryInstrumentId" type="hidden" value="@Model" />
+<input id="workPackagedId" type="hidden" value="@Model" />
 <section>
     <div class="container">
-        <h2>Create work package from statutory instrument</h2>
+        @if (Model.HasValue)
+        {
+            <h2>Edit work package</h2>
+        }
+        else
+        {
+            <h2>New work package</h2>
+        }
     </div>
 </section>
 
@@ -17,7 +24,6 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Procedure*</label>
-                <small>(<span data-bind="text: statutoryInstrument.SIProcedure"></span>)</small>
                 <div data-bind="foreach: procedures">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="procedure" data-bind="checked: $root.procedureId, checkedValue: Id, attr:{id: 'p'+Id}" />
@@ -70,17 +76,29 @@
                     <date-entry params="date: madeDate"></date-entry>
                 </div>
             </div>
-
+            @if (Model.HasValue)
+            {
+                <div class="form-group">
+                    <label>Work packaged Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: workPackaged.TripleStoreId" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Work package Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: workPackaged.ProcedureWorkPackageTripleStoreId" readonly />
+                </div>
+            }
             <section>
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">Add</button>
-                <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
             </section>
         </form>
     </div>
 </section>
-
-<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteStatutoryInstrument, actionText: 'Delete'"></popup>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackaged, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script data-main="/Scripts/Views/solrstatutoryinstrumentedit.js" src="~/Scripts/require.js"></script>
+    <script data-main="/Scripts/Views/workpackagededit.js" src="~/Scripts/require.js"></script>
 }

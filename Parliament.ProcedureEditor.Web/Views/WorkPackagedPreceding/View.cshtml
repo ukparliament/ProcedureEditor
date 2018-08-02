@@ -1,0 +1,19 @@
+﻿@model int
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input id="workPackagedPrecedingId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h5 data-bind="text: workPackagedPreceding().ProcedureStatutoryInstrumentName"></h5>
+        <h5><small>is preceded by</small></h5>
+        <h5 data-bind="text: workPackagedPreceding().ProcedureProposedNegativeStatutoryInstrumentName"></h5>
+        <a href="/WorkPackagePreceding/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
+    </div>
+</section>
+
+@section scripts{
+    <script data-main="/Scripts/Views/workpackagedprecedingview.js" src="~/Scripts/require.js"></script>
+}

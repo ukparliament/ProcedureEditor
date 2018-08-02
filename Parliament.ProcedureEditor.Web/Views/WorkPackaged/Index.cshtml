@@ -12,10 +12,10 @@
 <section>
     <div class="container">
         <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
-        <ul class="list-group list-group-flush" data-bind="visible:workPackageables().length>0, foreach: workPackageables">
+        <ul class="list-group list-group-flush" data-bind="visible:workPackagedList().length>0, foreach: workPackagedList">
             <li class="list-group-item">
-                <work-package-list-item params="workPackageable: $data"></work-package-list-item>
-                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showWorkPackage.replace('{id}',Id)}">Select</a>
+                <work-packaged-list-item params="workPackaged: $data"></work-packaged-list-item>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showWorkPackaged.replace('{id}',Id)}">Select</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
@@ -25,5 +25,5 @@
 <popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteWorkPackageable, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script data-main="/Scripts/Views/workpackagelist.js" src="~/Scripts/require.js"></script>
+    <script data-main="/Scripts/Views/workpackagedlist.js" src="~/Scripts/require.js"></script>
 }

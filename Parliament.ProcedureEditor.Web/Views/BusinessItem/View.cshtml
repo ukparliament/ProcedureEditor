@@ -7,7 +7,7 @@
 <input id="businessItemId" type="hidden" value="@Model" />
 <section>
     <div class="container">
-        <h2>Work package: <span data-bind="text: businessItem().ProcedureWorkPackageableThingName"></span></h2>
+        <h2>Work package: <span data-bind="text: businessItem().WorkPackagedThingName"></span></h2>
         <h3>Procedure: <span data-bind="text: businessItem().ProcedureName"></span></h3>
         <h3>Date: <span data-bind="text: isNaN(Date.parse(businessItem().BusinessItemDate))?'N/A':new Date(businessItem().BusinessItemDate).toLocaleDateString('en-GB')"></span></h3>
         <h3>Id: <span data-bind="text: businessItem().TripleStoreId"></span></h3>

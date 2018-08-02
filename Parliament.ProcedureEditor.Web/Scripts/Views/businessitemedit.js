@@ -8,7 +8,7 @@
             self.isNotValidResponse = ko.observable(false);
             self.webLink = ko.observable(self.businessItem.WebLink || "");
             self.layingBodyId = ko.observable(self.businessItem.LayingBodyId);
-            self.procedureWorkPackageId = ko.observable(self.businessItem.ProcedureWorkPackageId);
+            self.procedureWorkPackagedId = ko.observable(self.businessItem.ProcedureWorkPackagedId);
             self.businessItemDate = ko.observable(self.businessItem.BusinessItemDate);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.businessItem.TripleStoreId + " business item?";
@@ -16,9 +16,9 @@
             self.searchStepText = ko.observable("");
             self.searchLayingBodyText = ko.observable("");
             self.workPackageSteps = ko.observableArray([]);
-            self.workPackageables = ko.observableArray([]);
+            self.workPackagedList = ko.observableArray([]);
             self.layingBodies = [];
-            self.procedureWorkPackageableThingName = ko.observable(self.businessItem.ProcedureWorkPackageableThingName || "");
+            self.workPackagedThingName = ko.observable(self.businessItem.WorkPackagedThingName || "");
             self.layingBodyName = ko.observable("");
 
             var initialStepArray = self.businessItem.Steps.map(function (val) {
@@ -26,10 +26,9 @@
                     Id: ko.observable(val)
                 }
             });
-            if (initialStepArray.length === 0)
-                initialStepArray.push({
-                    Id: ko.observable(null)
-                });
+            initialStepArray.push({
+                Id: ko.observable(null)
+            });
             self.businessItemSteps = ko.observableArray(initialStepArray);
 
             self.steps = ko.pureComputed(function () {
@@ -41,31 +40,41 @@
                     });
             });
 
+            self.removeStep = function (stepId) {
+                self.getSteps();
+            };
+
             self.addStep = function (step) {
+                self.workPackageSteps.remove(step);
                 self.businessItemSteps.push({
                     Id: ko.observable(null)
                 });
             };
 
             self.getSteps = function () {
-                if (self.procedureWorkPackageId() === null) {
+                if (self.procedureWorkPackagedId() === null) {
                     self.businessItemSteps([{
                         Id: ko.observable(null)
                     }]);
                     self.workPackageSteps([]);
                 }
                 else
-                    $.getJSON(window.urls.getStepsSearchByWorkPackage.replace("{workPackageId}", self.procedureWorkPackageId()), function (data) {
+                    $.getJSON(window.urls.getStepsSearchByWorkPackaged.replace("{workPackageId}", self.procedureWorkPackagedId()), function (data) {
                         self.workPackageSteps(data);
                         self.businessItemSteps.remove(function (val) {
                             return self.workPackageSteps().filter(function (item) {
                                 return item.Id === val.Id();
                             }).length === 0;
                         });
-                        if (self.businessItemSteps().length === 0)
+                        var biNumber = self.businessItemSteps().length;
+                        if (biNumber === 0)
                             self.businessItemSteps([{
                                 Id: ko.observable(null)
                             }]);
+                        if ((biNumber > 0) && (self.businessItemSteps()[biNumber - 1].Id() !== null))
+                            self.businessItemSteps.push({
+                                Id: ko.observable(null)
+                            });
                     });
             };
 
@@ -84,8 +93,8 @@
                 }
             });
 
-            $.getJSON(window.urls.getWorkPackages, function (data) {
-                self.workPackageables(data);
+            $.getJSON(window.urls.getWorkPackagedList, function (data) {
+                self.workPackagedList(data);
             });
 
             self.removeLayingBody = function () {
@@ -111,7 +120,7 @@
             });
 
             self.canSave = ko.computed(function () {
-                return (self.procedureWorkPackageId() !== 0) && (self.steps() !== null) && (self.steps().length > 0);
+                return (self.procedureWorkPackagedId() !== 0) && (self.steps() !== null) && (self.steps().length > 0);
             });
 
             self.save = function () {
@@ -122,13 +131,13 @@
                         data: {
                             WebLink: self.webLink(),
                             LayingBodyId: self.layingBodyId(),
-                            ProcedureWorkPackageId: self.procedureWorkPackageId(),
+                            ProcedureWorkPackagedId: self.procedureWorkPackagedId(),
                             BusinessItemDate: self.businessItemDate(),
                             Steps: self.steps()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackage.replace("{id}", self.procedureWorkPackageId());
+                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackagedId());
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -141,13 +150,13 @@
                         data: {
                             WebLink: self.webLink(),
                             LayingBodyId: self.layingBodyId(),
-                            ProcedureWorkPackageId: self.procedureWorkPackageId(),
+                            ProcedureWorkPackagedId: self.procedureWorkPackagedId(),
                             BusinessItemDate: self.businessItemDate(),
                             Steps: self.steps()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackage.replace("{id}", self.procedureWorkPackageId());
+                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackagedId());
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -177,7 +186,7 @@
         };
 
         var businessItemId = $("#businessItemId").val();
-        var workPackageableId = $("#workPackageableId").val();
+        var workPackagedId = $("#workPackagedId").val();
         if (Number.isNaN(Number.parseInt(businessItemId)) === false)
             $.getJSON(window.urls.getBusinessItem.replace("{id}", businessItemId), function (data) {
                 var vm = new viewModel(data);
@@ -189,8 +198,8 @@
                 TripleStoreId: null,
                 WebLink: null,
                 LayingBodyId: null,
-                ProcedureWorkPackageId: Number.isNaN(Number.parseInt(workPackageableId)) ? null : workPackageableId,
-                ProcedureWorkPackageableThingName: null,
+                ProcedureWorkPackagedId: Number.isNaN(Number.parseInt(workPackagedId)) ? null : workPackagedId,
+                WorkPackagedThingName: null,
                 BusinessItemDate: null,
                 Steps: []
             };

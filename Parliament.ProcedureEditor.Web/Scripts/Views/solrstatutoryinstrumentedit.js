@@ -3,30 +3,34 @@
         var viewModel = function (statutoryInstrument) {
             var self = this;
             self.statutoryInstrument = statutoryInstrument;
-            self.procedureWorkPackageableThingName = ko.observable(statutoryInstrument.Title);
+            self.workPackagedThingName = ko.observable(statutoryInstrument.Title);
             self.statutoryInstrumentNumber = ko.observable(statutoryInstrument.SINumber);
             self.statutoryInstrumentNumberPrefix = ko.observable(statutoryInstrument.SIPrefix);
             self.statutoryInstrumentNumberYear = ko.observable(null);
             self.comingIntoForceNote = ko.observable(statutoryInstrument.ComingIntoForceNote);
+            self.comingIntoForceDate = ko.observable(statutoryInstrument.ComingIntoForceDate);
+            self.madeDate = ko.observable(statutoryInstrument.MadeDate);
             self.webLink = ko.observable(statutoryInstrument.WebUrl);
+            self.isStatutoryInstrument = ko.observable(null);
             self.procedureWorkPackageableThingTypeId = ko.observable(null);
             self.comingIntoForceDate = ko.observable(statutoryInstrument.ComingIntoForceDate);
             self.timeLimitForObjectionEndDate = ko.observable(null);
             self.procedureId = ko.observable(null)
             self.isNotValidResponse = ko.observable(false);
+            self.warningText = "Are you sure you wish to delete '" + statutoryInstrument.Title + "' record?";
+            self.isDeletePopupVisible = ko.observable(false);
 
             self.procedures = ko.observableArray([]);
             $.getJSON(window.urls.getProcedures, function (data) {
                 self.procedures(data);
             });
 
-            self.types = ko.observableArray([]);
-            $.getJSON(window.urls.getWorkPackageTypes, function (data) {
-                self.types(data);
-            });
+            self.showDeletePopup = function () {
+                self.isDeletePopupVisible(true);
+            };
             
             self.canSave = ko.computed(function () {
-                return (self.procedureWorkPackageableThingName().length > 0) &&
+                return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null);
             });
 
@@ -35,16 +39,16 @@
                     method: "POST",
                     dataType: "json",
                     data: {
-                        ProcedureWorkPackageableThingName: self.procedureWorkPackageableThingName(),
+                        WorkPackagedThingName: self.workPackagedThingName(),
                         StatutoryInstrumentNumber: self.statutoryInstrumentNumber(),
                         StatutoryInstrumentNumberPrefix: self.statutoryInstrumentNumberPrefix(),
                         StatutoryInstrumentNumberYear: self.statutoryInstrumentNumberYear(),
                         ComingIntoForceNote: self.comingIntoForceNote(),
                         WebLink: self.webLink(),
-                        ProcedureWorkPackageableThingTypeId: self.procedureWorkPackageableThingTypeId(),
                         ComingIntoForceDate: self.comingIntoForceDate(),
-                        TimeLimitForObjectionEndDate: self.timeLimitForObjectionEndDate(),
-                        ProcedureId: self.procedureId()
+                        MadeDate: self.madeDate(),
+                        ProcedureId: self.procedureId(),
+                        IsStatutoryInstrument: self.isStatutoryInstrument()
                     }
                 }).done(function (data) {
                     if (data === true)
@@ -52,6 +56,22 @@
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {
+                    self.isNotValidResponse(true);
+                });
+            };
+
+            self.deleteStatutoryInstrument = function () {
+                $.ajax(window.urls.deleteSolrStatutoryInstrument.replace("{id}", self.statutoryInstrument.Id), {
+                    method: "DELETE",
+                    dataType: "json"
+                }).done(function (data) {
+                    self.isDeletePopupVisible(false);
+                    if (data === true)
+                        window.location = window.urls.showSolrStatutoryInstruments;
+                    else
+                        self.isNotValidResponse(true);
+                }).fail(function () {
+                    self.isDeletePopupVisible(false);
                     self.isNotValidResponse(true);
                 });
             };
