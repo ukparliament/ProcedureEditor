@@ -35,8 +35,8 @@
                 <label>Type*</label>
                 <div data-bind="foreach: routeTypes">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="routeType" data-bind="checked: $root.procedureRouteTypeId, checkedValue: Id, attr:{id: 'p'+Id}" />
-                        <label data-bind="text: ProcedureRouteTypeName, attr:{for: 'p'+Id}"></label>
+                        <input class="form-check-input" type="radio" name="routeType" data-bind="checked: $root.procedureRouteTypeId, checkedValue: Id, attr:{id: 'r'+Id}" />
+                        <label data-bind="text: ProcedureRouteTypeName, attr:{for: 'r'+Id}"></label>
                     </div>
                 </div>
             </div>
