@@ -34,7 +34,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.Title,
                 s.SIPrefix, s.SINumber, s.WebUrl, s.ComingIntoForceNote,
                 s.ComingIntoForceDate, s.MadeDate, s.SIProcedure from SolrStatutoryInstrumentData s
-                where s.Id=@Id",
+                where s.IsDeleted=0 and s.TripleStoreId is null and s.Id=@Id",
                 new { Id = id });
             return GetItem<SolrStatutoryInstrument>(command);
         }

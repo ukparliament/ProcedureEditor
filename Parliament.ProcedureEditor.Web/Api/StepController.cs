@@ -121,7 +121,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, ProcedureStepName,
                 ProcedureStepDescription from ProcedureStep
-                where Id=@Id;
+                where IsDeleted=0 and Id=@Id;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
                 where h.ProcedureStepId=@Id",

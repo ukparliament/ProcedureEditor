@@ -36,7 +36,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("procedure/{id:int}", ContentType.JSON)]
         public Procedure Get(int id)
         {
-            CommandDefinition command = new CommandDefinition("select Id, TripleStoreId, ProcedureName from [Procedure] where Id=@Id", new { Id = id });
+            CommandDefinition command = new CommandDefinition("select Id, TripleStoreId, ProcedureName from [Procedure] where IsDeleted=0 and Id=@Id", new { Id = id });
             return GetItem<Procedure>(command);
         }
 

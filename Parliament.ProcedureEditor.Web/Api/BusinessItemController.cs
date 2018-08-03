@@ -151,7 +151,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
-                where b.Id=@Id;
+                where b.IsDeleted=0 and b.Id=@Id;
                 select Id, ProcedureBusinessItemId, ProcedureStepId from ProcedureBusinessItemProcedureStep
                 where ProcedureBusinessItemId=@Id",
                 new { Id = id });
