@@ -82,8 +82,15 @@
     <Build Include="dbo\Stored Procedures\DeleteWorkPackaged.sql" />
     <Build Include="dbo\Tables\SolrStatutoryInstrumentData.sql" />
     <Build Include="dbo\Stored Procedures\CreateWorkPackaged.sql" />
+    <Build Include="dbo\Tables\DeletedProcedureWorkPackagedThingPreceding.sql" />
+    <Build Include="dbo\Tables\DeletedProcedureWorkPackagedThing.sql" />
+    <Build Include="dbo\Tables\DeletedProcedureStep.sql" />
+    <Build Include="dbo\Tables\DeletedProcedureRoute.sql" />
+    <Build Include="dbo\Tables\DeletedProcedureBusinessItem.sql" />
+    <Build Include="dbo\Tables\DeletedProcedure.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wpmove.sql" />
+    <None Include="wpmove.sparql" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 
 namespace Parliament.ProcedureEditor.Web.Api
@@ -10,23 +11,6 @@ namespace Parliament.ProcedureEditor.Web.Api
 
     public class RouteController : BaseApiController
     {
-        [HttpGet]
-        [ContentNegotiation("route", ContentType.JSON)]
-        public List<Route> Search(string searchText)
-        {
-            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
-                r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
-                p.ProcedureName, rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
-                ts.ProcedureStepName as ToProcedureStepName from ProcedureRoute r
-                join [Procedure] p on p.Id=r.ProcedureId
-                join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
-                join ProcedureStep fs on fs.Id=r.FromProcedureStepId
-                join ProcedureStep ts on ts.Id=r.ToProcedureStepId
-                where r.IsDeleted=0 and ((fs.ProcedureStepName like @SearchText) or (ts.ProcedureStepName like @SearchText) or (upper(r.TripleStoreId)=@TripleStoreId))",
-                new { SearchText = $"%{searchText}%", TripleStoreId = searchText.ToUpper() });
-            return GetItems<Route>(command);
-        }
-
         [HttpGet]
         [ContentNegotiation("route", ContentType.JSON)]
         public List<Route> SearchByProcedure(int procedureId)
@@ -39,9 +23,28 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId
-                where r.IsDeleted=0 and r.ProcedureId=@Id",
-                new { Id=procedureId });
-            return GetItems<Route>(command);
+                where r.ProcedureId=@Id;
+                select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
+                join House hh on hh.Id=h.HouseId
+                join ProcedureRoute r on r.FromProcedureStepId=h.ProcedureStepId or r.ToProcedureStepId=h.ProcedureStepId
+                join [Procedure] p on p.Id=r.ProcedureId
+                where r.ProcedureId=@Id",
+                new { Id = procedureId });
+            Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
+
+            tuple.Item1
+                .ForEach(r => r.FromProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == r.FromProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList());
+
+            tuple.Item1
+                .ForEach(r => r.ToProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == r.ToProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList());
+
+            return tuple.Item1;
         }
 
         [HttpGet]
@@ -56,9 +59,26 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId
-                where r.IsDeleted=0 and ((r.FromProcedureStepId=@StepId) or (r.ToProcedureStepId=@StepId))",
-                new { StepId = stepId});
-            return GetItems<Route>(command);
+                where ((r.FromProcedureStepId=@StepId) or (r.ToProcedureStepId=@StepId));
+                select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
+                join House hh on hh.Id=h.HouseId
+                where h.ProcedureStepId=@StepId",
+                new { StepId = stepId });
+            Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
+
+            tuple.Item1
+                .ForEach(r => r.FromProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == r.FromProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList());
+
+            tuple.Item1
+                .ForEach(r => r.ToProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == r.ToProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList());
+
+            return tuple.Item1;
         }
 
         [HttpGet]
@@ -79,16 +99,31 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join [Procedure] p on p.Id=r.ProcedureId
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
-                join ProcedureStep ts on ts.Id=r.ToProcedureStepId
-                where r.IsDeleted=0");
-            return GetItems<Route>(command);
+                join ProcedureStep ts on ts.Id=r.ToProcedureStepId;
+                select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
+                join House hh on hh.Id=h.HouseId");
+            Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
+
+            tuple.Item1
+                .ForEach(r => r.FromProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == r.FromProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList());
+
+            tuple.Item1
+                .ForEach(r => r.ToProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == r.ToProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList());
+
+            return tuple.Item1;
         }
 
         [HttpGet]
         [ContentNegotiation("route/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetView(int id)
         {
-            return RenderView("View",id);
+            return RenderView("View", id);
         }
 
         [HttpGet]
@@ -103,16 +138,32 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId
-                where r.IsDeleted=0 and r.Id=@Id",
+                where r.Id=@Id;
+                select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
+                join House hh on hh.Id=h.HouseId
+                join ProcedureRoute r on r.FromProcedureStepId=h.ProcedureStepId or r.ToProcedureStepId=h.ProcedureStepId
+                where r.Id=@Id",
                 new { Id = id });
-            return GetItem<Route>(command);
+            Tuple<Route, List<StepHouse>> tuple = GetItem<Route, StepHouse>(command);
+
+            tuple.Item1.FromProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == tuple.Item1.FromProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList();
+
+            tuple.Item1.ToProcedureStepHouseNames = tuple.Item2
+                    .Where(h => h.ProcedureStepId == tuple.Item1.ToProcedureStepId)
+                    .Select(h => h.HouseName)
+                    .ToList();
+
+            return tuple.Item1;
         }
 
         [HttpGet]
         [ContentNegotiation("route/edit/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetEdit(int id)
         {
-            return RenderView("Edit",id);
+            return RenderView("Edit", id);
         }
 
         [HttpGet]
@@ -184,17 +235,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
-            CommandDefinition command = new CommandDefinition(@"update ProcedureRoute
-                set IsDeleted=1,
-                    ModifiedBy=@ModifiedBy,
-                    ModifiedAt=@ModifiedAt
-                where Id=@Id",
-                new
-                {
-                    ModifiedBy = EMail,
-                    ModifiedAt = DateTimeOffset.UtcNow,
-                    Id = id
-                });
+            CommandDefinition command = new CommandDefinition(@"delete from ProcedureRoute where Id=@Id", new { Id = id });
             return Execute(command);
         }
     }

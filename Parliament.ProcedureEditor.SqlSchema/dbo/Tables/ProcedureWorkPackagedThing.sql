@@ -6,7 +6,6 @@
     [ProcedureId]                       INT                NOT NULL,
     [ModifiedAt]                        DATETIMEOFFSET (0) NOT NULL,
     [ModifiedBy]                        NVARCHAR (MAX)     NOT NULL,
-    [IsDeleted]                         BIT                CONSTRAINT [DF_ProcedureWorkPackagedThing_IsDeleted] DEFAULT ((0)) NOT NULL,
     CONSTRAINT [PK_ProcedureWorkPackagedThing] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_ProcedureWorkPackagedThing_Procedure] FOREIGN KEY ([ProcedureId]) REFERENCES [dbo].[Procedure] ([Id]),
     CONSTRAINT [IX_ProcedureWorkPackagedThing] UNIQUE NONCLUSTERED ([TripleStoreId] ASC),
@@ -15,3 +14,22 @@
 
 
 
+
+
+
+
+
+
+
+GO
+CREATE TRIGGER [dbo].[OnDeleteProcedureWorkPackagedThing]
+   ON [dbo].[ProcedureWorkPackagedThing]
+   AFTER DELETE
+AS 
+BEGIN
+	SET NOCOUNT ON;
+
+   insert into DeletedProcedureWorkPackagedThing (Id, TripleStoreId, ProcedureWorkPackageTripleStoreId)
+   select d.Id, d.TripleStoreId, d.ProcedureWorkPackageTripleStoreId from deleted d
+
+END

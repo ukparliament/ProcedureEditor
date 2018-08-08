@@ -21,13 +21,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("workpackagepreceding", ContentType.JSON)]
         public List<WorkPackagedPreceding> Get()
         {
-            CommandDefinition command = new CommandDefinition(@"select p.Id, p.ProcedureProposedNegativeStatutoryInstrumentId,
-	                p.ProcedureStatutoryInstrumentId, nsi.ProcedureProposedNegativeStatutoryInstrumentName,
-	                si.ProcedureStatutoryInstrumentName
+            CommandDefinition command = new CommandDefinition(@"select p.Id, p.WorkPackagedIsFollowedById, p.WorkPackagedIsPrecededById, 
+	                si.ProcedureStatutoryInstrumentName as WorkPackagedIsFollowedByName,
+	                nsi.ProcedureProposedNegativeStatutoryInstrumentName as WorkPackagedIsPrecededByName
                 from ProcedureWorkPackagedThingPreceding p
-                join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=p.ProcedureProposedNegativeStatutoryInstrumentId
-                join ProcedureStatutoryInstrument si on si.Id=p.ProcedureStatutoryInstrumentId
-                where p.IsDeleted=0");
+                join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=p.WorkPackagedIsPrecededById
+				join ProcedureStatutoryInstrument si on si.Id=p.WorkPackagedIsFollowedById");
             return GetItems<WorkPackagedPreceding>(command);
         }
 
@@ -42,13 +41,13 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("workpackagepreceding/{id:int}", ContentType.JSON)]
         public WorkPackagedPreceding Get(int id)
         {
-            CommandDefinition command = new CommandDefinition(@"select p.Id, p.ProcedureProposedNegativeStatutoryInstrumentId,
-	                p.ProcedureStatutoryInstrumentId, nsi.ProcedureProposedNegativeStatutoryInstrumentName,
-	                si.ProcedureStatutoryInstrumentName
+            CommandDefinition command = new CommandDefinition(@"select p.Id, p.WorkPackagedIsFollowedById, p.WorkPackagedIsPrecededById, 
+	                si.ProcedureStatutoryInstrumentName as WorkPackagedIsFollowedByName,
+	                nsi.ProcedureProposedNegativeStatutoryInstrumentName as WorkPackagedIsPrecededByName
                 from ProcedureWorkPackagedThingPreceding p
-                join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=p.ProcedureProposedNegativeStatutoryInstrumentId
-                join ProcedureStatutoryInstrument si on si.Id=p.ProcedureStatutoryInstrumentId
-                where p.IsDeleted=0 and p.Id=@Id",
+                join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=p.WorkPackagedIsPrecededById
+				join ProcedureStatutoryInstrument si on si.Id=p.WorkPackagedIsFollowedById
+                where p.Id=@Id",
                 new { Id = id });
             return GetItem<WorkPackagedPreceding>(command);
         }
@@ -72,19 +71,19 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Put(int id, [FromBody]WorkPackagedPreceding workPackagedPreceding)
         {
             if ((workPackagedPreceding == null) ||
-                (workPackagedPreceding.ProcedureProposedNegativeStatutoryInstrumentId == 0) ||
-                (workPackagedPreceding.ProcedureStatutoryInstrumentId == 0))
+                (workPackagedPreceding.WorkPackagedIsFollowedById == 0) ||
+                (workPackagedPreceding.WorkPackagedIsPrecededById == 0))
                 return false;
             CommandDefinition command = new CommandDefinition(@"update ProcedureWorkPackagedThingPreceding
-                set ProcedureProposedNegativeStatutoryInstrumentId=@ProcedureProposedNegativeStatutoryInstrumentId,
-                    ProcedureStatutoryInstrumentId=@ProcedureStatutoryInstrumentId,
+                set WorkPackagedIsFollowedById=@WorkPackagedIsFollowedById,
+                    WorkPackagedIsPrecededById=@WorkPackagedIsPrecededById,
                     ModifiedBy=@ModifiedBy,
                     ModifiedAt=@ModifiedAt
                 where Id=@Id",
                 new
                 {
-                    ProcedureProposedNegativeStatutoryInstrumentId = workPackagedPreceding.ProcedureProposedNegativeStatutoryInstrumentId,
-                    ProcedureStatutoryInstrumentId = workPackagedPreceding.ProcedureStatutoryInstrumentId,
+                    WorkPackagedIsFollowedById = workPackagedPreceding.WorkPackagedIsFollowedById,
+                    WorkPackagedIsPrecededById = workPackagedPreceding.WorkPackagedIsPrecededById,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
@@ -97,18 +96,18 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Post([FromBody]WorkPackagedPreceding workPackagedPreceding)
         {
             if ((workPackagedPreceding == null) ||
-                (workPackagedPreceding.ProcedureProposedNegativeStatutoryInstrumentId == 0) ||
-                (workPackagedPreceding.ProcedureStatutoryInstrumentId == 0))
+                (workPackagedPreceding.WorkPackagedIsFollowedById == 0) ||
+                (workPackagedPreceding.WorkPackagedIsPrecededById == 0))
                 return false;
             CommandDefinition command = new CommandDefinition(@"insert into ProcedureWorkPackagedThingPreceding
-                (ProcedureProposedNegativeStatutoryInstrumentId,ProcedureStatutoryInstrumentId,
+                (WorkPackagedIsFollowedById,WorkPackagedIsPrecededById,
                     ModifiedBy,ModifiedAt)
-                values(@ProcedureProposedNegativeStatutoryInstrumentId,@ProcedureStatutoryInstrumentId,
+                values(@WorkPackagedIsFollowedById,@WorkPackagedIsPrecededById,
                     @ModifiedBy,@ModifiedAt)",
                 new
                 {
-                    ProcedureProposedNegativeStatutoryInstrumentId = workPackagedPreceding.ProcedureProposedNegativeStatutoryInstrumentId,
-                    ProcedureStatutoryInstrumentId = workPackagedPreceding.ProcedureStatutoryInstrumentId,
+                    WorkPackagedIsFollowedById = workPackagedPreceding.WorkPackagedIsFollowedById,
+                    WorkPackagedIsPrecededById = workPackagedPreceding.WorkPackagedIsPrecededById,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow
                 });
@@ -119,17 +118,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("workpackagepreceding/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
-            CommandDefinition command = new CommandDefinition(@"update ProcedureWorkPackagedThingPreceding
-                set IsDeleted=1,
-                    ModifiedBy=@ModifiedBy,
-                    ModifiedAt=@ModifiedAt
-                where Id=@Id",
-                new
-                {
-                    ModifiedBy = EMail,
-                    ModifiedAt = DateTimeOffset.UtcNow,
-                    Id = id
-                });
+            CommandDefinition command = new CommandDefinition(@"delete from ProcedureWorkPackagedThingPreceding where Id=@Id", new { Id = id });
             return Execute(command);
         }
     }

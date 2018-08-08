@@ -1,4 +1,6 @@
-﻿namespace Parliament.ProcedureEditor.Web.Models
+﻿using System.Collections.Generic;
+
+namespace Parliament.ProcedureEditor.Web.Models
 {
     public class Route
     {
@@ -13,5 +15,7 @@
         public string ProcedureName { get; set; }
         public string FromProcedureStepName { get; set; }
         public string ToProcedureStepName { get; set; }
+        public IEnumerable<string> FromProcedureStepHouseNames { get; set; }
+        public IEnumerable<string> ToProcedureStepHouseNames { get; set; }
     }
 }

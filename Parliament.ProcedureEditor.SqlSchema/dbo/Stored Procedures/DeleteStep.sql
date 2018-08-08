@@ -8,7 +8,7 @@ AS
 BEGIN
     SET NOCOUNT ON
 
-	select top 1 Id from ProcedureRoute where IsDeleted=0 and ((FromProcedureStepId=@StepId) or (ToProcedureStepId=@StepId))
+	select top 1 Id from ProcedureRoute where ((FromProcedureStepId=@StepId) or (ToProcedureStepId=@StepId))
 	union
 	select top 1 Id from ProcedureBusinessItemProcedureStep where ProcedureStepId=@StepId
 
@@ -16,15 +16,9 @@ BEGIN
 		set @IsSuccess=0
 	else
 		begin
-			update ProcedureStep
-			set 
-				IsDeleted=1, 
-				ModifiedAt=GETUTCDATE(),
-				ModifiedBy=@ModifiedBy
-			where Id=@StepId
-			set @IsSuccess=1
-
+			delete from ProcedureStep where Id=@StepId
 			delete from ProcedureStepHouse where ProcedureStepId=@StepId
+			set @IsSuccess=1
 		end
 
 END

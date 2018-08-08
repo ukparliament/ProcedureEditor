@@ -3,10 +3,10 @@
     public class WorkPackagedPreceding
     {
         public int Id { get; set; }
-        public int ProcedureProposedNegativeStatutoryInstrumentId { get; set; }
-        public int ProcedureStatutoryInstrumentId { get; set; }
+        public int WorkPackagedIsFollowedById { get; set; }
+        public int WorkPackagedIsPrecededById { get; set; }
 
-        public string ProcedureProposedNegativeStatutoryInstrumentName { get; set; }
-        public string ProcedureStatutoryInstrumentName { get; set; }
+        public string WorkPackagedIsFollowedByName { get; set; }
+        public string WorkPackagedIsPrecededByName { get; set; }
     }
 }

@@ -3,11 +3,7 @@
         viewModel: function (params) {
             var self = this;
 
-            self.procedureName = params.route.ProcedureName;
-            self.procedureRouteTypeName = params.route.ProcedureRouteTypeName;
-            self.fromProcedureStepName = params.route.FromProcedureStepName;
-            self.toProcedureStepName = params.route.ToProcedureStepName;
-
+            self.route = params.route;
         },
         template: htmlText
     }

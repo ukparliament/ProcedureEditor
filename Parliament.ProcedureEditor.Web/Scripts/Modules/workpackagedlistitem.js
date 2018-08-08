@@ -3,9 +3,8 @@
         viewModel: function (params) {
             var self = this;
 
-            self.workPackagedThingName = params.workPackaged.WorkPackagedThingName;
+            self.workPackaged = params.workPackaged;
             self.statutoryInstrumentType = params.workPackaged.IsStatutoryInstrument ? "Statutory instrument paper" : "Proposed negative statutory instrument paper";
-            self.procedureName = params.workPackaged.ProcedureName;
             self.mostRecentBusinessItemDate = isNaN(Date.parse(params.workPackaged.MostRecentBusinessItemDate)) ?
                 'N/A' : new Date(params.workPackaged.MostRecentBusinessItemDate).toLocaleDateString('en-GB');
 

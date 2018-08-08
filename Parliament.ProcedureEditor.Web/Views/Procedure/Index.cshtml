@@ -16,6 +16,7 @@
         <ul class="list-group list-group-flush" data-bind="foreach: procedures">
             <li class="list-group-item">
                 <h5 data-bind="text: ProcedureName"></h5>
+                <h6 data-bind="text: TripleStoreId"></h6>
                 <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href: window.urls.showProcedure.replace('{id}',Id)}">Select</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>

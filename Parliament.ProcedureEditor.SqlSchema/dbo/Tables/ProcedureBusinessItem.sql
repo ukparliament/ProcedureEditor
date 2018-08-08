@@ -5,7 +5,6 @@
     [LayingBodyId]            INT                NULL,
     [ProcedureWorkPackagedId] INT                NOT NULL,
     [ModifiedBy]              NVARCHAR (MAX)     NOT NULL,
-    [IsDeleted]               BIT                CONSTRAINT [DF__Procedure__IsDel__123EB7A3] DEFAULT ((0)) NOT NULL,
     [ModifiedAt]              DATETIMEOFFSET (0) NOT NULL,
     [BusinessItemDate]        DATETIMEOFFSET (0) NULL,
     CONSTRAINT [PK_ProcedureBusinessItem] PRIMARY KEY CLUSTERED ([Id] ASC),
@@ -16,3 +15,18 @@
 
 
 
+
+
+
+GO
+CREATE TRIGGER [dbo].[OnDeleteProcedureBusinessItem]
+   ON [dbo].ProcedureBusinessItem
+   AFTER DELETE
+AS 
+BEGIN
+	SET NOCOUNT ON;
+
+   insert into DeletedProcedureBusinessItem (Id, TripleStoreId)
+   select d.Id, d.TripleStoreId from deleted d
+
+END

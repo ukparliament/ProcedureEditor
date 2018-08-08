@@ -14,8 +14,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<LayingBody> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, LayingBodyName
-                from LayingBody
-                where IsDeleted=0");
+                from LayingBody");
             return GetItems<LayingBody>(command);
         }
 

@@ -8,20 +8,15 @@ AS
 BEGIN
     SET NOCOUNT ON
 
-	select top 1 Id from ProcedureRoute where IsDeleted=0 and ProcedureId=@ProcedureId
+	select top 1 Id from ProcedureRoute where ProcedureId=@ProcedureId
 	union
-	select top 1 Id from ProcedureWorkPackagedThing where IsDeleted=0 and ProcedureId=@ProcedureId
+	select top 1 Id from ProcedureWorkPackagedThing where ProcedureId=@ProcedureId
 
 	if @@ROWCOUNT>0
 		set @IsSuccess=0
 	else
 		begin
-			update [Procedure] 
-			set 
-				IsDeleted=1, 
-				ModifiedAt=GETUTCDATE(),
-				ModifiedBy=@ModifiedBy
-			where Id=@ProcedureId
+			delete from [Procedure] where Id=@ProcedureId
 			set @IsSuccess=1
 		end
 

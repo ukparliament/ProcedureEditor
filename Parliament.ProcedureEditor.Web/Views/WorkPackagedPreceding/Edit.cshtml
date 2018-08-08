@@ -24,11 +24,11 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Is followed by*</label>
-                <work-packaged-selector params="procedureWorkPackagedId: procedureStatutoryInstrumentId, workPackagedList: procedureStatutoryInstruments"></work-packaged-selector>
+                <work-packaged-selector params="procedureWorkPackagedId: workPackagedIsFollowedById, workPackagedList: procedureStatutoryInstruments"></work-packaged-selector>
             </div>
             <div class="form-group">
                 <label>Is preceded by*</label>
-                <work-packaged-selector params="procedureWorkPackagedId: procedureProposedNegativeStatutoryInstrumentId, workPackagedList: procedureProposedNegativeStatutoryInstruments"></work-packaged-selector>
+                <work-packaged-selector params="procedureWorkPackagedId: workPackagedIsPrecededById, workPackagedList: procedureProposedNegativeStatutoryInstruments"></work-packaged-selector>
             </div>
             <section>
                 <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>

@@ -5,15 +5,15 @@
             if (workPackagedPreceding === null)
                 self.workPackagedPreceding = {
                     Id: null,
-                    ProcedureProposedNegativeStatutoryInstrumentId: null,
-                    ProcedureStatutoryInstrumentId: null
+                    WorkPackagedIsFollowedById: null,
+                    WorkPackagedIsPrecededById: null
                 };
             else
                 self.workPackagedPreceding = workPackagedPreceding;
 
             self.isNotValidResponse = ko.observable(false);
-            self.procedureProposedNegativeStatutoryInstrumentId = ko.observable(self.workPackagedPreceding.ProcedureProposedNegativeStatutoryInstrumentId);
-            self.procedureStatutoryInstrumentId = ko.observable(self.workPackagedPreceding.ProcedureStatutoryInstrumentId);
+            self.workPackagedIsFollowedById = ko.observable(self.workPackagedPreceding.WorkPackagedIsFollowedById);
+            self.workPackagedIsPrecededById = ko.observable(self.workPackagedPreceding.WorkPackagedIsPrecededById);
             self.procedureProposedNegativeStatutoryInstruments = ko.observableArray([]);
             self.procedureStatutoryInstruments = ko.observableArray([]);
 
@@ -32,8 +32,8 @@
             self.warningText = "Are you sure you wish to delete this work package preceding?";
 
             self.canSave = ko.computed(function () {
-                return (self.procedureProposedNegativeStatutoryInstrumentId() !== null) &&
-                    (self.procedureStatutoryInstrumentId() !== null);
+                return (self.workPackagedIsFollowedById() !== null) &&
+                    (self.workPackagedIsPrecededById() !== null);
             });
 
             self.save = function () {
@@ -42,8 +42,8 @@
                         method: "POST",
                         dataType: "json",
                         data: {
-                            ProcedureProposedNegativeStatutoryInstrumentId: self.procedureProposedNegativeStatutoryInstrumentId(),
-                            ProcedureStatutoryInstrumentId: self.procedureStatutoryInstrumentId()
+                            WorkPackagedIsFollowedById: self.workPackagedIsFollowedById(),
+                            WorkPackagedIsPrecededById: self.workPackagedIsPrecededById()
                         }
                     }).done(function (data) {
                         if (data === true)
@@ -58,8 +58,8 @@
                         method: "PUT",
                         dataType: "json",
                         data: {
-                            ProcedureProposedNegativeStatutoryInstrumentId: self.procedureProposedNegativeStatutoryInstrumentId(),
-                            ProcedureStatutoryInstrumentId: self.procedureStatutoryInstrumentId()
+                            WorkPackagedIsFollowedById: self.workPackagedIsFollowedById(),
+                            WorkPackagedIsPrecededById: self.workPackagedIsPrecededById()
                         }
                     }).done(function (data) {
                         if (data === true)

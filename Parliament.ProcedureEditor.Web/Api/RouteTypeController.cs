@@ -14,8 +14,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<RouteType> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select Id, ProcedureRouteTypeName
-                from ProcedureRouteType
-                where IsDeleted=0");
+                from ProcedureRouteType");
             return GetItems<RouteType>(command);
         }
 

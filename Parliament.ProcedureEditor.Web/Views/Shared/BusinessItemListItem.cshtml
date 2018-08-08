@@ -1,4 +1,4 @@
-﻿<ul class="list-unstyled" data-bind="foreach: steps">
+﻿<ul class="list-unstyled" data-bind="foreach: businessItem.Steps">
     <li>
         <h5 data-bind="text: ProcedureStepName"></h5>
         <ul class="list-inline" data-bind="foreach: HouseNames">
@@ -6,6 +6,7 @@
         </ul>
     </li>
 </ul>
-<h6 data-bind="text: workPackagedThingName"></h6>
-<h6 data-bind="text: procedureName"></h6>
+<h6 data-bind="text: businessItem.WorkPackagedThingName"></h6>
+<h6 data-bind="text: businessItem.ProcedureName"></h6>
 <h6 data-bind="text: businessItemDate"></h6>
+<h6 data-bind="text: businessItem.TripleStoreId"></h6>

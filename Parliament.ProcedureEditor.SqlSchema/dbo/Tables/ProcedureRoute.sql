@@ -6,7 +6,6 @@
     [ToProcedureStepId]    INT                NOT NULL,
     [ProcedureRouteTypeId] INT                NOT NULL,
     [ModifiedBy]           NVARCHAR (MAX)     NOT NULL,
-    [IsDeleted]            BIT                DEFAULT ((0)) NOT NULL,
     [ModifiedAt]           DATETIMEOFFSET (0) NOT NULL,
     CONSTRAINT [PK_ProcedureRoute] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_ProcedureRoute_Procedure] FOREIGN KEY ([ProcedureId]) REFERENCES [dbo].[Procedure] ([Id]),
@@ -19,7 +18,24 @@
 
 
 
-GO
-CREATE UNIQUE NONCLUSTERED INDEX [IX_ProcedureRoute_1]
-    ON [dbo].[ProcedureRoute]([ProcedureId] ASC, [FromProcedureStepId] ASC, [ToProcedureStepId] ASC) WHERE ([IsDeleted]=(0));
 
+
+GO
+CREATE NONCLUSTERED INDEX [IX_ProcedureRoute_1]
+    ON [dbo].[ProcedureRoute]([ProcedureId] ASC, [FromProcedureStepId] ASC, [ToProcedureStepId] ASC);
+
+
+
+
+GO
+CREATE TRIGGER [dbo].[OnDeleteProcedureRoute]
+   ON [dbo].ProcedureRoute
+   AFTER DELETE
+AS 
+BEGIN
+	SET NOCOUNT ON;
+
+   insert into DeletedProcedureRoute (Id, TripleStoreId)
+   select d.Id, d.TripleStoreId from deleted d
+
+END

@@ -18,6 +18,7 @@
                 <ul class="list-inline" data-bind="foreach: HouseNames">
                     <li class="list-inline-item"><h6 data-bind="text: $data"></h6></li>
                 </ul>
+                <h6 data-bind="text: TripleStoreId"></h6>
                 <a class="btn btn-outline-primary btn-sm" data-bind="attr: {href: window.urls.showStep.replace('{id}',Id)}">Select</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>

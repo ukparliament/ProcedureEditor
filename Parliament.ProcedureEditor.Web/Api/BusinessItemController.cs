@@ -14,36 +14,6 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpGet]
         [ContentNegotiation("businessitem", ContentType.JSON)]
-        public List<BusinessItem> Search(string searchText)
-        {
-            CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.LayingBodyId, b.ProcedureWorkPackagedId, b.BusinessItemDate,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
-                wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
-                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
-                left join ProcedureStatutoryInstrument si on si.Id=wp.Id
-                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
-                join [Procedure] p on p.Id=wp.ProcedureId
-                where b.IsDeleted=0 and ((b.WebLink like @SearchText) or (upper(b.TripleStoreId)=@TripleStoreId) or (coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) like @SearchText));
-                select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
-                join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId
-                left join ProcedureStatutoryInstrument si on si.Id=b.ProcedureWorkPackagedId
-                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=b.ProcedureWorkPackagedId
-                where b.IsDeleted=0 and ((b.WebLink like @SearchText) or (upper(b.TripleStoreId)=@TripleStoreId) or (coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) like @SearchText))",
-                new { SearchText = $"%{searchText}%", TripleStoreId = searchText.ToUpper() });
-            Tuple<List<BusinessItem>, List<BusinessItemStep>> tuple = GetItems<BusinessItem, BusinessItemStep>(command);
-
-            tuple.Item1
-                .ForEach(b => b.Steps = tuple.Item2
-                    .Where(s => s.ProcedureBusinessItemId == b.Id)
-                    .Select(s => s.ProcedureStepId)
-                    .ToList());
-
-            return tuple.Item1;
-        }
-
-        [HttpGet]
-        [ContentNegotiation("businessitem", ContentType.JSON)]
         public List<BusinessItem> SearchByWorkPackage(int workPackageId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
@@ -54,10 +24,10 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
-                where b.IsDeleted=0 and b.ProcedureWorkPackagedId=@ProcedureWorkPackagedId;
+                where b.ProcedureWorkPackagedId=@ProcedureWorkPackagedId;
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
                 join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId
-                where b.IsDeleted=0 and b.ProcedureWorkPackagedId=@ProcedureWorkPackagedId",
+                where b.ProcedureWorkPackagedId=@ProcedureWorkPackagedId",
                 new { ProcedureWorkPackagedId = workPackageId });
             Tuple<List<BusinessItem>, List<BusinessItemStep>> tuple = GetItems<BusinessItem, BusinessItemStep>(command);
 
@@ -82,10 +52,10 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
-                where b.IsDeleted=0 and exists (select top 1 bs.Id from ProcedureBusinessItemProcedureStep bs where bs.ProcedureBusinessItemId=b.Id and bs.ProcedureStepId=@StepId);
+                where exists (select top 1 bs.Id from ProcedureBusinessItemProcedureStep bs where bs.ProcedureBusinessItemId=b.Id and bs.ProcedureStepId=@StepId);
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
                 join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId
-                where b.IsDeleted=0 and s.ProcedureStepId=@StepId",
+                where s.ProcedureStepId=@StepId",
                 new { StepId = stepId });
             Tuple<List<BusinessItem>, List<BusinessItemStep>> tuple = GetItems<BusinessItem, BusinessItemStep>(command);
 
@@ -116,11 +86,9 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
-                join [Procedure] p on p.Id=wp.ProcedureId
-                where b.IsDeleted=0;
+                join [Procedure] p on p.Id=wp.ProcedureId;
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
-                join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId
-                where b.IsDeleted=0");
+                join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId");
             Tuple<List<BusinessItem>, List<BusinessItemStep>> tuple = GetItems<BusinessItem, BusinessItemStep>(command);
 
             tuple.Item1
@@ -151,7 +119,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
-                where b.IsDeleted=0 and b.Id=@Id;
+                where b.Id=@Id;
                 select Id, ProcedureBusinessItemId, ProcedureStepId from ProcedureBusinessItemProcedureStep
                 where ProcedureBusinessItemId=@Id",
                 new { Id = id });
@@ -182,7 +150,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("businessitem/add", ContentType.HTML)]
         public IHttpActionResult GetAdd(int workPackageId)
         {
-            return RenderView("Edit",new BusinessItemEditParameters() { WorkPackagedId = workPackageId });
+            return RenderView("Edit", new BusinessItemEditParameters() { WorkPackagedId = workPackageId });
         }
 
         [HttpPut]
@@ -268,19 +236,9 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Delete(int id)
         {
             List<CommandDefinition> updates = new List<CommandDefinition>();
-            updates.Add(new CommandDefinition(@"update ProcedureBusinessItem
-                set IsDeleted=1,
-                    ModifiedBy=@ModifiedBy,
-                    ModifiedAt=@ModifiedAt
-                where Id=@Id",
-                new
-                {
-                    ModifiedBy = EMail,
-                    ModifiedAt = DateTimeOffset.UtcNow,
-                    Id = id
-                }));
+            updates.Add(new CommandDefinition(@"delete from ProcedureBusinessItem where Id=@Id", new { Id = id }));
             updates.Add(new CommandDefinition(@"delete from ProcedureBusinessItemProcedureStep where ProcedureBusinessItemId=@Id",
-                new { Id = id }));            
+                new { Id = id }));
             return Execute(updates.ToArray());
         }
     }

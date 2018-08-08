@@ -17,7 +17,6 @@ var urls = {
 
     getWorkPackagedList: "/workpackage",
     getWorkPackagedListSearchByProcedure: "/workpackage?procedureId={procedureId}",
-    getWorkPackagedListSearch: "/workpackage?searchText={searchText}",
     getWorkPackaged: "/workpackage/{id}",
     addWorkPackaged: "/workpackage",
     updateWorkPackaged: "/workpackage/{id}",
@@ -30,7 +29,6 @@ var urls = {
     updateRoute: "/route/{id}",
     deleteRoute: "/route/{id}",
     getRoute: "/route/{id}",
-    getRoutesSearch: "/route?searchText={searchText}",
     getRoutesSearchByProcedure: "/route?procedureId={procedureId}",
     getRoutesSearchByStep: "/route?stepId={stepId}",
     showRoutes: "/Route",
@@ -43,7 +41,6 @@ var urls = {
     updateStep: "/step/{id}",
     deleteStep: "/step/{id}",
     getStep: "/step/{id}",
-    getStepsSearch: "/step?searchText={searchText}",
     getStepsSearchByWorkPackaged: "/step?workPackageId={workPackageId}",
     showSteps: "/Step",
     showStep: "/Step/{id}",
@@ -55,7 +52,6 @@ var urls = {
     updateBusinessItem: "/businessitem/{id}",
     deleteBusinessItem: "/businessitem/{id}",
     getBusinessItem: "/businessitem/{id}",
-    getBusinessItemsSearch: "/businessitem?searchText={searchText}",
     getBusinessItemsSearchByWorkPackaged: "/businessitem?workPackageId={workPackageId}",
     getBusinessItemsSearchByStep: "/businessitem?stepId={stepId}",
     showBusinessItems: "/BusinessItem",
@@ -81,7 +77,8 @@ var urls = {
 };
 window.urls = urls;
 
-define(["knockout"], function (ko) {
+define(["knockout", "jquery"], function (ko, $) {
+    $.ajaxSetup({ cache: false });
     ko.components.register("popup", { require: '/Scripts/Modules/popup.js' });
     ko.components.register("date-entry", { require: '/Scripts/Modules/dateentry.js' });
     ko.components.register("work-packaged-selector", { require: '/Scripts/Modules/workpackagedselector.js' });    

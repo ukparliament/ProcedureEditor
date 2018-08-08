@@ -1,24 +1,43 @@
 ﻿CREATE TABLE [dbo].[ProcedureWorkPackagedThingPreceding] (
-    [Id]                                             INT            IDENTITY (1, 1) NOT NULL,
-    [ProcedureProposedNegativeStatutoryInstrumentId] INT            NOT NULL,
-    [ProcedureStatutoryInstrumentId]                 INT            NOT NULL,
-    [ModifiedAt]                                     DATE           NOT NULL,
-    [ModifiedBy]                                     NVARCHAR (MAX) NOT NULL,
-    [IsDeleted]                                      BIT            CONSTRAINT [DF_ProcedureWorkPackagedThingPreceding_IsDeleted] DEFAULT ((0)) NOT NULL,
+    [Id]                         INT            IDENTITY (1, 1) NOT NULL,
+    [WorkPackagedIsFollowedById] INT            NOT NULL,
+    [WorkPackagedIsPrecededById] INT            NOT NULL,
+    [ModifiedAt]                 DATE           NOT NULL,
+    [ModifiedBy]                 NVARCHAR (MAX) NOT NULL,
     CONSTRAINT [PK_ProcedureWorkPackagedThingPreceding] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK_ProcedureWorkPackagedThingPreceding_ProcedureProposedNegativeStatutoryInstrument] FOREIGN KEY ([ProcedureProposedNegativeStatutoryInstrumentId]) REFERENCES [dbo].[ProcedureProposedNegativeStatutoryInstrument] ([Id]),
-    CONSTRAINT [FK_ProcedureWorkPackagedThingPreceding_ProcedureStatutoryInstrument] FOREIGN KEY ([ProcedureStatutoryInstrumentId]) REFERENCES [dbo].[ProcedureStatutoryInstrument] ([Id])
+    CONSTRAINT [FK_ProcedureWorkPackagedThingPreceding_ProcedureWorkPackagedThing] FOREIGN KEY ([WorkPackagedIsFollowedById]) REFERENCES [dbo].[ProcedureWorkPackagedThing] ([Id]),
+    CONSTRAINT [FK_ProcedureWorkPackagedThingPreceding_ProcedureWorkPackagedThing1] FOREIGN KEY ([WorkPackagedIsPrecededById]) REFERENCES [dbo].[ProcedureWorkPackagedThing] ([Id]),
+    CONSTRAINT [IX_ProcedureWorkPackagedThingPreceding_1] UNIQUE NONCLUSTERED ([WorkPackagedIsFollowedById] ASC, [WorkPackagedIsPrecededById] ASC)
 );
 
 
 
 
-GO
-CREATE UNIQUE NONCLUSTERED INDEX [IX_ProcedureWorkPackagedThingPreceding_1]
-    ON [dbo].[ProcedureWorkPackagedThingPreceding]([ProcedureStatutoryInstrumentId] ASC) WHERE ([IsDeleted]=(0));
+
+
 
 
 GO
-CREATE UNIQUE NONCLUSTERED INDEX [IX_ProcedureWorkPackagedThingPreceding]
-    ON [dbo].[ProcedureWorkPackagedThingPreceding]([ProcedureProposedNegativeStatutoryInstrumentId] ASC) WHERE ([IsDeleted]=(0));
 
+
+
+GO
+
+
+
+
+
+GO
+CREATE TRIGGER [dbo].[OnDeleteProcedureWorkPackagedThingPreceding]
+   ON [dbo].ProcedureWorkPackagedThingPreceding
+   after DELETE
+AS 
+BEGIN
+	SET NOCOUNT ON;
+
+   insert into DeletedProcedureWorkPackagedThingPreceding (Id, FollowedByTripleStoreId, PrecededByTripleStoreId)
+   select d.Id, fwt.TripleStoreId, pwt.TripleStoreId from deleted d
+   join ProcedureWorkPackagedThing fwt on fwt.Id=d.WorkPackagedIsFollowedById
+   join ProcedureWorkPackagedThing pwt on pwt.Id=d.WorkPackagedIsPrecededById
+
+END
