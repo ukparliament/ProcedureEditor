@@ -1,0 +1,21 @@
+﻿@model int
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input id="layingItemId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h2>WorkPackedThingName: <span data-bind="text: layingItem().WorkPackedThingName"></span></h2>
+        <h3 data-bind="visible: (layingItem().LayingBodyName||'').length>0">Laying body: <span data-bind="text: layingItem().LayingBodyName"></span></h3>
+        <h3>Laying date: <span data-bind="text: isNaN(Date.parse(layingItem().LayingDate))?'N/A':new Date(layingItem().LayingDate).toLocaleDateString('en-GB')"></span></h3>
+        <h3>Id: <span data-bind="text: layingItem().TripleStoreId"></span></h3>
+        <a href="/LayingItem/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
+    </div>
+</section>
+
+
+@section scripts{
+    <script data-main="/Scripts/Views/layingitemview.js" src="~/Scripts/require.js"></script>
+}

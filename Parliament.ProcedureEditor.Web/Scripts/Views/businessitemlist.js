@@ -56,7 +56,7 @@
                 }).done(function (data) {
                     self.isDeletePopupVisible(false);
                     if (data === true)
-                        self.businessItem.remove(self.soonToBeDeleted);
+                        self.businessItems.remove(self.soonToBeDeleted);
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {

@@ -17,7 +17,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<BusinessItem> SearchByWorkPackage(int workPackageId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.LayingBodyId, b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackagedId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
@@ -45,7 +45,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<BusinessItem> SearchByStep(int stepId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.LayingBodyId, b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackagedId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
@@ -80,7 +80,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<BusinessItem> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.LayingBodyId, b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackagedId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
@@ -112,7 +112,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public BusinessItem Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.LayingBodyId, b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackagedId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
@@ -163,7 +163,6 @@ namespace Parliament.ProcedureEditor.Web.Api
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"update ProcedureBusinessItem
                 set WebLink=@WebLink,
-                    LayingBodyId=@LayingBodyId,
                     ProcedureWorkPackagedId=@ProcedureWorkPackagedId,
                     BusinessItemDate=@BusinessItemDate,
                     ModifiedBy=@ModifiedBy,
@@ -235,11 +234,17 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("businessitem/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
-            List<CommandDefinition> updates = new List<CommandDefinition>();
-            updates.Add(new CommandDefinition(@"delete from ProcedureBusinessItem where Id=@Id", new { Id = id }));
-            updates.Add(new CommandDefinition(@"delete from ProcedureBusinessItemProcedureStep where ProcedureBusinessItemId=@Id",
-                new { Id = id }));
-            return Execute(updates.ToArray());
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@ModifiedBy", EMail);
+            parameters.Add("@BusinessItemId", id);
+            parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
+            CommandDefinition command = new CommandDefinition("DeleteBusinessItem",
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure);
+            if (Execute(command))
+                return parameters.Get<bool>("@IsSuccess");
+            else
+                return false;
         }
     }
 

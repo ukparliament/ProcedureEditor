@@ -183,6 +183,9 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
+    <Content Include="Scripts\Views\layingitemedit.js" />
+    <Content Include="Scripts\Views\layingitemlist.js" />
+    <Content Include="Scripts\Views\layingitemview.js" />
     <Content Include="Scripts\Views\solrstatutoryinstrumentlist.js" />
     <Content Include="Scripts\Views\routeedit.js" />
     <Content Include="Scripts\Views\routelist.js" />
@@ -215,6 +218,7 @@
     <Compile Include="Api\Configuration\ContentType.cs" />
     <Compile Include="Api\AuthenticationController.cs" />
     <Compile Include="Api\HtmlTemplateController.cs" />
+    <Compile Include="Api\LayingItemController.cs" />
     <Compile Include="Api\ProcedureController.cs" />
     <Compile Include="Api\RouteController.cs" />
     <Compile Include="Api\HouseController.cs" />
@@ -227,6 +231,7 @@
     <Compile Include="Api\WorkPackagedController.cs" />
     <Compile Include="Api\Configuration\ContentNegotiationAttribute.cs" />
     <Compile Include="Controllers\MvcController.cs" />
+    <Compile Include="Models\LayingItem.cs" />
     <Compile Include="Models\BusinessItemEditParameters.cs" />
     <Compile Include="Models\LayingBody.cs" />
     <Compile Include="Models\SolrStatutoryInstrument.cs" />
@@ -290,6 +295,9 @@
     <Content Include="Views\Shared\WorkPackagedListItem.cshtml" />
     <Content Include="Views\Shared\RouteListItem.cshtml" />
     <Content Include="Views\Shared\BusinessItemListItem.cshtml" />
+    <Content Include="Views\LayingItem\Edit.cshtml" />
+    <Content Include="Views\LayingItem\Index.cshtml" />
+    <Content Include="Views\LayingItem\View.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

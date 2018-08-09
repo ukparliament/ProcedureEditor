@@ -8,7 +8,6 @@ namespace Parliament.ProcedureEditor.Web.Models
         public int Id { get; set; }
         public string TripleStoreId { get; set; }
         public string WebLink { get; set; }
-        public int? LayingBodyId { get; set; }
         public int ProcedureWorkPackagedId { get; set; }        
         public DateTimeOffset? BusinessItemDate { get; set; }
         public IEnumerable<int> Steps { get; set; }

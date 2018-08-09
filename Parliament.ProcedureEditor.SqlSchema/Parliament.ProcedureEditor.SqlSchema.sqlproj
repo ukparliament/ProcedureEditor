@@ -88,6 +88,9 @@
     <Build Include="dbo\Tables\DeletedProcedureRoute.sql" />
     <Build Include="dbo\Tables\DeletedProcedureBusinessItem.sql" />
     <Build Include="dbo\Tables\DeletedProcedure.sql" />
+    <Build Include="dbo\Tables\ProcedureLaying.sql" />
+    <Build Include="dbo\Tables\DeletedProcedureLaying.sql" />
+    <Build Include="dbo\Stored Procedures\DeleteBusinessItem.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wpmove.sql" />

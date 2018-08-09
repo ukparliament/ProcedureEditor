@@ -57,6 +57,14 @@ var urls = {
     showBusinessItems: "/BusinessItem",
     showBusinessItem: "/BusinessItem/{id}",
 
+    getLayingItems: "/layingitem",
+    addLayingItem: "/layingitem",
+    updateLayingItem: "/layingitem/{id}",
+    deleteLayingItem: "/layingitem/{id}",
+    getLayingItem: "/layingitem/{id}",
+    showLayingItems: "/LayingItem",
+    showLayingItem: "/LayingItem/{id}",
+
     getHouses: "/house",
 
     getWorkPackagedPrecedings: "/workpackagepreceding",

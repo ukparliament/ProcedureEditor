@@ -1,0 +1,87 @@
+﻿@model int?
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input id="layingItemId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        @if (Model.HasValue)
+        {
+            <h2>Edit laying item</h2>
+        }
+        else
+        {
+            <h2>New laying item</h2>
+        }
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Business item*</label>
+                <div class="input-group" data-bind="visible: businessItemId()!==null">
+                    <span class="form-control" data-bind="text: businessItemName"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeBusinessItem">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: businessItemId()===null, textInput: searchBusinessItemText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredBusinessItems().length>0, foreach: filteredBusinessItems">
+                    <li class="list-group-item">
+                        <h6 data-bind="text: WorkPackagedThingName"></h6>
+                        <h6 data-bind="text: TripleStoreId"></h6>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectLayingBody">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Work package*</label>
+                <work-packaged-selector params="procedureWorkPackagedId: procedureWorkPackagedId, workPackagedList: workPackagedList"></work-packaged-selector>
+            </div>
+            <div class="form-group">
+                <label>Laying body</label>
+                <div class="input-group" data-bind="visible: layingBodyId()!==null">
+                    <span class="form-control" data-bind="text: layingBodyName"></span>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeLayingBody">Remove</button>
+                    </div>
+                </div>
+                <input class="form-control" data-bind="visible: layingBodyId()===null, textInput: searchLayingBodyText" />
+                <ul class="list-group list-group-flush" data-bind="visible:filteredLayingBodies().length>0, foreach: filteredLayingBodies">
+                    <li class="list-group-item">
+                        <span data-bind="text: LayingBodyName"></span>
+                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectLayingBody">Select</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label>Laying date</label>
+                <date-entry params="date: businessItemDate"></date-entry>
+            </div>
+            @if (Model.HasValue)
+            {
+                <div class="form-group">
+                    <label>Id</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: businessItem.TripleStoreId" readonly />
+                </div>
+            }
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.BusinessItemId.HasValue ? "Update" : "Add")</button>
+                @if (Model.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
+        </form>
+    </div>
+</section>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteBusinessItem, actionText: 'Delete'"></popup>
+
+@section scripts{
+    <script data-main="/Scripts/Views/businessitemedit.js" src="~/Scripts/require.js"></script>
+}
