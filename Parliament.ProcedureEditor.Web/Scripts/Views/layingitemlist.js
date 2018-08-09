@@ -13,13 +13,13 @@
             });
 
             self.showDeletePopup = function (layingItem) {
-                self.soonToBeDeleted = businessItem;
+                self.soonToBeDeleted = layingItem;
                 self.warningText("Are you sure you wish to delete " + layingItem.TripleStoreId + " laying item?");
                 self.isDeletePopupVisible(true);
             };
 
-            self.deleteLayingItems = function () {
-                $.ajax(window.urls.deleteLayingItems.replace("{id}", self.soonToBeDeleted.Id), {
+            self.deleteLayingItem = function () {
+                $.ajax(window.urls.deleteLayingItem.replace("{id}", self.soonToBeDeleted.Id), {
                     method: "DELETE",
                     dataType: "json"
                 }).done(function (data) {

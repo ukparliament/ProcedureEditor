@@ -16,7 +16,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
-	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackagedId=wp.Id) as MostRecentBusinessItemDate,
+	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate,
@@ -43,7 +43,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
-	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackagedId=wp.Id) as MostRecentBusinessItemDate,
+	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate,
@@ -68,7 +68,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
-	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackagedId=wp.Id) as MostRecentBusinessItemDate,
+	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate,

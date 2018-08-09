@@ -17,18 +17,18 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<BusinessItem> SearchByWorkPackage(int workPackageId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackageId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
-                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
+                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
-                where b.ProcedureWorkPackagedId=@ProcedureWorkPackagedId;
+                where b.ProcedureWorkPackageId=@ProcedureWorkPackageId;
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
                 join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId
-                where b.ProcedureWorkPackagedId=@ProcedureWorkPackagedId",
-                new { ProcedureWorkPackagedId = workPackageId });
+                where b.ProcedureWorkPackageId=@ProcedureWorkPackageId",
+                new { ProcedureWorkPackageId = workPackageId });
             Tuple<List<BusinessItem>, List<BusinessItemStep>> tuple = GetItems<BusinessItem, BusinessItemStep>(command);
 
             tuple.Item1
@@ -45,10 +45,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<BusinessItem> SearchByStep(int stepId)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackageId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
-                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
+                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
@@ -80,10 +80,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<BusinessItem> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackageId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
-                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
+                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId;
@@ -112,10 +112,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         public BusinessItem Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
-                b.ProcedureWorkPackagedId, b.BusinessItemDate,
+                b.ProcedureWorkPackageId, b.BusinessItemDate,
                 coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
-                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackagedId
+                join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
@@ -150,7 +150,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("businessitem/add", ContentType.HTML)]
         public IHttpActionResult GetAdd(int workPackageId)
         {
-            return RenderView("Edit", new BusinessItemEditParameters() { WorkPackagedId = workPackageId });
+            return RenderView("Edit", new BusinessItemEditParameters() { WorkPackageId = workPackageId });
         }
 
         [HttpPut]
@@ -158,12 +158,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Put(int id, [FromBody]BusinessItem businessItem)
         {
             if ((businessItem == null) ||
-                (businessItem.ProcedureWorkPackagedId == 0))
+                (businessItem.ProcedureWorkPackageId == 0))
                 return false;
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"update ProcedureBusinessItem
                 set WebLink=@WebLink,
-                    ProcedureWorkPackagedId=@ProcedureWorkPackagedId,
+                    ProcedureWorkPackageId=@ProcedureWorkPackageId,
                     BusinessItemDate=@BusinessItemDate,
                     ModifiedBy=@ModifiedBy,
                     ModifiedAt=@ModifiedAt
@@ -171,8 +171,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 new
                 {
                     WebLink = businessItem.WebLink,
-                    LayingBodyId = businessItem.LayingBodyId,
-                    ProcedureWorkPackagedId = businessItem.ProcedureWorkPackagedId,
+                    ProcedureWorkPackageId = businessItem.ProcedureWorkPackageId,
                     BusinessItemDate = businessItem.BusinessItemDate,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
@@ -197,22 +196,21 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Post([FromBody]BusinessItem businessItem)
         {
             if ((businessItem == null) ||
-                (businessItem.ProcedureWorkPackagedId == 0))
+                (businessItem.ProcedureWorkPackageId == 0))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             if (string.IsNullOrWhiteSpace(tripleStoreId))
                 return false;
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"insert into ProcedureBusinessItem
-                (WebLink,LayingBodyId,ProcedureWorkPackagedId,BusinessItemDate,
+                (WebLink,LayingBodyId,ProcedureWorkPackageId,BusinessItemDate,
                     ModifiedBy,ModifiedAt,TripleStoreId)
-                values(@WebLink,@LayingBodyId,@ProcedureWorkPackagedId,@BusinessItemDate,
+                values(@WebLink,@LayingBodyId,@ProcedureWorkPackageId,@BusinessItemDate,
                     @ModifiedBy,@ModifiedAt,@TripleStoreId)",
                 new
                 {
                     WebLink = businessItem.WebLink,
-                    LayingBodyId = businessItem.LayingBodyId,
-                    ProcedureWorkPackagedId = businessItem.ProcedureWorkPackagedId,
+                    ProcedureWorkPackageId = businessItem.ProcedureWorkPackageId,
                     BusinessItemDate = businessItem.BusinessItemDate,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,

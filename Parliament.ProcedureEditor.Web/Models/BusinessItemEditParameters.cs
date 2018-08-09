@@ -3,6 +3,6 @@
     public class BusinessItemEditParameters
     {
         public int? BusinessItemId { get; set; }
-        public int? WorkPackagedId { get; set; }
+        public int? WorkPackageId { get; set; }
     }
 }

@@ -8,7 +8,7 @@
             self.isNotValidResponse = ko.observable(false);
             self.webLink = ko.observable(self.businessItem.WebLink || "");
             self.layingBodyId = ko.observable(self.businessItem.LayingBodyId);
-            self.procedureWorkPackagedId = ko.observable(self.businessItem.ProcedureWorkPackagedId);
+            self.procedureWorkPackageId = ko.observable(self.businessItem.ProcedureWorkPackageId);
             self.businessItemDate = ko.observable(self.businessItem.BusinessItemDate);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.businessItem.TripleStoreId + " business item?";
@@ -52,14 +52,14 @@
             };
 
             self.getSteps = function () {
-                if (self.procedureWorkPackagedId() === null) {
+                if (self.procedureWorkPackageId() === null) {
                     self.businessItemSteps([{
                         Id: ko.observable(null)
                     }]);
                     self.workPackageSteps([]);
                 }
                 else
-                    $.getJSON(window.urls.getStepsSearchByWorkPackaged.replace("{workPackageId}", self.procedureWorkPackagedId()), function (data) {
+                    $.getJSON(window.urls.getStepsSearchByWorkPackaged.replace("{workPackageId}", self.procedureWorkPackageId()), function (data) {
                         self.workPackageSteps(data);
                         self.businessItemSteps.remove(function (val) {
                             return self.workPackageSteps().filter(function (item) {
@@ -120,7 +120,7 @@
             });
 
             self.canSave = ko.computed(function () {
-                return (self.procedureWorkPackagedId() !== 0) && (self.steps() !== null) && (self.steps().length > 0);
+                return (self.procedureWorkPackageId() !== 0) && (self.steps() !== null) && (self.steps().length > 0);
             });
 
             self.save = function () {
@@ -131,13 +131,13 @@
                         data: {
                             WebLink: self.webLink(),
                             LayingBodyId: self.layingBodyId(),
-                            ProcedureWorkPackagedId: self.procedureWorkPackagedId(),
+                            ProcedureWorkPackageId: self.procedureWorkPackageId(),
                             BusinessItemDate: self.businessItemDate(),
                             Steps: self.steps()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackagedId());
+                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackageId());
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -150,13 +150,13 @@
                         data: {
                             WebLink: self.webLink(),
                             LayingBodyId: self.layingBodyId(),
-                            ProcedureWorkPackagedId: self.procedureWorkPackagedId(),
+                            ProcedureWorkPackageId: self.procedureWorkPackageId(),
                             BusinessItemDate: self.businessItemDate(),
                             Steps: self.steps()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackagedId());
+                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackageId());
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -198,7 +198,7 @@
                 TripleStoreId: null,
                 WebLink: null,
                 LayingBodyId: null,
-                ProcedureWorkPackagedId: Number.isNaN(Number.parseInt(workPackagedId)) ? null : workPackagedId,
+                ProcedureWorkPackageId: Number.isNaN(Number.parseInt(workPackageId)) ? null : workPackageId,
                 WorkPackagedThingName: null,
                 BusinessItemDate: null,
                 Steps: []

@@ -1,10 +1,10 @@
-﻿<div class="input-group" data-bind="visible: businessItemId()!==null">
+﻿<div class="input-group" data-bind="visible: canSearch()===false">
     <span class="form-control" data-bind="text: businessItemName"></span>
     <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" data-bind="click: removeBusinessItem">Remove</button>
     </div>
 </div>
-<input class="form-control" data-bind="visible: businessItemId()===null, textInput: searchBusinessItemText" />
+<input class="form-control" data-bind="visible: canSearch()===true, textInput: searchBusinessItemText" />
 <ul class="list-group list-group-flush" data-bind="visible:filteredBusinessItems().length>0, foreach: filteredBusinessItems">
     <li class="list-group-item">
         <h6 data-bind="text: WorkPackagedThingName"></h6>

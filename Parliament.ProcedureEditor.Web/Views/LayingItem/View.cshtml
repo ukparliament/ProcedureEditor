@@ -7,7 +7,7 @@
 <input id="layingItemId" type="hidden" value="@Model" />
 <section>
     <div class="container">
-        <h2>WorkPackedThingName: <span data-bind="text: layingItem().WorkPackedThingName"></span></h2>
+        <h2>Work Packaged: <span data-bind="text: layingItem().WorkPackagedThingName"></span></h2>
         <h3 data-bind="visible: (layingItem().LayingBodyName||'').length>0">Laying body: <span data-bind="text: layingItem().LayingBodyName"></span></h3>
         <h3>Laying date: <span data-bind="text: isNaN(Date.parse(layingItem().LayingDate))?'N/A':new Date(layingItem().LayingDate).toLocaleDateString('en-GB')"></span></h3>
         <h3>Id: <span data-bind="text: layingItem().TripleStoreId"></span></h3>

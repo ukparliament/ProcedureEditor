@@ -9,7 +9,7 @@ BEGIN
     SET NOCOUNT ON
 
 	select top 1 b.Id from ProcedureBusinessItem b
-	where b.ProcedureWorkPackagedId=@WorkPackagedId
+	where b.ProcedureWorkPackageId=@WorkPackagedId
 	union 
 	select top 1 p.Id from ProcedureWorkPackagedThingPreceding p
 	where ((p.WorkPackagedIsFollowedById=@WorkPackagedId) or 

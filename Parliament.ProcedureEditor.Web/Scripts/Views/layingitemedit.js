@@ -1,162 +1,72 @@
 ﻿requirejs(["/Scripts/main.js"], function (main) {
     requirejs(["knockout", "jquery"], function (ko, $) {
-        var viewModel = function (businessItem) {
+        var viewModel = function (layingItem) {
             var self = this;
 
-            self.businessItem = businessItem;
+            self.layingItem = layingItem;
 
             self.isNotValidResponse = ko.observable(false);
-            self.webLink = ko.observable(self.businessItem.WebLink || "");
-            self.layingBodyId = ko.observable(self.businessItem.LayingBodyId);
-            self.procedureWorkPackagedId = ko.observable(self.businessItem.ProcedureWorkPackagedId);
-            self.businessItemDate = ko.observable(self.businessItem.BusinessItemDate);
+            self.businessItem = ko.observable({
+                Id: self.layingItem.ProcedureBusinessItemId,
+                ProcedureWorkPackagedId: self.layingItem.ProcedureWorkPackagedId
+            });
+            self.layingBodyId = ko.observable(self.layingItem.LayingBodyId);
+            self.layingDate = ko.observable(self.layingItem.LayingDate);
             self.isDeletePopupVisible = ko.observable(false);
-            self.warningText = "Are you sure you wish to delete " + self.businessItem.TripleStoreId + " business item?";
-            self.searchWorkPackageText = ko.observable("");
-            self.searchStepText = ko.observable("");
+            self.warningText = "Are you sure you wish to delete " + self.layingItem.TripleStoreId + " business item?";
             self.searchLayingBodyText = ko.observable("");
-            self.workPackageSteps = ko.observableArray([]);
+            self.businessItems = ko.observableArray([]);
             self.workPackagedList = ko.observableArray([]);
-            self.layingBodies = [];
-            self.workPackagedThingName = ko.observable(self.businessItem.WorkPackagedThingName || "");
-            self.layingBodyName = ko.observable("");
+            self.layingBodies = ko.observableArray([]);
 
-            var initialStepArray = self.businessItem.Steps.map(function (val) {
-                return {
-                    Id: ko.observable(val)
-                }
-            });
-            initialStepArray.push({
-                Id: ko.observable(null)
-            });
-            self.businessItemSteps = ko.observableArray(initialStepArray);
-
-            self.steps = ko.pureComputed(function () {
-                return self.businessItemSteps().filter(function (itm) {
-                    return itm.Id() !== null;
-                })
-                    .map(function (itm) {
-                        return itm.Id();
-                    });
-            });
-
-            self.removeStep = function (stepId) {
-                self.getSteps();
-            };
-
-            self.addStep = function (step) {
-                self.workPackageSteps.remove(step);
-                self.businessItemSteps.push({
-                    Id: ko.observable(null)
-                });
-            };
-
-            self.getSteps = function () {
-                if (self.procedureWorkPackagedId() === null) {
-                    self.businessItemSteps([{
-                        Id: ko.observable(null)
-                    }]);
-                    self.workPackageSteps([]);
-                }
-                else
-                    $.getJSON(window.urls.getStepsSearchByWorkPackaged.replace("{workPackageId}", self.procedureWorkPackagedId()), function (data) {
-                        self.workPackageSteps(data);
-                        self.businessItemSteps.remove(function (val) {
-                            return self.workPackageSteps().filter(function (item) {
-                                return item.Id === val.Id();
-                            }).length === 0;
-                        });
-                        var biNumber = self.businessItemSteps().length;
-                        if (biNumber === 0)
-                            self.businessItemSteps([{
-                                Id: ko.observable(null)
-                            }]);
-                        if ((biNumber > 0) && (self.businessItemSteps()[biNumber - 1].Id() !== null))
-                            self.businessItemSteps.push({
-                                Id: ko.observable(null)
-                            });
-                    });
-            };
-
-            ko.computed(function () {
-                self.getSteps();
+            $.getJSON(window.urls.getBusinessItems, function (data) {
+                self.businessItems(data);
             });
 
             $.getJSON(window.urls.getLayingBodies, function (data) {
-                self.layingBodies = data;
-                if ((self.layingBodyId() !== null) && (self.layingBodyId() !== 0)) {
-                    var id = self.layingBodyId();
-                    var found = self.layingBodies.filter(function (val) {
-                        return val.Id === id;
-                    });
-                    self.layingBodyName(found[0].LayingBodyName);
-                }
+                self.layingBodies(data);
             });
 
             $.getJSON(window.urls.getWorkPackagedList, function (data) {
                 self.workPackagedList(data);
             });
 
-            self.removeLayingBody = function () {
-                self.layingBodyId(null);
-                self.layingBodyName("");
-                self.searchLayingBodyText("");
-            };
-
-            self.selectLayingBody = function (data) {
-                self.layingBodyId(data.Id);
-                self.layingBodyName(data.LayingBodyName);
-                self.searchLayingBodyText("");
-            };
-
-            self.filteredLayingBodies = ko.pureComputed(function () {
-                var text = self.searchLayingBodyText();
-                if ((text !== null) && (text.length > 0))
-                    return self.layingBodies.filter(function (val) {
-                        return val.LayingBodyName.toUpperCase().indexOf(text.toUpperCase()) >= 0;
-                    });
-                else
-                    return [];
-            });
-
             self.canSave = ko.computed(function () {
-                return (self.procedureWorkPackagedId() !== 0) && (self.steps() !== null) && (self.steps().length > 0);
+                return (self.businessItem() !== null) && (self.businessItem().Id !== 0) && (self.businessItem().ProcedureWorkPackagedId !== null);
             });
 
             self.save = function () {
-                if (Number.isNaN(Number.parseInt(self.businessItem.Id)))
-                    $.ajax(window.urls.addBusinessItem, {
+                if (Number.isNaN(Number.parseInt(self.layingItem.Id)))
+                    $.ajax(window.urls.addLayingItem, {
                         method: "POST",
                         dataType: "json",
                         data: {
-                            WebLink: self.webLink(),
+                            ProcedureBusinessItemId: self.businessItem().Id,
+                            ProcedureWorkPackagedId: self.businessItem().ProcedureWorkPackagedId,
                             LayingBodyId: self.layingBodyId(),
-                            ProcedureWorkPackagedId: self.procedureWorkPackagedId(),
-                            BusinessItemDate: self.businessItemDate(),
-                            Steps: self.steps()
+                            LayingDate: self.layingDate()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackagedId());
+                            window.location = window.urls.showLayingItems;
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
                         self.isNotValidResponse(true);
                     });
                 else
-                    $.ajax(window.urls.updateBusinessItem.replace("{id}", self.businessItem.Id), {
+                    $.ajax(window.urls.updateLayingItem.replace("{id}", self.layingItem.Id), {
                         method: "PUT",
                         dataType: "json",
                         data: {
-                            WebLink: self.webLink(),
+                            ProcedureBusinessItemId: self.businessItem().Id,
+                            ProcedureWorkPackagedId: self.businessItem().ProcedureWorkPackagedId,
                             LayingBodyId: self.layingBodyId(),
-                            ProcedureWorkPackagedId: self.procedureWorkPackagedId(),
-                            BusinessItemDate: self.businessItemDate(),
-                            Steps: self.steps()
+                            LayingDate: self.layingDate()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackagedId());
+                            window.location = window.urls.showLayingItems;
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -168,14 +78,14 @@
                 self.isDeletePopupVisible(true);
             };
 
-            self.deleteBusinessItem = function () {
-                $.ajax(window.urls.deleteBusinessItem.replace("{id}", self.businessItem.Id), {
+            self.deleteLayingItem = function () {
+                $.ajax(window.urls.deleteLayingItem.replace("{id}", self.layingItem.Id), {
                     method: "DELETE",
                     dataType: "json"
                 }).done(function (data) {
                     self.isDeletePopupVisible(false);
                     if (data === true)
-                        window.location = window.urls.showBusinessItems;
+                        window.location = window.urls.showLayingItems;
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {
@@ -185,10 +95,9 @@
             };
         };
 
-        var businessItemId = $("#businessItemId").val();
-        var workPackagedId = $("#workPackagedId").val();
-        if (Number.isNaN(Number.parseInt(businessItemId)) === false)
-            $.getJSON(window.urls.getBusinessItem.replace("{id}", businessItemId), function (data) {
+        var layingItemId = $("#layingItemId").val();
+        if (Number.isNaN(Number.parseInt(layingItemId)) === false)
+            $.getJSON(window.urls.getLayingItem.replace("{id}", layingItemId), function (data) {
                 var vm = new viewModel(data);
                 ko.applyBindings(vm);
             });
@@ -196,12 +105,10 @@
             var bi = {
                 Id: null,
                 TripleStoreId: null,
-                WebLink: null,
+                ProcedureBusinessItemId: null,
+                ProcedureWorkPackagedId: null,
                 LayingBodyId: null,
-                ProcedureWorkPackagedId: Number.isNaN(Number.parseInt(workPackagedId)) ? null : workPackagedId,
-                WorkPackagedThingName: null,
-                BusinessItemDate: null,
-                Steps: []
+                LayingDate: null
             };
             var vm = new viewModel(bi);
             ko.applyBindings(vm);

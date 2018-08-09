@@ -175,6 +175,7 @@
     <Content Include="Scripts\Modules\routelistitem.js" />
     <Content Include="Scripts\Modules\workpackagedlistitem.js" />
     <Content Include="Scripts\Modules\businessitemselector.js" />
+    <Content Include="Scripts\Modules\layingbodyselector.js" />
     <Content Include="Scripts\Modules\workpackagedselector.js" />
     <Content Include="Scripts\Modules\dateentry.js" />
     <Content Include="Scripts\Modules\popup.js" />
@@ -300,6 +301,7 @@
     <Content Include="Views\LayingItem\Index.cshtml" />
     <Content Include="Views\LayingItem\View.cshtml" />
     <Content Include="Views\Shared\BusinessItemSelector.cshtml" />
+    <Content Include="Views\Shared\LayingBodySelector.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -24,27 +24,11 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Business item*</label>
-                <work-packaged-selector params="procedureBusinessItemId: procedureBusinessItemId, businessItems: businessItems"></work-packaged-selector>
-            </div>
-            <div class="form-group">
-                <label>Work package*</label>
-                <work-packaged-selector params="procedureWorkPackagedId: procedureWorkPackagedId, workPackagedList: workPackagedList"></work-packaged-selector>
+                <business-item-selector params="businessItem: businessItem, businessItems: businessItems"></business-item-selector>
             </div>
             <div class="form-group">
                 <label>Laying body</label>
-                <div class="input-group" data-bind="visible: layingBodyId()!==null">
-                    <span class="form-control" data-bind="text: layingBodyName"></span>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeLayingBody">Remove</button>
-                    </div>
-                </div>
-                <input class="form-control" data-bind="visible: layingBodyId()===null, textInput: searchLayingBodyText" />
-                <ul class="list-group list-group-flush" data-bind="visible:filteredLayingBodies().length>0, foreach: filteredLayingBodies">
-                    <li class="list-group-item">
-                        <span data-bind="text: LayingBodyName"></span>
-                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectLayingBody">Select</button>
-                    </li>
-                </ul>
+                <laying-body-selector params="layingBodyId: layingBodyId, layingBodies: layingBodies"></laying-body-selector>
             </div>
             <div class="form-group">
                 <label>Laying date</label>
@@ -54,11 +38,11 @@
             {
                 <div class="form-group">
                     <label>Id</label>
-                    <input type="text" class="form-control form-control-md" data-bind="textInput: businessItem.TripleStoreId" readonly />
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: layingItem.TripleStoreId" readonly />
                 </div>
             }
             <section>
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.BusinessItemId.HasValue ? "Update" : "Add")</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
                 @if (Model.HasValue)
                 {
                     <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
@@ -67,8 +51,8 @@
         </form>
     </div>
 </section>
-<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteBusinessItem, actionText: 'Delete'"></popup>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteLayingItem, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script data-main="/Scripts/Views/businessitemedit.js" src="~/Scripts/require.js"></script>
+    <script data-main="/Scripts/Views/layingitemedit.js" src="~/Scripts/require.js"></script>
 }

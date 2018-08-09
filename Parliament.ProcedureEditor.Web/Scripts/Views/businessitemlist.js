@@ -26,7 +26,7 @@
                             Id: val.Id,
                             TripleStoreId: val.TripleStoreId,
                             BusinessItemDate: val.BusinessItemDate,
-                            ProcedureWorkPackageableThingName: val.ProcedureWorkPackageableThingName,
+                            WorkPackagedThingName: val.WorkPackagedThingName,
                             ProcedureName: val.ProcedureName,
                             Steps: val.Steps.map(function (stepId) {
                                 if (steps["Id" + stepId])

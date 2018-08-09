@@ -5,7 +5,7 @@
 }
 
 <input id="businessItemId" type="hidden" value="@Model.BusinessItemId" />
-<input id="workPackagedId" type="hidden" value="@Model.WorkPackagedId" />
+<input id="workPackageId" type="hidden" value="@Model.WorkPackageId" />
 <section>
     <div class="container">
         @if (Model.BusinessItemId.HasValue)
@@ -25,7 +25,7 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Work package*</label>
-                <work-packaged-selector params="procedureWorkPackagedId: procedureWorkPackagedId, workPackagedList: workPackagedList"></work-packaged-selector>
+                <work-packaged-selector params="procedureWorkPackagedId: procedureWorkPackageId, workPackagedList: workPackagedList"></work-packaged-selector>
             </div>
             <div class="form-group">
                 <label>Step*</label>

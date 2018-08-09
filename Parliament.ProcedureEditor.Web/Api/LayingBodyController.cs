@@ -18,6 +18,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItems<LayingBody>(command);
         }
 
+        [HttpGet]
+        [ContentNegotiation("layingbody/{id:int}", ContentType.JSON)]
+        public LayingBody Get(int id)
+        {
+            CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, LayingBodyName
+                from LayingBody where Id=@Id", new { Id = id });
+            return GetItem<LayingBody>(command);
+        }
+
     }
- 
+
 }

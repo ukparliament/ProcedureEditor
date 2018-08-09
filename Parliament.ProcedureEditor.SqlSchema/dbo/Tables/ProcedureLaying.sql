@@ -10,8 +10,11 @@
     CONSTRAINT [PK_ProcedureLaying] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_ProcedureLaying_LayingBody] FOREIGN KEY ([LayingBodyId]) REFERENCES [dbo].[LayingBody] ([Id]),
     CONSTRAINT [FK_ProcedureLaying_ProcedureBusinessItem] FOREIGN KEY ([ProcedureBusinessItemId]) REFERENCES [dbo].[ProcedureBusinessItem] ([Id]),
-    CONSTRAINT [FK_ProcedureLaying_ProcedureWorkPackagedThing] FOREIGN KEY ([ProcedureWorkPackagedId]) REFERENCES [dbo].[ProcedureWorkPackagedThing] ([Id])
+    CONSTRAINT [FK_ProcedureLaying_ProcedureWorkPackagedThing] FOREIGN KEY ([ProcedureWorkPackagedId]) REFERENCES [dbo].[ProcedureWorkPackagedThing] ([Id]),
+    CONSTRAINT [IX_ProcedureLaying] UNIQUE NONCLUSTERED ([ProcedureBusinessItemId] ASC, [ProcedureWorkPackagedId] ASC)
 );
+
+
 
 
 

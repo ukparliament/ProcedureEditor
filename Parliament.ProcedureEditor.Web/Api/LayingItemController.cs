@@ -22,9 +22,14 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select li.Id, li.ProcedureBusinessItemId,
                     li.ProcedureWorkPackagedId, li.LayingDate, li.LayingBodyId, li.PersonTripleStoreId,
-	                lb.LayingBodyName, wp.ProcedureWorkPackagedThingName from ProcedureLaying li
+	                lb.LayingBodyName, b.TripleStoreId,
+                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName
+                    from ProcedureLaying li
                 join LayingBody lb on lb.Id=li.LayingBodyId
-                join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId");
+                join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
+                join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId
+                left join ProcedureStatutoryInstrument si on si.Id=wp.Id
+                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id");
             return GetItems<LayingItem>(command);
         }
 
@@ -41,10 +46,15 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select li.Id, li.ProcedureBusinessItemId,
                     li.ProcedureWorkPackagedId, li.LayingDate, li.LayingBodyId, li.PersonTripleStoreId,
-	                lb.LayingBodyName, wp.ProcedureWorkPackagedThingName from ProcedureLaying li
+	                lb.LayingBodyName, b.TripleStoreId,
+                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName
+                    from ProcedureLaying li
                 join LayingBody lb on lb.Id=li.LayingBodyId
+                join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
                 join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId
-                where b.Id=@Id",
+                left join ProcedureStatutoryInstrument si on si.Id=wp.Id
+                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                where li.Id=@Id",
                 new { Id = id });
             return GetItem<LayingItem>(command);
         }
@@ -103,10 +113,10 @@ namespace Parliament.ProcedureEditor.Web.Api
                 (layingItem.ProcedureWorkPackagedId == 0))
                 return false;
             CommandDefinition command=new CommandDefinition(@"insert into ProcedureLaying
-                (ProcedureBusinessItemId, ProcedureWorkPackagedThingId,
+                (ProcedureBusinessItemId, ProcedureWorkPackagedId,
 	                LayingDate, LayingBodyId, PersonTripleStoreId,
                     ModifiedBy,ModifiedAt)
-                values(@ProcedureBusinessItemId, @ProcedureWorkPackagedThingId,
+                values(@ProcedureBusinessItemId, @ProcedureWorkPackagedId,
 	                @LayingDate, @LayingBodyId, @PersonTripleStoreId,
                     @ModifiedBy,@ModifiedAt)",
                 new

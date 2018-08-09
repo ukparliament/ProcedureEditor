@@ -13,7 +13,7 @@ namespace Parliament.ProcedureEditor.Web.Models
         public string PersonTripleStoreId { get; set; }
 
         public string TripleStoreId { get; set; }
-        public string WorkPackedThingName { get; set; }
+        public string WorkPackagedThingName { get; set; }
         public string LayingBodyName { get; set; }
     }
 }
