@@ -24,20 +24,7 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Business item*</label>
-                <div class="input-group" data-bind="visible: businessItemId()!==null">
-                    <span class="form-control" data-bind="text: businessItemName"></span>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeBusinessItem">Remove</button>
-                    </div>
-                </div>
-                <input class="form-control" data-bind="visible: businessItemId()===null, textInput: searchBusinessItemText" />
-                <ul class="list-group list-group-flush" data-bind="visible:filteredBusinessItems().length>0, foreach: filteredBusinessItems">
-                    <li class="list-group-item">
-                        <h6 data-bind="text: WorkPackagedThingName"></h6>
-                        <h6 data-bind="text: TripleStoreId"></h6>
-                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectLayingBody">Select</button>
-                    </li>
-                </ul>
+                <work-packaged-selector params="procedureBusinessItemId: procedureBusinessItemId, businessItems: businessItems"></work-packaged-selector>
             </div>
             <div class="form-group">
                 <label>Work package*</label>
@@ -61,7 +48,7 @@
             </div>
             <div class="form-group">
                 <label>Laying date</label>
-                <date-entry params="date: businessItemDate"></date-entry>
+                <date-entry params="date: layingDate"></date-entry>
             </div>
             @if (Model.HasValue)
             {

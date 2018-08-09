@@ -6,19 +6,17 @@
             self.businessItem = businessItem;
 
             self.isNotValidResponse = ko.observable(false);
-            self.webLink = ko.observable(self.businessItem.WebLink || "");
-            self.layingBodyId = ko.observable(self.businessItem.LayingBodyId);
+            self.procedureBusinessItemId = ko.observable(self.businessItem.ProcedureBusinessItemId);
             self.procedureWorkPackagedId = ko.observable(self.businessItem.ProcedureWorkPackagedId);
-            self.businessItemDate = ko.observable(self.businessItem.BusinessItemDate);
+            self.layingBodyId = ko.observable(self.businessItem.LayingBodyId);
+            self.layingDate = ko.observable(self.businessItem.LayingDate);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.businessItem.TripleStoreId + " business item?";
-            self.searchWorkPackageText = ko.observable("");
-            self.searchStepText = ko.observable("");
             self.searchLayingBodyText = ko.observable("");
+            self.businessItems = ko.observableArray([]);
             self.workPackageSteps = ko.observableArray([]);
             self.workPackagedList = ko.observableArray([]);
             self.layingBodies = [];
-            self.workPackagedThingName = ko.observable(self.businessItem.WorkPackagedThingName || "");
             self.layingBodyName = ko.observable("");
 
             var initialStepArray = self.businessItem.Steps.map(function (val) {

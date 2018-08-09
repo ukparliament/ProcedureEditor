@@ -93,5 +93,6 @@ define(["knockout", "jquery"], function (ko, $) {
     ko.components.register("step-selector", { require: '/Scripts/Modules/stepselector.js' });    
     ko.components.register("work-packaged-list-item", { require: '/Scripts/Modules/workpackagedlistitem.js' });    
     ko.components.register("route-list-item", { require: '/Scripts/Modules/routelistitem.js' });    
-    ko.components.register("business-item-list-item", { require: '/Scripts/Modules/businessitemlistitem.js' });    
+    ko.components.register("business-item-list-item", { require: '/Scripts/Modules/businessitemlistitem.js' });
+    ko.components.register("business-item-selector", { require: '/Scripts/Modules/businessitemselector.js' });    
 });

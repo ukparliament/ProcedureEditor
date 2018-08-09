@@ -1,0 +1,14 @@
+﻿<div class="input-group" data-bind="visible: businessItemId()!==null">
+    <span class="form-control" data-bind="text: businessItemName"></span>
+    <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeBusinessItem">Remove</button>
+    </div>
+</div>
+<input class="form-control" data-bind="visible: businessItemId()===null, textInput: searchBusinessItemText" />
+<ul class="list-group list-group-flush" data-bind="visible:filteredBusinessItems().length>0, foreach: filteredBusinessItems">
+    <li class="list-group-item">
+        <h6 data-bind="text: WorkPackagedThingName"></h6>
+        <h6 data-bind="text: TripleStoreId"></h6>
+        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectBusinessItem">Select</button>
+    </li>
+</ul>
