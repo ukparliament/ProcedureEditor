@@ -9,6 +9,7 @@
     <li class="list-group-item">
         <h6 data-bind="text: WorkPackagedThingName"></h6>
         <h6 data-bind="text: ProcedureName"></h6>
+        <h6 data-bind="text: isNaN(Date.parse(BusinessItemDate)) ? 'N/A' : new Date(BusinessItemDate).toLocaleDateString('en-GB')"></h6>
         <h6 data-bind="text: TripleStoreId"></h6>
         <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectBusinessItem">Select</button>
     </li>

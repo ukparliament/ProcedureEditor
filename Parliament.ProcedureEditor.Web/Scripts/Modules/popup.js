@@ -9,12 +9,16 @@
 
             self.close = function () {
                 self.isPopupVisible(false);
-                $("body").removeClass("modal-open");
             };
 
             self.show = ko.computed(function () {
                 if (self.isPopupVisible())
                     $("body").addClass("modal-open");
+            });
+
+            self.hide = ko.computed(function () {
+                if (self.isPopupVisible()===false)
+                    $("body").removeClass("modal-open");
             });
 
         },

@@ -28,6 +28,7 @@
                 {
                     <div data-bind="text: businessItem().WorkPackagedThingName"></div>
                     <div data-bind="text: businessItem().ProcedureName"></div>
+                    <div data-bind="text: isNaN(Date.parse(businessItem().BusinessItemDate)) ? 'N/A' : new Date(businessItem().BusinessItemDate).toLocaleDateString('en-GB')"></div>
                     <div data-bind="text: businessItem().TripleStoreId"></div>
                 }
                 else
