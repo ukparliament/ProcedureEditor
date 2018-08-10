@@ -203,9 +203,9 @@ namespace Parliament.ProcedureEditor.Web.Api
                 return false;
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"insert into ProcedureBusinessItem
-                (WebLink,LayingBodyId,ProcedureWorkPackageId,BusinessItemDate,
+                (WebLink,ProcedureWorkPackageId,BusinessItemDate,
                     ModifiedBy,ModifiedAt,TripleStoreId)
-                values(@WebLink,@LayingBodyId,@ProcedureWorkPackageId,@BusinessItemDate,
+                values(@WebLink,@ProcedureWorkPackageId,@BusinessItemDate,
                     @ModifiedBy,@ModifiedAt,@TripleStoreId)",
                 new
                 {

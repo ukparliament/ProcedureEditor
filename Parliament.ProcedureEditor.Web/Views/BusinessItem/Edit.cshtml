@@ -36,22 +36,6 @@
                 </ul>
             </div>
             <div class="form-group">
-                <label>Laying body</label>
-                <div class="input-group" data-bind="visible: layingBodyId()!==null">
-                    <span class="form-control" data-bind="text: layingBodyName"></span>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" data-bind="click: removeLayingBody">Remove</button>
-                    </div>
-                </div>
-                <input class="form-control" data-bind="visible: layingBodyId()===null, textInput: searchLayingBodyText" />
-                <ul class="list-group list-group-flush" data-bind="visible:filteredLayingBodies().length>0, foreach: filteredLayingBodies">
-                    <li class="list-group-item">
-                        <span data-bind="text: LayingBodyName"></span>
-                        <button type="button" class="btn btn-outline-primary" data-bind="click: $parent.selectLayingBody">Select</button>
-                    </li>
-                </ul>
-            </div>
-            <div class="form-group">
                 <label>Link</label>
                 <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
             </div>

@@ -91,9 +91,11 @@
     <Build Include="dbo\Tables\ProcedureLaying.sql" />
     <Build Include="dbo\Tables\DeletedProcedureLaying.sql" />
     <Build Include="dbo\Stored Procedures\DeleteBusinessItem.sql" />
+    <Build Include="dbo\Stored Procedures\InsertUpdateSolrStatutoryInstrument.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wpmove.sql" />
     <None Include="wpmove.sparql" />
+    <None Include="wpmove2.sparql" />
   </ItemGroup>
 </Project>

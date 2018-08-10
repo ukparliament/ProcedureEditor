@@ -8,7 +8,7 @@
             self.isNotValidResponse = ko.observable(false);
             self.businessItem = ko.observable({
                 Id: self.layingItem.ProcedureBusinessItemId,
-                ProcedureWorkPackagedId: self.layingItem.ProcedureWorkPackagedId
+                ProcedureWorkPackageId: self.layingItem.ProcedureWorkPackagedId
             });
             self.layingBodyId = ko.observable(self.layingItem.LayingBodyId);
             self.layingDate = ko.observable(self.layingItem.LayingDate);
@@ -19,9 +19,15 @@
             self.workPackagedList = ko.observableArray([]);
             self.layingBodies = ko.observableArray([]);
 
-            $.getJSON(window.urls.getBusinessItems, function (data) {
-                self.businessItems(data);
-            });
+            if (self.layingItem.ProcedureBusinessItemId !== null) {
+                $.getJSON(window.urls.getBusinessItem.replace("{id}", self.layingItem.ProcedureBusinessItemId), function (data) {
+                    self.businessItem(data);
+                });
+            }
+            else
+                $.getJSON(window.urls.getBusinessItems, function (data) {
+                    self.businessItems(data);
+                });
 
             $.getJSON(window.urls.getLayingBodies, function (data) {
                 self.layingBodies(data);
@@ -32,7 +38,7 @@
             });
 
             self.canSave = ko.computed(function () {
-                return (self.businessItem() !== null) && (self.businessItem().Id !== 0) && (self.businessItem().ProcedureWorkPackagedId !== null);
+                return (self.businessItem() !== null) && (self.businessItem().Id > 0) && (self.businessItem().ProcedureWorkPackageId > 0);
             });
 
             self.save = function () {
@@ -42,7 +48,7 @@
                         dataType: "json",
                         data: {
                             ProcedureBusinessItemId: self.businessItem().Id,
-                            ProcedureWorkPackagedId: self.businessItem().ProcedureWorkPackagedId,
+                            ProcedureWorkPackagedId: self.businessItem().ProcedureWorkPackageId,
                             LayingBodyId: self.layingBodyId(),
                             LayingDate: self.layingDate()
                         }
@@ -60,7 +66,7 @@
                         dataType: "json",
                         data: {
                             ProcedureBusinessItemId: self.businessItem().Id,
-                            ProcedureWorkPackagedId: self.businessItem().ProcedureWorkPackagedId,
+                            ProcedureWorkPackagedId: self.businessItem().ProcedureWorkPackageId,
                             LayingBodyId: self.layingBodyId(),
                             LayingDate: self.layingDate()
                         }
