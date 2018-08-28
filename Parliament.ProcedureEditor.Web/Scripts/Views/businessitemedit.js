@@ -144,7 +144,7 @@
         };
 
         var businessItemId = $("#businessItemId").val();
-        var workPackagedId = $("#workPackagedId").val();
+        var workPackageId = $("#workPackageId").val();
         if (Number.isNaN(Number.parseInt(businessItemId)) === false)
             $.getJSON(window.urls.getBusinessItem.replace("{id}", businessItemId), function (data) {
                 var vm = new viewModel(data);
