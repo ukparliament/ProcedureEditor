@@ -28,7 +28,8 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join House hh on hh.Id=h.HouseId
                 join ProcedureRoute r on r.FromProcedureStepId=h.ProcedureStepId or r.ToProcedureStepId=h.ProcedureStepId
                 join [Procedure] p on p.Id=r.ProcedureId
-                where r.ProcedureId=@Id",
+                where r.ProcedureId=@Id
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName",
                 new { Id = procedureId });
             Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
 
@@ -62,7 +63,8 @@ namespace Parliament.ProcedureEditor.Web.Api
                 where ((r.FromProcedureStepId=@StepId) or (r.ToProcedureStepId=@StepId));
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
-                where h.ProcedureStepId=@StepId",
+                where h.ProcedureStepId=@StepId
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName",
                 new { StepId = stepId });
             Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
 
@@ -101,7 +103,8 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
-                join House hh on hh.Id=h.HouseId");
+                join House hh on hh.Id=h.HouseId
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName");
             Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
 
             tuple.Item1
@@ -142,7 +145,8 @@ namespace Parliament.ProcedureEditor.Web.Api
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
                 join ProcedureRoute r on r.FromProcedureStepId=h.ProcedureStepId or r.ToProcedureStepId=h.ProcedureStepId
-                where r.Id=@Id",
+                where r.Id=@Id
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName",
                 new { Id = id });
             Tuple<Route, List<StepHouse>> tuple = GetItem<Route, StepHouse>(command);
 
