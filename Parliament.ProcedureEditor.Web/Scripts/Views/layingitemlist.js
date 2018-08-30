@@ -14,7 +14,7 @@
 
             self.showDeletePopup = function (layingItem) {
                 self.soonToBeDeleted = layingItem;
-                self.warningText("Are you sure you wish to delete " + layingItem.TripleStoreId + " laying item?");
+                self.warningText("Are you sure you wish to delete " + layingItem.TripleStoreId + " laying?");
                 self.isDeletePopupVisible(true);
             };
 
