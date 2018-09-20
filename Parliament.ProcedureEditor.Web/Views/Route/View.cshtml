@@ -8,12 +8,12 @@
 <section>
     <div class="container">
         <h2>Procedure: <span data-bind="text: route().ProcedureName"></span></h2>
-        <h3>Type: <span data-bind="text: route().ProcedureRouteTypeName"></span></h3>
-        <h3>From: <span data-bind="text: route().FromProcedureStepName"></span></h3>
+        <h3 data-bind="text: route().FromProcedureStepName"></h3>
         <ul class="list-inline" data-bind="foreach: route().FromProcedureStepHouseNames">
             <li class="list-inline-item"><h4><small data-bind="text: $data"></small></h4></li>
         </ul>
-        <h3>To: <span data-bind="text: route().ToProcedureStepName"></span></h3>
+        <h3 data-bind="text: route().ProcedureRouteTypeName"></h3>
+        <h3 data-bind="text: route().ToProcedureStepName"></h3>
         <ul class="list-inline" data-bind="foreach: route().ToProcedureStepHouseNames">
             <li class="list-inline-item"><h4><small data-bind="text: $data"></small></h4></li>
         </ul>

@@ -1,10 +1,10 @@
 ﻿<h5 data-bind="text: route.ProcedureName"></h5>
-<h6 data-bind="text: route.ProcedureRouteTypeName"></h6>
-<h6>From: <span data-bind="text: route.FromProcedureStepName"></span></h6>
+<h6 data-bind="text: route.FromProcedureStepName"></h6>
 <ul class="list-inline" data-bind="foreach: route.FromProcedureStepHouseNames">
     <li class="list-inline-item"><h6><small data-bind="text: $data"></small></h6></li>
 </ul>
-<h6>To: <span data-bind="text: route.ToProcedureStepName"></span></h6>
+<h6 data-bind="text: route.ProcedureRouteTypeName"></h6>
+<h6 data-bind="text: route.ToProcedureStepName"></h6>
 <ul class="list-inline" data-bind="foreach: route.ToProcedureStepHouseNames">
     <li class="list-inline-item"><h6><small data-bind="text: $data"></small></h6></li>
 </ul>
