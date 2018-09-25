@@ -15,5 +15,6 @@ namespace Parliament.ProcedureEditor.Web.Models
         public string WorkPackagedThingName { get; set; }
         public int ProcedureId { get; set; }
         public string ProcedureName { get; set; }
+        public int[] ProcedureWorkPackages { get; set; }
     }
 }

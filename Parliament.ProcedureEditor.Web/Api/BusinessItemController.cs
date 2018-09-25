@@ -158,7 +158,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Put(int id, [FromBody]BusinessItem businessItem)
         {
             if ((businessItem == null) ||
-                (businessItem.ProcedureWorkPackageId == 0))
+                (businessItem.ProcedureWorkPackages == null) ||
+                (businessItem.ProcedureWorkPackages.Count() != 1))
                 return false;
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"update ProcedureBusinessItem
@@ -171,7 +172,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 new
                 {
                     WebLink = businessItem.WebLink,
-                    ProcedureWorkPackageId = businessItem.ProcedureWorkPackageId,
+                    ProcedureWorkPackageId = businessItem.ProcedureWorkPackages.SingleOrDefault(),
                     BusinessItemDate = businessItem.BusinessItemDate,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
@@ -196,35 +197,46 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Post([FromBody]BusinessItem businessItem)
         {
             if ((businessItem == null) ||
-                (businessItem.ProcedureWorkPackageId == 0))
+                (businessItem.ProcedureWorkPackages == null) ||
+                (businessItem.ProcedureWorkPackages.Any() == false))
                 return false;
-            string tripleStoreId = GetTripleStoreId();
-            if (string.IsNullOrWhiteSpace(tripleStoreId))
-                return false;
+            List<string> tripleStoreIds = new List<string>(); ;
+            foreach (int wp in businessItem.ProcedureWorkPackages.Distinct())
+            {
+                string tripleStoreId = GetTripleStoreId();
+                if (string.IsNullOrWhiteSpace(tripleStoreId))
+                    return false;
+                else
+                    tripleStoreIds.Add(tripleStoreId);
+            }
+
             List<CommandDefinition> updates = new List<CommandDefinition>();
-            updates.Add(new CommandDefinition(@"insert into ProcedureBusinessItem
-                (WebLink,ProcedureWorkPackageId,BusinessItemDate,
-                    ModifiedBy,ModifiedAt,TripleStoreId)
-                values(@WebLink,@ProcedureWorkPackageId,@BusinessItemDate,
-                    @ModifiedBy,@ModifiedAt,@TripleStoreId)",
-                new
-                {
-                    WebLink = businessItem.WebLink,
-                    ProcedureWorkPackageId = businessItem.ProcedureWorkPackageId,
-                    BusinessItemDate = businessItem.BusinessItemDate,
-                    ModifiedBy = EMail,
-                    ModifiedAt = DateTimeOffset.UtcNow,
-                    TripleStoreId = tripleStoreId
-                }));
-            if (businessItem.Steps != null)
-                updates.AddRange(businessItem.Steps.Select(s => new CommandDefinition(@"insert into ProcedureBusinessItemProcedureStep
+            for (int i = 0; i < businessItem.ProcedureWorkPackages.Distinct().Count(); i++)
+            {
+                updates.Add(new CommandDefinition(@"insert into ProcedureBusinessItem
+                    (WebLink,ProcedureWorkPackageId,BusinessItemDate,
+                        ModifiedBy,ModifiedAt,TripleStoreId)
+                    values(@WebLink,@ProcedureWorkPackageId,@BusinessItemDate,
+                        @ModifiedBy,@ModifiedAt,@TripleStoreId)",
+                    new
+                    {
+                        WebLink = businessItem.WebLink,
+                        ProcedureWorkPackageId = businessItem.ProcedureWorkPackages[i],
+                        BusinessItemDate = businessItem.BusinessItemDate,
+                        ModifiedBy = EMail,
+                        ModifiedAt = DateTimeOffset.UtcNow,
+                        TripleStoreId = tripleStoreIds[i]
+                    }));
+                if (businessItem.Steps != null)
+                    updates.AddRange(businessItem.Steps.Select(s => new CommandDefinition(@"insert into ProcedureBusinessItemProcedureStep
                     (ProcedureBusinessItemId, ProcedureStepId)
                     select Id, @ProcedureStepId from ProcedureBusinessItem where TripleStoreId=@TripleStoreId",
-                        new
-                        {
-                            TripleStoreId = tripleStoreId,
-                            ProcedureStepId = s
-                        })));
+                            new
+                            {
+                                TripleStoreId = tripleStoreIds[i],
+                                ProcedureStepId = s
+                            })));
+            }
             return Execute(updates.ToArray());
         }
 

@@ -41,7 +41,7 @@ var urls = {
     updateStep: "/step/{id}",
     deleteStep: "/step/{id}",
     getStep: "/step/{id}",
-    getStepsSearchByWorkPackaged: "/step?workPackageId={workPackageId}",
+    getStepsSearchByWorkPackaged: "/step/search",
     showSteps: "/Step",
     showStep: "/Step/{id}",
 

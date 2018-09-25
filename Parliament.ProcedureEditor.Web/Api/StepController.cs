@@ -11,22 +11,24 @@ namespace Parliament.ProcedureEditor.Web.Api
 
     public class StepController : BaseApiController
     {
-        [HttpGet]
-        [ContentNegotiation("step", ContentType.JSON)]
-        public List<Step> Search(int workPackageId)
+        [HttpPost]
+        [ContentNegotiation("step/search", ContentType.JSON)]
+        public List<Step> Search(StepSearchParameters searchParameters)
         {
+            if (searchParameters == null)
+                return null;
             CommandDefinition command = new CommandDefinition(@"select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackagedThing wp
                 join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
                 join ProcedureStep s on s.Id=r.FromProcedureStepId
-                where wp.Id=@id
+                where wp.Id in @ids
                 union
                 select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackagedThing wp
                 join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
                 join ProcedureStep s on s.Id=r.ToProcedureStepId
-                where wp.Id=@id;
+                where wp.Id in @ids;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId",
-                new { id = workPackageId });
+                new { ids = searchParameters.WorkPackagedIds });
             Tuple<List<Step>, List<StepHouse>> tuple = GetItems<Step, StepHouse>(command);
 
             tuple.Item1

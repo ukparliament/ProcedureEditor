@@ -7,17 +7,25 @@
 
             self.isNotValidResponse = ko.observable(false);
             self.webLink = ko.observable(self.businessItem.WebLink || "");
-            self.procedureWorkPackageId = ko.observable(self.businessItem.ProcedureWorkPackageId);
             self.businessItemDate = ko.observable(self.businessItem.BusinessItemDate);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.businessItem.TripleStoreId + " business item?";
             self.workPackageSteps = ko.observableArray([]);
             self.workPackagedList = ko.observableArray([]);
+            self.workPackages = ko.observableArray([]);
+            if (self.businessItem.ProcedureWorkPackageId !== null)
+                self.workPackages.push({
+                    Id: ko.observable(self.businessItem.ProcedureWorkPackageId)
+                });
+            else
+                self.workPackages.push({
+                    Id: ko.observable(null)
+                });
 
             var initialStepArray = self.businessItem.Steps.map(function (val) {
                 return {
                     Id: ko.observable(val)
-                }
+                };
             });
             initialStepArray.push({
                 Id: ko.observable(null)
@@ -33,7 +41,21 @@
                     });
             });
 
-            self.removeStep = function (stepId) {
+            self.removeWorkPackage = function (workPackagedId) {
+                self.workPackages.remove(function (val) {
+                    return val.Id() === null;
+                });
+                self.workPackages.push({ Id: ko.observable(null) });
+                self.getSteps();
+            };
+
+            self.addWorkPackage = function (workPackaged) {
+                if (Number.isNaN(Number.parseInt(self.businessItem.Id)))
+                    self.workPackages.push({ Id: ko.observable(null) });
+                self.getSteps();
+            };
+
+            self.removeStep = function () {
                 self.getSteps();
             };
 
@@ -44,15 +66,31 @@
                 });
             };
 
+            self.workPackageIds = ko.computed(function () {
+                return self.workPackages().filter(function (item) {
+                    return item.Id() !== null;
+                }).map(function (item) {
+                    return item.Id();
+                }).filter(function (item, index, arr) {
+                    return arr.indexOf(item) === index;
+                });
+            });
+
             self.getSteps = function () {
-                if (self.procedureWorkPackageId() === null) {
+                if (self.workPackageIds().length === 0) {
                     self.businessItemSteps([{
                         Id: ko.observable(null)
                     }]);
                     self.workPackageSteps([]);
                 }
                 else
-                    $.getJSON(window.urls.getStepsSearchByWorkPackaged.replace("{workPackageId}", self.procedureWorkPackageId()), function (data) {
+                    $.ajax(window.urls.getStepsSearchByWorkPackaged, {
+                        method: "POST",
+                        dataType: "json",
+                        data: {
+                            WorkPackagedIds: self.workPackageIds()
+                        }
+                    }).done(function (data) {
                         self.workPackageSteps(data);
                         self.businessItemSteps.remove(function (val) {
                             return self.workPackageSteps().filter(function (item) {
@@ -71,32 +109,32 @@
                     });
             };
 
-            ko.computed(function () {
-                self.getSteps();
-            });
-
             $.getJSON(window.urls.getWorkPackagedList, function (data) {
                 self.workPackagedList(data);
             });
 
             self.canSave = ko.computed(function () {
-                return (self.procedureWorkPackageId() !== 0) && (self.steps() !== null) && (self.steps().length > 0);
+                return (self.workPackageIds().length > 0) && (self.steps() !== null) && (self.steps().length > 0);
             });
 
-            self.save = function () {
+            self.saveAndReturnToWorkPackaged = function () {
+                self.save(window.urls.showWorkPackaged.replace("{id}", self.workPackageIds()[0]));
+            };
+
+            self.save = function (redirectUrl) {
                 if (Number.isNaN(Number.parseInt(self.businessItem.Id)))
                     $.ajax(window.urls.addBusinessItem, {
                         method: "POST",
                         dataType: "json",
                         data: {
                             WebLink: self.webLink(),
-                            ProcedureWorkPackageId: self.procedureWorkPackageId(),
+                            ProcedureWorkPackages: self.workPackageIds(),
                             BusinessItemDate: self.businessItemDate(),
                             Steps: self.steps()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackageId());
+                            window.location = redirectUrl || window.urls.getBusinessItems;
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -108,13 +146,13 @@
                         dataType: "json",
                         data: {
                             WebLink: self.webLink(),
-                            ProcedureWorkPackageId: self.procedureWorkPackageId(),
+                            ProcedureWorkPackages: self.workPackageIds(),
                             BusinessItemDate: self.businessItemDate(),
                             Steps: self.steps()
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showWorkPackaged.replace("{id}", self.procedureWorkPackageId());
+                            window.location = redirectUrl || window.urls.getBusinessItems;
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
