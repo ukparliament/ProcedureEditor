@@ -19,7 +19,6 @@ namespace Parliament.ProcedureEditor.Web.Models
 
         public string WorkPackagedThingName { get; set; }
         public bool IsStatutoryInstrument { get; set; }
-
         public string ProcedureName { get; set; }
         public DateTimeOffset? MostRecentBusinessItemDate { get; set; }
     }

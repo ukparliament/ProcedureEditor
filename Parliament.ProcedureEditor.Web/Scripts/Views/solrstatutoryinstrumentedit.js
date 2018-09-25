@@ -11,24 +11,49 @@
             self.comingIntoForceDate = ko.observable(statutoryInstrument.ComingIntoForceDate);
             self.madeDate = ko.observable(statutoryInstrument.MadeDate);
             self.webLink = ko.observable(statutoryInstrument.WebUrl);
-            self.isStatutoryInstrument = ko.observable(null);
             self.procedureWorkPackageableThingTypeId = ko.observable(null);
             self.comingIntoForceDate = ko.observable(statutoryInstrument.ComingIntoForceDate);
             self.timeLimitForObjectionEndDate = ko.observable(null);
-            self.procedureId = ko.observable(null)
+            self.procedureId = ko.observable(null);
             self.isNotValidResponse = ko.observable(false);
             self.warningText = "Are you sure you wish to delete '" + statutoryInstrument.Title + "' record?";
             self.isDeletePopupVisible = ko.observable(false);
+            self.proposedNegativeStatutoryInstrumentId = ko.observable(null);
 
             self.procedures = ko.observableArray([]);
             $.getJSON(window.urls.getProcedures, function (data) {
                 self.procedures(data);
+                var procedureDictionary = {};
+                for (i = 0; i < data.length; i++)
+                    procedureDictionary[data[i].TripleStoreId] = data[i].Id;
+                self.proposedNegativeStatutoryInstrumentId(procedureDictionary["iCdMN1MW"]);
+                if (self.statutoryInstrument.IsStatutoryInstrument === false)
+                    self.procedureId(self.proposedNegativeStatutoryInstrumentId());
+                else
+                    if (self.madeDate() === null) {
+                        if (self.statutoryInstrument.SIProcedure.toLowerCase().indexOf("negative") >= 0)
+                            self.procedureId(procedureDictionary["gTgidljI"]);
+                        else
+                            if (self.statutoryInstrument.SIProcedure.toLowerCase().indexOf("affirmative") >= 0)
+                                self.procedureId(procedureDictionary["H5YJQsK2"]);
+                    }
+                    else {
+                        if (self.statutoryInstrument.SIProcedure.toLowerCase().indexOf("negative") >= 0)
+                            self.procedureId(procedureDictionary["5S6p4YsP"]);
+                        else
+                            if (self.statutoryInstrument.SIProcedure.toLowerCase().indexOf("affirmative") >= 0)
+                                self.procedureId(procedureDictionary["iWugpxMn"]);
+                    }
+            });
+
+            self.isStatutoryInstrument = ko.computed(function () {
+                return self.procedureId() !== self.proposedNegativeStatutoryInstrumentId();
             });
 
             self.showDeletePopup = function () {
                 self.isDeletePopupVisible(true);
             };
-            
+
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null);

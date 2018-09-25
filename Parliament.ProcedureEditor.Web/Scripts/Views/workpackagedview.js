@@ -4,7 +4,6 @@
             var self = this;
             self.workPackaged = ko.observable(workPackaged);
             self.businessItems = ko.observableArray([]);
-            self.statutoryInstrumentType = self.workPackaged().IsStatutoryInstrument ? "Statutory instrument paper" : "Proposed negative statutory instrument paper";
 
             $.getJSON(window.urls.getBusinessItemsSearchByWorkPackaged.replace("{workPackageId}", workPackaged.Id), function (data) {
                 enhanceBusinessItems(data);

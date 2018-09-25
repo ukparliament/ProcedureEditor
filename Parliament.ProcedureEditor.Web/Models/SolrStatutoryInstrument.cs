@@ -13,5 +13,6 @@ namespace Parliament.ProcedureEditor.Web.Models
         public DateTimeOffset? ComingIntoForceDate { get; set; }
         public DateTimeOffset? MadeDate { get; set; }
         public string SIProcedure { get; set; }
+        public bool? IsStatutoryInstrument { get; set; }
     }
 }

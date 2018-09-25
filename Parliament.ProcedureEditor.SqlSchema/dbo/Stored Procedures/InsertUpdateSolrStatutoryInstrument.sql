@@ -1,5 +1,4 @@
-﻿
-CREATE PROCEDURE [dbo].[InsertUpdateSolrStatutoryInstrument]
+﻿CREATE PROCEDURE [dbo].[InsertUpdateSolrStatutoryInstrument]
 (
 	@Uri nvarchar(128),
 	@SIPrefix nvarchar(32),
@@ -10,6 +9,7 @@ CREATE PROCEDURE [dbo].[InsertUpdateSolrStatutoryInstrument]
 	@Title nvarchar(max),
 	@SIProcedure nvarchar(50),
 	@ComingIntoForceNote nvarchar(max),
+	@IsStatutoryInstrument bit,
 	@Message nvarchar(50) out
 )
 AS
@@ -24,8 +24,8 @@ BEGIN
 
 	IF (@Id is Null)
 		BEGIN
-			insert into [dbo].[SolrStatutoryInstrumentData] ([Uri],[SIPrefix],[SINumber],[WebUrl],[ComingIntoForceDate],[MadeDate],[Title],[SIProcedure],[ComingIntoForceNote])
-			values (@Uri,@SIPrefix,@SINumber,@WebUrl,@ComingIntoForceDate,@MadeDate,@Title,@SIProcedure,@ComingIntoForceNote)
+			insert into [dbo].[SolrStatutoryInstrumentData] ([Uri],[SIPrefix],[SINumber],[WebUrl],[ComingIntoForceDate],[MadeDate],[Title],[SIProcedure],[ComingIntoForceNote],IsStatutoryInstrument)
+			values (@Uri,@SIPrefix,@SINumber,@WebUrl,@ComingIntoForceDate,@MadeDate,@Title,@SIProcedure,@ComingIntoForceNote,@IsStatutoryInstrument)
 			select @Message = 'New row added'
 		END
 	ELSE
@@ -33,7 +33,7 @@ BEGIN
 			IF (@TripleStoreId is Null) AND (@IsDeleted = 0)
 				BEGIN
 					update [dbo].[SolrStatutoryInstrumentData]
-						set SIPrefix = @SIPrefix, SINumber = @SINumber, WebUrl = @WebUrl, ComingIntoForceDate = @ComingIntoForceDate, MadeDate=@MadeDate, Title=@Title, SIProcedure = @SIProcedure, ComingIntoForceNote=@ComingIntoForceNote 
+						set SIPrefix = @SIPrefix, SINumber = @SINumber, WebUrl = @WebUrl, ComingIntoForceDate = @ComingIntoForceDate, MadeDate=@MadeDate, Title=@Title, SIProcedure = @SIProcedure, ComingIntoForceNote=@ComingIntoForceNote, IsStatutoryInstrument=@IsStatutoryInstrument
 					where Id=@Id
 					SELECT @Message = 'Current row updated'
 				END

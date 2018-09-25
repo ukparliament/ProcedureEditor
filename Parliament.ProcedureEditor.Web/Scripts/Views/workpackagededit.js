@@ -33,15 +33,23 @@
             self.comingIntoForceDate = ko.observable(self.workPackaged.ComingIntoForceDate);
             self.madeDate = ko.observable(self.workPackaged.MadeDate);
             self.procedureId = ko.observable(self.workPackaged.ProcedureId);
-            self.isStatutoryInstrument = ko.observable(self.workPackaged.IsStatutoryInstrument);
+            self.proposedNegativeStatutoryInstrumentId = ko.observable(null);
 
             self.procedures = ko.observableArray([]);
             $.getJSON(window.urls.getProcedures, function (data) {
                 self.procedures(data);
+                var procedureDictionary = {};
+                for (i = 0; i < data.length; i++)
+                    procedureDictionary[data[i].TripleStoreId] = data[i].Id;
+                self.proposedNegativeStatutoryInstrumentId(procedureDictionary["iCdMN1MW"]);
             });
 
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.workPackaged.TripleStoreId + " work package?";
+
+            self.isStatutoryInstrument = ko.computed(function () {
+                return self.procedureId() !== self.proposedNegativeStatutoryInstrumentId();
+            });
 
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&

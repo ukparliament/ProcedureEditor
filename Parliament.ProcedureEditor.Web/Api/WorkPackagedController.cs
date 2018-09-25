@@ -19,8 +19,7 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate,
-	                cast(iif(si.ProcedureStatutoryInstrumentName is null,0,1) as bit) as IsStatutoryInstrument
+	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
@@ -46,8 +45,7 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate,
-	                cast(iif(si.ProcedureStatutoryInstrumentName is null,0,1) as bit) as IsStatutoryInstrument
+	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
@@ -71,8 +69,7 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate,
-	                cast(iif(si.ProcedureStatutoryInstrumentName is null,0,1) as bit) as IsStatutoryInstrument
+	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
