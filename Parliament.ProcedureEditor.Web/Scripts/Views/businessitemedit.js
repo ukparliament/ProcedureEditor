@@ -16,7 +16,7 @@
             if (self.businessItem.ProcedureWorkPackageId !== null)
                 self.workPackages.push({
                     Id: ko.observable(self.businessItem.ProcedureWorkPackageId)
-                });
+                });                
             else
                 self.workPackages.push({
                     Id: ko.observable(null)
@@ -179,6 +179,8 @@
                     self.isNotValidResponse(true);
                 });
             };
+
+            self.getSteps();
         };
 
         var businessItemId = $("#businessItemId").val();

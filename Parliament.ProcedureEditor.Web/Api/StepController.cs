@@ -17,18 +17,24 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             if (searchParameters == null)
                 return null;
-            CommandDefinition command = new CommandDefinition(@"select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackagedThing wp
-                join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
-                join ProcedureStep s on s.Id=r.FromProcedureStepId
-                where wp.Id in @ids
-                union
-                select distinct s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from ProcedureWorkPackagedThing wp
-                join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
-                join ProcedureStep s on s.Id=r.ToProcedureStepId
-                where wp.Id in @ids;
+            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from (
+	                select unionsteps.step from (
+		                select wp.Id as wp, s.Id as step from ProcedureWorkPackagedThing wp
+		                join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
+		                join ProcedureStep s on s.Id=r.FromProcedureStepId
+		                where wp.Id in @ids
+		                union
+		                select wp.Id as wp, s.Id as step from ProcedureWorkPackagedThing wp
+		                join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
+		                join ProcedureStep s on s.Id=r.ToProcedureStepId
+		                where wp.Id in @ids
+		                group by wp.Id, s.Id) unionsteps
+	                group by unionsteps.step
+	                having count(unionsteps.wp)=@wpCount) intersectsteps
+                join ProcedureStep s on s.Id=intersectsteps.step;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId",
-                new { ids = searchParameters.WorkPackagedIds });
+                new { ids = searchParameters.WorkPackagedIds, wpCount=searchParameters.WorkPackagedIds.Count() });
             Tuple<List<Step>, List<StepHouse>> tuple = GetItems<Step, StepHouse>(command);
 
             tuple.Item1
