@@ -80,6 +80,25 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
+        [ContentNegotiation("workpackage/{tripleStoreId}", ContentType.JSON)]
+        public WorkPackaged GetByTripleStore(string tripleStoreId)
+        {
+            CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
+	                wp.ProcedureId, p.ProcedureName,
+	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
+	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+                from ProcedureWorkPackagedThing wp
+                left join ProcedureStatutoryInstrument si on si.Id=wp.Id
+                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                join [Procedure] p on p.Id=wp.ProcedureId
+                where wp.TripleStoreId=@TripleStoreId",
+                new { TripleStoreId = tripleStoreId });
+            return GetItem<WorkPackaged>(command);
+        }
+
+        [HttpGet]
         [ContentNegotiation("workpackage/edit/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetEdit(int id)
         {
@@ -187,7 +206,6 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Delete(int id)
         {
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@ModifiedBy", EMail);
             parameters.Add("@WorkPackagedId", id);
             parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
             CommandDefinition command = new CommandDefinition("DeleteWorkPackaged",

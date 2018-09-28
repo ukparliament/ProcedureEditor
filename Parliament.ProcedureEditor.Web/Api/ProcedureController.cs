@@ -101,7 +101,6 @@ namespace Parliament.ProcedureEditor.Web.Api
         public bool Delete(int id)
         {
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@ModifiedBy", EMail);
             parameters.Add("@ProcedureId", id);
             parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
             CommandDefinition command = new CommandDefinition("DeleteProcedure",

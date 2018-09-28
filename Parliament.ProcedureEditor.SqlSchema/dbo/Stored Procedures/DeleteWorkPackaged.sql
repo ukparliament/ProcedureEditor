@@ -1,7 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[DeleteWorkPackaged]
 (
 	@WorkPackagedId int,
-	@ModifiedBy [nvarchar](max),
 	@IsSuccess bit output
 )
 AS
@@ -19,6 +18,8 @@ BEGIN
 		set @IsSuccess=0
 	else
 		begin
+			delete from ProcedureStatutoryInstrument where Id=@WorkPackagedId
+			delete from ProcedureProposedNegativeStatutoryInstrument where Id=@WorkPackagedId
 			delete from ProcedureWorkPackagedThing where Id=@WorkPackagedId
 			set @IsSuccess=1
 		end

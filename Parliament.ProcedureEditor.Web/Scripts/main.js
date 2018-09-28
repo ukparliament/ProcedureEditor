@@ -18,6 +18,7 @@ var urls = {
     getWorkPackagedList: "/workpackage",
     getWorkPackagedListSearchByProcedure: "/workpackage?procedureId={procedureId}",
     getWorkPackaged: "/workpackage/{id}",
+    getWorkPackagedByTripleStoreId: "/workpackage/{tripleStoreId}",
     addWorkPackaged: "/workpackage",
     updateWorkPackaged: "/workpackage/{id}",
     deleteWorkPackaged: "/workpackage/{id}",
@@ -76,12 +77,17 @@ var urls = {
     showWorkPackagedPrecedings: "/WorkPackagePreceding",
     showWorkPackagedPreceding: "/WorkPackagePreceding/{id}",
 
-    getSolrStatutoryInstruments: "/solrfeed",
-    getSolrStatutoryInstrument: "/solrfeed/{id}",
-    addSolrStatutoryInstrument: "/solrfeed/{id}",
-    deleteSolrStatutoryInstrument: "/solrfeed/{id}",
-    editSolrStatutoryInstruments: "/SolrFeed/Edit/{id}",
-    showSolrStatutoryInstruments: "/SolrFeed",
+    getSolrStatutoryInstruments: "/solrfeed/statutoryinstrument",
+    getSolrBusinessItems: "/solrfeed/businessitem",
+    getSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
+    getSolrBusinessItem: "/solrfeed/businessitem/{id}",
+    addSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
+    addSolrBusinessItem: "/solrfeed/businessitem/{id}",
+    deleteSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
+    editSolrStatutoryInstrument: "/SolrFeed/StatutoryInstrument/Edit/{id}",
+    editSolrBusinessItem: "/SolrFeed/BusinessItem/Edit/{id}",
+    showSolrStatutoryInstruments: "/SolrFeed/StatutoryInstrument",
+    showSolrBusinessItems: "/SolrFeed/BusinessItem"
 
 };
 window.urls = urls;

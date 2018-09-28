@@ -1,0 +1,81 @@
+﻿@model int
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input id="statutoryInstrumentId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h2>Create business items from statutory instrument</h2>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <div>
+            <h5 data-bind="text: statutoryInstrument.Title"></h5>
+            <h6 data-bind="text: statutoryInstrument.SIProcedure"></h6>
+            <h6 data-bind="text: statutoryInstrument.WebUrl"></h6>
+            <h6 data-bind="text: statutoryInstrument.SIPrefix"></h6>
+            <h6 data-bind="text: statutoryInstrument.SINumber"></h6>
+            <h6 data-bind="text: statutoryInstrument.TripleStoreId"></h6>
+            <section>
+                <h6>Business item (created)</h6>
+                <div class="form-group">
+                    <label>Date: </label>
+                    <label data-bind="text: isNaN(Date.parse(createdDate())) ? 'N/A' : new Date(createdDate()).toLocaleDateString('en-GB')"></label>
+                </div>
+                <div class="form-group">
+                    <label>Link: </label>
+                    <label data-bind="text: webLink"></label>
+                </div>
+                <div class="form-group">
+                    <label>Step: </label>
+                    <label data-bind="text: createdStep().ProcedureStepName"></label>
+                </div>
+            </section>
+            <div data-bind="visible: isStartedBusinessItemAllowed">
+                <h6>Business item (clock started)</h6>
+                <div class="form-group">
+                    <label>Date: </label>
+                    <label data-bind="text: isNaN(Date.parse(startedDate())) ? 'N/A' : new Date(startedDate()).toLocaleDateString('en-GB')"></label>
+                </div>
+                <div class="form-group">
+                    <label>Step: </label>
+                    <label data-bind="text: startedStep().ProcedureStepName"></label>
+                </div>
+            </div>
+            <div>
+                <h6>Business items (laid)</h6>
+                <div class="form-group">
+                    <label>Date: </label>
+                    <label data-bind="text: isNaN(Date.parse(laidDate())) ? 'N/A' : new Date(laidDate()).toLocaleDateString('en-GB')"></label>
+                </div>
+                <ul class="list-unstyled" data-bind="foreach: laidSteps">
+                    <li>
+                        <div class="form-group">
+                            <label>Step: </label>
+                            <label data-bind="text: step.ProcedureStepName"></label>
+                        </div>
+                        <div class="form-group">
+                            <label>Link: </label>
+                            <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <section>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-bind="click: save">Add</button>
+                <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+            </section>
+        </div>
+    </div>
+</section>
+
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteStatutoryInstrument, actionText: 'Delete'"></popup>
+
+@section scripts{
+    <script data-main="/Scripts/Views/solrfeedbusinessitemedit.js" src="~/Scripts/require.js"></script>
+}

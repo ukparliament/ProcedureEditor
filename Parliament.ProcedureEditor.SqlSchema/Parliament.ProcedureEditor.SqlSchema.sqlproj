@@ -92,5 +92,6 @@
     <Build Include="dbo\Tables\DeletedProcedureLaying.sql" />
     <Build Include="dbo\Stored Procedures\DeleteBusinessItem.sql" />
     <Build Include="dbo\Stored Procedures\InsertUpdateSolrStatutoryInstrument.sql" />
+    <Build Include="dbo\Tables\SolrBusinessItem.sql" />
   </ItemGroup>
 </Project>

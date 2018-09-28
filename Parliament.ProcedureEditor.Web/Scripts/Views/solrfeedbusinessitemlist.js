@@ -1,9 +1,9 @@
 ﻿requirejs(["/Scripts/main.js"], function (main) {
     requirejs(["knockout", "jquery"], function (ko, $) {
-        var viewModel = function (statutoryInstruments) {
+        var viewModel = function (businessItems) {
             var self = this;
 
-            self.statutoryInstruments = ko.observableArray(statutoryInstruments);
+            self.businessItems = ko.observableArray(businessItems);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = ko.observable(null);
             self.isNotValidResponse = ko.observable(false);
@@ -22,7 +22,7 @@
                 }).done(function (data) {
                     self.isDeletePopupVisible(false);
                     if (data === true)
-                        self.statutoryInstruments.remove(self.soonToBeDeleted);
+                        self.businessItems.remove(self.soonToBeDeleted);
                     else
                         self.isNotValidResponse(true);
                 }).fail(function () {
@@ -33,8 +33,8 @@
 
         };
 
-        $.getJSON(window.urls.getSolrStatutoryInstruments, function (data) {
-            var vm = new viewModel(data);
+        $.getJSON(window.urls.getSolrBusinessItems, function (businessItems) {
+            var vm = new viewModel(businessItems);
             ko.applyBindings(vm);
         });
     });

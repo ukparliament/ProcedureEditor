@@ -4,8 +4,8 @@
 
 <section>
     <div class="container">
-        <h2 data-bind="visible: statutoryInstruments().length>0" style="display:none">Statutory instruments imported from Solr</h2>
-        <h2 data-bind="visible: statutoryInstruments().length===0" style="display:none">No statutory instruments imported from Solr</h2>
+        <h2 data-bind="visible: statutoryInstruments().length>0" style="display:none">Data imported from Solr</h2>
+        <h2 data-bind="visible: statutoryInstruments().length===0" style="display:none">No data imported from Solr</h2>
         <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
     </div>
 </section>
@@ -20,15 +20,17 @@
                 <h6 data-bind="visible: SIPrefix!=null"><span>Prefix: </span><span data-bind="text: SIPrefix"></span></h6>
                 <h6 data-bind="visible: SINumber!=null"><span>Number: </span><span data-bind="text: SINumber"></span></h6>
                 <h6 data-bind="visible: WebUrl!=null"><span>Link: </span><span data-bind="text: WebUrl"></span></h6>
-                <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:window.urls.editSolrStatutoryInstruments.replace('{id}',Id) }">Edit</a>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:window.urls.editSolrStatutoryInstrument.replace('{id}',Id) }">Create work package</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
-        </ul>
+        </ul>        
     </div>
 </section>
+
+
 
 <popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteStatutoryInstrument, actionText: 'Delete'"></popup>
 
 @section scripts{
-    <script data-main="Scripts/Views/solrstatutoryinstrumentlist.js" src="~/Scripts/require.js"></script>
+    <script data-main="/Scripts/Views/solrfeedstatutoryinstrumentlist.js" src="~/Scripts/require.js"></script>
 }

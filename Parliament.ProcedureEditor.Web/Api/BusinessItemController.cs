@@ -209,11 +209,33 @@ namespace Parliament.ProcedureEditor.Web.Api
                 else
                     tripleStoreIds.Add(tripleStoreId);
             }
-
             List<CommandDefinition> updates = new List<CommandDefinition>();
+            updates.AddRange(GenerateCreateCommand(businessItem, tripleStoreIds.ToArray()));
+            return Execute(updates.ToArray());
+        }
+
+        [HttpDelete]
+        [ContentNegotiation("businessitem/{id:int}", ContentType.JSON)]
+        public bool Delete(int id)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@BusinessItemId", id);
+            parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
+            CommandDefinition command = new CommandDefinition("DeleteBusinessItem",
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure);
+            if (Execute(command))
+                return parameters.Get<bool>("@IsSuccess");
+            else
+                return false;
+        }
+
+        public List<CommandDefinition> GenerateCreateCommand(BusinessItem businessItem, string[] tripleStoreIds)
+        {
+            List<CommandDefinition> commands = new List<CommandDefinition>();
             for (int i = 0; i < businessItem.ProcedureWorkPackages.Distinct().Count(); i++)
             {
-                updates.Add(new CommandDefinition(@"insert into ProcedureBusinessItem
+                commands.Add(new CommandDefinition(@"insert into ProcedureBusinessItem
                     (WebLink,ProcedureWorkPackageId,BusinessItemDate,
                         ModifiedBy,ModifiedAt,TripleStoreId)
                     values(@WebLink,@ProcedureWorkPackageId,@BusinessItemDate,
@@ -228,7 +250,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                         TripleStoreId = tripleStoreIds[i]
                     }));
                 if (businessItem.Steps != null)
-                    updates.AddRange(businessItem.Steps.Select(s => new CommandDefinition(@"insert into ProcedureBusinessItemProcedureStep
+                    commands.AddRange(businessItem.Steps.Select(s => new CommandDefinition(@"insert into ProcedureBusinessItemProcedureStep
                     (ProcedureBusinessItemId, ProcedureStepId)
                     select Id, @ProcedureStepId from ProcedureBusinessItem where TripleStoreId=@TripleStoreId",
                             new
@@ -237,24 +259,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                                 ProcedureStepId = s
                             })));
             }
-            return Execute(updates.ToArray());
-        }
-
-        [HttpDelete]
-        [ContentNegotiation("businessitem/{id:int}", ContentType.JSON)]
-        public bool Delete(int id)
-        {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@ModifiedBy", EMail);
-            parameters.Add("@BusinessItemId", id);
-            parameters.Add("@IsSuccess", dbType: System.Data.DbType.Boolean, direction: System.Data.ParameterDirection.Output);
-            CommandDefinition command = new CommandDefinition("DeleteBusinessItem",
-                parameters,
-                commandType: System.Data.CommandType.StoredProcedure);
-            if (Execute(command))
-                return parameters.Get<bool>("@IsSuccess");
-            else
-                return false;
+            return commands;
         }
     }
 

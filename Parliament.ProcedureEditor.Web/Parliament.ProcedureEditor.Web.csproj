@@ -188,19 +188,21 @@
     <Content Include="Scripts\Views\layingitemedit.js" />
     <Content Include="Scripts\Views\layingitemlist.js" />
     <Content Include="Scripts\Views\layingitemview.js" />
-    <Content Include="Scripts\Views\solrstatutoryinstrumentlist.js" />
+    <Content Include="Scripts\Views\solrfeedstatutoryinstrumentlist.js" />
+    <Content Include="Scripts\Views\solrfeedbusinessitemlist.js" />
     <Content Include="Scripts\Views\routeedit.js" />
     <Content Include="Scripts\Views\routelist.js" />
     <Content Include="Scripts\Views\routeview.js" />
     <Content Include="Scripts\Views\businessitemlist.js" />
     <Content Include="Scripts\Views\businessitemview.js" />
     <Content Include="Scripts\Views\businessitemedit.js" />
+    <Content Include="Scripts\Views\solrfeedbusinessitemedit.js" />
     <Content Include="Scripts\Views\stepview.js" />
     <Content Include="Scripts\Views\stepedit.js" />
     <Content Include="Scripts\Views\steplist.js" />
     <Content Include="Scripts\Views\workpackagedprecedingedit.js" />
     <Content Include="Scripts\Views\workpackagedprecedinglist.js" />
-    <Content Include="Scripts\Views\solrstatutoryinstrumentedit.js" />
+    <Content Include="Scripts\Views\solrfeedstatutoryinstrumentedit.js" />
     <Content Include="Scripts\Views\workpackagedlist.js" />
     <Content Include="Scripts\Views\workpackagededit.js" />
     <Content Include="Scripts\Views\workpackagedprecedingview.js" />
@@ -226,7 +228,7 @@
     <Compile Include="Api\HouseController.cs" />
     <Compile Include="Api\BusinessItemController.cs" />
     <Compile Include="Api\LayingBodyController.cs" />
-    <Compile Include="Api\SolrStatutoryInstrumentController.cs" />
+    <Compile Include="Api\SolrFeedController.cs" />
     <Compile Include="Api\StepController.cs" />
     <Compile Include="Api\RouteTypeController.cs" />
     <Compile Include="Api\WorkPackagedPrecedingController.cs" />
@@ -289,8 +291,8 @@
     <Content Include="Views\WorkPackagedPreceding\Index.cshtml" />
     <Content Include="Views\WorkPackagedPreceding\View.cshtml" />
     <Content Include="Views\Authentication\Login.cshtml" />
-    <Content Include="Views\SolrStatutoryInstrument\Index.cshtml" />
-    <Content Include="Views\SolrStatutoryInstrument\Edit.cshtml" />
+    <Content Include="Views\SolrFeed\BusinessItem\Index.cshtml" />
+    <Content Include="Views\SolrFeed\StatutoryInstrument\Edit.cshtml" />
     <Content Include="Views\Shared\DateEntry.cshtml" />
     <Content Include="Views\Shared\WorkPackagedSelector.cshtml" />
     <Content Include="Views\Shared\Popup.cshtml" />
@@ -303,6 +305,8 @@
     <Content Include="Views\LayingItem\View.cshtml" />
     <Content Include="Views\Shared\BusinessItemSelector.cshtml" />
     <Content Include="Views\Shared\LayingBodySelector.cshtml" />
+    <Content Include="Views\SolrFeed\BusinessItem\Edit.cshtml" />
+    <Content Include="Views\SolrFeed\StatutoryInstrument\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,7 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[DeleteProcedure]
 (
 	@ProcedureId int,
-	@ModifiedBy [nvarchar](max),
 	@IsSuccess bit output
 )
 AS

@@ -6,6 +6,7 @@
     [WebUrl]                NVARCHAR (MAX)     NULL,
     [ComingIntoForceDate]   DATETIMEOFFSET (0) NULL,
     [MadeDate]              DATETIMEOFFSET (0) NULL,
+    [LaidDate]              DATETIMEOFFSET (0) NULL,
     [Title]                 NVARCHAR (MAX)     NULL,
     [SIProcedure]           NVARCHAR (50)      NULL,
     [ComingIntoForceNote]   NVARCHAR (MAX)     NULL,
@@ -14,6 +15,10 @@
     [IsDeleted]             BIT                CONSTRAINT [DF_SolrStatutoryInstrumentData_IsDeleted] DEFAULT ((0)) NOT NULL,
     CONSTRAINT [PK_SolrStatutoryInstrumentData] PRIMARY KEY CLUSTERED ([Id] ASC)
 );
+
+
+
+
 
 
 

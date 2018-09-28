@@ -1,7 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[DeleteStep]
 (
 	@StepId int,
-	@ModifiedBy [nvarchar](max),
 	@IsSuccess bit output
 )
 AS
