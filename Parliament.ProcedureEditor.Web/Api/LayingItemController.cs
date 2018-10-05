@@ -63,14 +63,21 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("layingitem/edit/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetEdit(int id)
         {
-            return RenderView("Edit", id);
+            return RenderView("Edit", new LayingItemEditParameters() { LayingItemId = id });
         }
 
         [HttpGet]
         [ContentNegotiation("layingitem/add", ContentType.HTML)]
         public IHttpActionResult GetAdd()
         {
-            return RenderView("Edit");
+            return RenderView("Edit", new LayingItemEditParameters());
+        }
+
+        [HttpGet]
+        [ContentNegotiation("layingitem/add", ContentType.HTML)]
+        public IHttpActionResult GetAdd(int businessItemId)
+        {
+            return RenderView("Edit", new LayingItemEditParameters() { BusinessItemId = businessItemId });
         }
 
         [HttpPut]
@@ -81,7 +88,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 (layingItem.ProcedureBusinessItemId == 0) ||
                 (layingItem.ProcedureWorkPackagedId == 0))
                 return false;
-            CommandDefinition command=new CommandDefinition(@"update ProcedureLaying
+            CommandDefinition command = new CommandDefinition(@"update ProcedureLaying
                 set ProcedureBusinessItemId=@ProcedureBusinessItemId,
                     ProcedureWorkPackagedId=@ProcedureWorkPackagedId,
                     LayingDate=@LayingDate,
@@ -112,7 +119,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 (layingItem.ProcedureBusinessItemId == 0) ||
                 (layingItem.ProcedureWorkPackagedId == 0))
                 return false;
-            CommandDefinition command=new CommandDefinition(@"insert into ProcedureLaying
+            CommandDefinition command = new CommandDefinition(@"insert into ProcedureLaying
                 (ProcedureBusinessItemId, ProcedureWorkPackagedId,
 	                LayingDate, LayingBodyId, PersonTripleStoreId,
                     ModifiedBy,ModifiedAt)

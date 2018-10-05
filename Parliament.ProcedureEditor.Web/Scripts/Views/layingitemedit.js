@@ -102,6 +102,7 @@
         };
 
         var layingItemId = $("#layingItemId").val();
+        var businessItemId = $("#businessItemId").val();
         if (Number.isNaN(Number.parseInt(layingItemId)) === false)
             $.getJSON(window.urls.getLayingItem.replace("{id}", layingItemId), function (data) {
                 var vm = new viewModel(data);
@@ -111,7 +112,7 @@
             var bi = {
                 Id: null,
                 TripleStoreId: null,
-                ProcedureBusinessItemId: null,
+                ProcedureBusinessItemId: Number.isNaN(Number.parseInt(businessItemId)) ? null : businessItemId,
                 ProcedureWorkPackagedId: null,
                 LayingBodyId: null,
                 LayingDate: null

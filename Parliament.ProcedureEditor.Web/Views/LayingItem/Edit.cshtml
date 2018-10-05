@@ -1,13 +1,15 @@
-﻿@model int?
+﻿@model LayingItemEditParameters
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input id="layingItemId" type="hidden" value="@Model" />
+<input id="layingItemId" type="hidden" value="@Model.LayingItemId" />
+<input id="businessItemId" type="hidden" value="@Model.BusinessItemId" />
+
 <section>
     <div class="container">
-        @if (Model.HasValue)
+        @if (Model.LayingItemId.HasValue)
         {
             <h2>Edit laying</h2>
         }
@@ -24,7 +26,7 @@
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Business item*</label>
-                @if (Model.HasValue)
+                @if (Model.LayingItemId.HasValue)
                 {
                     <div data-bind="text: businessItem().WorkPackagedThingName"></div>
                     <div data-bind="text: businessItem().ProcedureName"></div>
@@ -44,7 +46,7 @@
                 <label>Laying date</label>
                 <date-entry params="date: layingDate"></date-entry>
             </div>
-            @if (Model.HasValue)
+            @if (Model.LayingItemId.HasValue)
             {
                 <div class="form-group">
                     <label>Id</label>
@@ -52,8 +54,8 @@
                 </div>
             }
             <section>
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
-                @if (Model.HasValue)
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.LayingItemId.HasValue ? "Update" : "Add")</button>
+                @if (Model.LayingItemId.HasValue)
                 {
                     <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
                 }
