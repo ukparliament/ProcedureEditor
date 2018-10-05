@@ -21,7 +21,7 @@
 <section>
     <div class="container">
         <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
-        <form data-bind="submit: save">
+        <form>
             <div class="form-group">
                 <label>Procedure*</label>
                 <div data-bind="foreach: procedures">
@@ -55,13 +55,14 @@
                     <input type="text" class="form-control form-control-md" data-bind="textInput: route.TripleStoreId" readonly />
                 </div>
             }
-            <section>
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
-                @if (Model.HasValue)
-                {
-                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
-                }
-            </section>
+                <section>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave, click: function(){save(null);}">@(Model.HasValue ? "Update" : "Add")</button>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave, click: saveAndReturnToProcedure">@(Model.HasValue ? "Update and return to procedure" : "Add and return to procedure")</button>
+                    @if (Model.HasValue)
+                    {
+                        <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                    }
+                </section>
         </form>
     </div>
 </section>

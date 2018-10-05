@@ -34,7 +34,7 @@
             });
 
             $.getJSON(window.urls.getSteps, function (data) {
-                self.steps(data);                
+                self.steps(data);
             });
 
             $.getJSON(window.urls.getProcedures, function (data) {
@@ -48,7 +48,11 @@
                     (self.procedureRouteTypeId() !== null) && (self.procedureRouteTypeId() > 0);
             });
 
-            self.save = function () {
+            self.saveAndReturnToProcedure = function () {
+                self.save(window.urls.showProcedure.replace("{id}", self.procedureId()));
+            };
+
+            self.save = function (redirectUrl) {
                 if (Number.isNaN(Number.parseInt(self.route.Id)))
                     $.ajax(window.urls.addRoute, {
                         method: "POST",
@@ -61,7 +65,7 @@
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showRoutes;
+                            window.location = redirectUrl || window.urls.showRoutes;
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
@@ -79,7 +83,7 @@
                         }
                     }).done(function (data) {
                         if (data === true)
-                            window.location = window.urls.showRoutes;
+                            window.location = redirectUrl || window.urls.showRoutes;
                         else
                             self.isNotValidResponse(true);
                     }).fail(function () {
