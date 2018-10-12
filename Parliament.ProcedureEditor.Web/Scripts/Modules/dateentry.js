@@ -18,6 +18,8 @@
                 var dateTxt = self.year() + "-" + (self.month() < 10 ? "0" + self.month() : self.month()) + "-" + (self.day() < 10 ? "0" + self.day() : self.day()) + "T00:00:00Z";
                 if (isNaN(Date.parse(dateTxt)) === false)
                     self.date(dateTxt);
+                else
+                    self.date(null);
             });
 
         },
