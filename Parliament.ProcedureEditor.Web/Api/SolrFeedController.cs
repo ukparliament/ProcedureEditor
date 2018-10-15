@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
@@ -137,7 +138,7 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpPost]
         [ContentNegotiation("solrfeed/businessitem/{id:int}", ContentType.JSON)]
-        public bool PostBusinessItem(int id, [FromBody]BusinessItem[] businessItems)
+        public bool PostBusinessItem(int id, [FromBody]BusinessItemSolrEditModel[] businessItems)
         {
             if ((businessItems == null) ||
                 (businessItems.Any() == false))
@@ -155,10 +156,37 @@ namespace Parliament.ProcedureEditor.Web.Api
             BusinessItemController businessItemController = new BusinessItemController();
             for (int i = 0; i < businessItems.Length; i++)
             {
-                updates.AddRange(businessItemController.GenerateCreateCommand(businessItems[i], tripleStoreIds.Skip(i).Take(1).ToArray()));
+                string tripleStoreId = tripleStoreIds.Skip(i).Take(1).SingleOrDefault();
+                BusinessItem bi = new BusinessItem()
+                {
+                    WebLink = businessItems[i].WebLink,
+                    ProcedureWorkPackages = new int[] { businessItems[i].ProcedureWorkPackageId },
+                    BusinessItemDate = businessItems[i].BusinessItemDate,
+                    Steps = new int[] { businessItems[i].StepId }
+                };
+                updates.AddRange(businessItemController.GenerateCreateCommand(bi, new string[] { tripleStoreId }));
+                if (businessItems[i].IsLaid)
+                    updates.Add(new CommandDefinition(@"insert into ProcedureLaying
+                        (ProcedureBusinessItemId,
+                            ProcedureWorkPackagedId,
+	                        LayingDate, LayingBodyId,
+                            ModifiedBy,ModifiedAt)
+                        values((select Id from ProcedureBusinessItem where TripleStoreId=@TripleStoreId), 
+                            @ProcedureWorkPackagedId,
+	                        @LayingDate, @LayingBodyId,
+                            @ModifiedBy,@ModifiedAt)",
+                    new
+                    {
+                        TripleStoreId = tripleStoreId,
+                        ProcedureWorkPackagedId = businessItems[i].ProcedureWorkPackageId,
+                        LayingDate = businessItems[i].LayingDate,
+                        LayingBodyId = businessItems[i].LayingBodyId,
+                        ModifiedBy = EMail,
+                        ModifiedAt = DateTimeOffset.UtcNow
+                    }));
                 updates.Add(new CommandDefinition(@"insert into SolrBusinessItem (SolrStatutoryInstrumentDataId, TripleStoreId)
                     values(@SolrStatutoryInstrumentDataId, @TripleStoreId)",
-                new { SolrStatutoryInstrumentDataId = id, TripleStoreId = tripleStoreIds.Skip(i).Take(1).SingleOrDefault() }));
+                new { SolrStatutoryInstrumentDataId = id, TripleStoreId = tripleStoreId }));
             }
 
             return Execute(updates.ToArray());

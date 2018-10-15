@@ -60,6 +60,10 @@
                             <label data-bind="text: step.ProcedureStepName"></label>
                         </div>
                         <div class="form-group">
+                            <label>Laying body</label>
+                            <laying-body-selector params="layingBodyId: layingBodyId, layingBodies: $root.layingBodies"></laying-body-selector>
+                        </div>
+                        <div class="form-group">
                             <label>Link: </label>
                             <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
                         </div>

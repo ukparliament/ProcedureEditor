@@ -13,7 +13,7 @@
 <section>
     <div class="container">
         <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
-        <ul class="list-group list-group-flush" data-bind="foreach: businessItems, visible: isBusinessItemsShown">
+        <ul class="list-group list-group-flush" data-bind="foreach: businessItems">
             <li class="list-group-item">
                 <h5 data-bind="text: Title"></h5>
                 <h6><span>Work packaged Id: </span><span data-bind="text: TripleStoreId"></span></h6>

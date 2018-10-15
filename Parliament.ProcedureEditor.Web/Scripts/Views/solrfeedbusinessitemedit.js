@@ -10,11 +10,12 @@
             self.createdDate = ko.observable();
             self.laidDate = ko.observable();
             self.startedDate = ko.observable();
+            self.layingBodies = ko.observableArray([]);
             self.isStartedBusinessItemAllowed = ko.observable(true);
             self.isNotValidResponse = ko.observable(false);
             self.warningText = "Are you sure you wish to delete '" + statutoryInstrument.Title + "' record?";
             self.isDeletePopupVisible = ko.observable(false);
-            
+
             self.assignSteps = function (steps, procedureTripleStoreId) {
                 var filteredSteps = [];
                 var minDate = null;
@@ -90,7 +91,8 @@
                 }).map(function (item) {
                     return {
                         step: item,
-                        webLink: ko.observable(null)
+                        webLink: ko.observable(null),
+                        layingBodyId: ko.observable(null)
                     };
                 });
                 self.laidSteps(filteredSteps);
@@ -104,6 +106,10 @@
                 });
             });
 
+            $.getJSON(window.urls.getLayingBodies, function (data) {
+                self.layingBodies(data);
+            });
+
             self.showDeletePopup = function () {
                 self.isDeletePopupVisible(true);
             };
@@ -111,27 +117,33 @@
             self.save = function () {
                 var bis = [{
                     WebLink: self.webLink(),
-                    ProcedureWorkPackages: [workPackageId],
+                    ProcedureWorkPackageId: workPackageId,
                     BusinessItemDate: self.createdDate(),
-                    Steps: [self.createdStep().Id]
+                    StepId: self.createdStep().Id,
+                    IsLaid: false
                 },
                 {
                     WebLink: self.laidSteps()[0].webLink(),
-                    ProcedureWorkPackages: workPackageId,
-                    BusinessItemDate: self.laidDate(),
-                    Steps: [self.laidSteps()[0].step.Id]
+                    ProcedureWorkPackageId: workPackageId,
+                    LayingDate: self.laidDate(),
+                    StepId: self.laidSteps()[0].step.Id,
+                    LayingBodyId: self.laidSteps()[0].layingBodyId(),
+                    IsLaid: true
                 },
                 {
                     WebLink: self.laidSteps()[1].webLink(),
-                    ProcedureWorkPackages: [workPackageId],
-                    BusinessItemDate: self.laidDate(),
-                    Steps: [self.laidSteps()[1].step.Id]
+                    ProcedureWorkPackageId: workPackageId,
+                    LayingDate: self.laidDate(),
+                    StepId: self.laidSteps()[1].step.Id,
+                    LayingBodyId: self.laidSteps()[1].layingBodyId(),
+                    IsLaid: true
                 }];
-                if (self.isStartedBusinessItemAllowed()=== true)
+                if (self.isStartedBusinessItemAllowed() === true)
                     bis.push({
-                        ProcedureWorkPackages: [workPackageId],
+                        ProcedureWorkPackageId: workPackageId,
                         BusinessItemDate: self.startedDate(),
-                        Steps: [self.startedStep().Id]
+                        StepId: self.startedStep().Id,
+                        IsLaid: false
                     });
                 $.ajax(window.urls.addSolrBusinessItem.replace("{id}", self.statutoryInstrument.Id), {
                     method: "POST",

@@ -235,6 +235,7 @@
     <Compile Include="Api\WorkPackagedController.cs" />
     <Compile Include="Api\Configuration\ContentNegotiationAttribute.cs" />
     <Compile Include="Controllers\MvcController.cs" />
+    <Compile Include="Models\BusinessItemSolrEditModel.cs" />
     <Compile Include="Models\LayingItemEditParameters.cs" />
     <Compile Include="Models\StepSearchParameters.cs" />
     <Compile Include="Models\LayingItem.cs" />
