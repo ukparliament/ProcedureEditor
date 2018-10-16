@@ -158,17 +158,19 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         internal bool Execute(CommandDefinition[] commands)
-        {
-            SqlTransaction transaction = null;
+        {            
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    transaction = connection.BeginTransaction();
-                    foreach (CommandDefinition command in commands)
-                        connection.Execute(command.CommandText, command.Parameters, transaction);
-                    transaction.Commit();
+                    using (SqlTransaction transaction = connection.BeginTransaction())
+                    {
+                        foreach (CommandDefinition command in commands)
+                            connection.Execute(command.CommandText, command.Parameters, transaction);
+                        transaction.Commit();
+                    }
+                    
                 }
             }
             catch (Exception e)
