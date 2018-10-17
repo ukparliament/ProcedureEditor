@@ -17,16 +17,23 @@
             self.procedureProposedNegativeStatutoryInstruments = ko.observableArray([]);
             self.procedureStatutoryInstruments = ko.observableArray([]);
 
-            $.getJSON(window.urls.getWorkPackagedList, function (data) {
-                self.procedureStatutoryInstruments(
-                    data.filter(function (wp) {
-                        return wp.IsStatutoryInstrument === true;
-                    }));
-                self.procedureProposedNegativeStatutoryInstruments(
-                    data.filter(function (wp) {
-                        return wp.IsStatutoryInstrument === false;
-                    }));
-            });
+            $.getJSON(window.urls.getProcedures, function (data) {
+                var negativeId = null;
+                for (i = 0; i < data.length; i++) {
+                    if (data[i].TripleStoreId === "iCdMN1MW")
+                        negativeId = data[i].Id;
+                }
+                $.getJSON(window.urls.getWorkPackagedList, function (data) {
+                    self.procedureStatutoryInstruments(
+                        data.filter(function (wp) {
+                            return wp.ProcedureId !== negativeId;
+                        }));
+                    self.procedureProposedNegativeStatutoryInstruments(
+                        data.filter(function (wp) {
+                            return wp.ProcedureId === negativeId;
+                        }));
+                });
+            });            
 
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete this work package preceding?";
