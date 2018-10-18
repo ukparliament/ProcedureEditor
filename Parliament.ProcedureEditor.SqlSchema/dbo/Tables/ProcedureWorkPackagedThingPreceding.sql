@@ -1,14 +1,16 @@
 ﻿CREATE TABLE [dbo].[ProcedureWorkPackagedThingPreceding] (
-    [Id]                         INT            IDENTITY (1, 1) NOT NULL,
-    [WorkPackagedIsFollowedById] INT            NOT NULL,
-    [WorkPackagedIsPrecededById] INT            NOT NULL,
-    [ModifiedAt]                 DATE           NOT NULL,
-    [ModifiedBy]                 NVARCHAR (MAX) NOT NULL,
+    [Id]                         INT                IDENTITY (1, 1) NOT NULL,
+    [WorkPackagedIsFollowedById] INT                NOT NULL,
+    [WorkPackagedIsPrecededById] INT                NOT NULL,
+    [ModifiedAt]                 DATETIMEOFFSET (0) NOT NULL,
+    [ModifiedBy]                 NVARCHAR (MAX)     NOT NULL,
     CONSTRAINT [PK_ProcedureWorkPackagedThingPreceding] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_ProcedureWorkPackagedThingPreceding_ProcedureWorkPackagedThing] FOREIGN KEY ([WorkPackagedIsFollowedById]) REFERENCES [dbo].[ProcedureWorkPackagedThing] ([Id]),
     CONSTRAINT [FK_ProcedureWorkPackagedThingPreceding_ProcedureWorkPackagedThing1] FOREIGN KEY ([WorkPackagedIsPrecededById]) REFERENCES [dbo].[ProcedureWorkPackagedThing] ([Id]),
     CONSTRAINT [IX_ProcedureWorkPackagedThingPreceding_1] UNIQUE NONCLUSTERED ([WorkPackagedIsFollowedById] ASC, [WorkPackagedIsPrecededById] ASC)
 );
+
+
 
 
 
