@@ -25,7 +25,7 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                lb.LayingBodyName, b.TripleStoreId,
                     coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName
                     from ProcedureLaying li
-                join LayingBody lb on lb.Id=li.LayingBodyId
+                left join LayingBody lb on lb.Id=li.LayingBodyId
                 join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
                 join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
@@ -49,7 +49,7 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                lb.LayingBodyName, b.TripleStoreId,
                     coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName
                     from ProcedureLaying li
-                join LayingBody lb on lb.Id=li.LayingBodyId
+                left join LayingBody lb on lb.Id=li.LayingBodyId
                 join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
                 join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
