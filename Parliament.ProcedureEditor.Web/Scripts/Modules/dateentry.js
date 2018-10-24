@@ -7,7 +7,7 @@
             self.day = ko.observable(null);
             self.month = ko.observable(null);
             self.year = ko.observable(null);
-
+            
             if (isNaN(Date.parse(self.date())) === false) {
                 self.day(new Date(self.date()).getDate());
                 self.month(new Date(self.date()).getMonth() + 1);
@@ -15,7 +15,15 @@
             }
 
             self.checkDate = ko.computed(function () {
-                var dateTxt = self.year() + "-" + (self.month() < 10 ? "0" + self.month() : self.month()) + "-" + (self.day() < 10 ? "0" + self.day() : self.day()) + "T00:00:00Z";
+                var timeZoneOffset = new Date(
+                    Date.UTC(self.year(), self.month() - 1, self.day(), 0, 0, 0))
+                    .toLocaleString("en-GB", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                        timeZone: "Europe/London"
+                    });
+                var dateTxt = self.year() + "-" + (self.month() < 10 ? "0" + self.month() : self.month()) + "-" + (self.day() < 10 ? "0" + self.day() : self.day()) + "T00:00:00+" + timeZoneOffset;
                 if (isNaN(Date.parse(dateTxt)) === false)
                     self.date(dateTxt);
                 else
