@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.ApplicationInsights;
 using Parliament.ProcedureEditor.Web.Api.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,7 +12,6 @@ namespace Parliament.ProcedureEditor.Web.Api
 {
     public class BaseApiController : ApiController
     {
-        internal TelemetryClient telemetryClient = new TelemetryClient(new Microsoft.ApplicationInsights.Extensibility.TelemetryConfiguration(ConfigurationManager.AppSettings["ApplicationInsightsInstrumentationKey"]));
         private readonly string connectionString = ConfigurationManager.ConnectionStrings["Sql"].ConnectionString;
 
         internal HtmlContentActionResult RenderView(string viewName, object model = null)
@@ -24,26 +22,17 @@ namespace Parliament.ProcedureEditor.Web.Api
         internal string GetTripleStoreId()
         {
             string id = null;
-            try
+            using (HttpClient client = new HttpClient())
             {
-                using (HttpClient client = new HttpClient())
+                client.DefaultRequestHeaders.Add("Api-Version", ConfigurationManager.AppSettings["ApiVersion"]);
+                client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ConfigurationManager.AppSettings["SubscriptionKey"]);
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+                using (HttpResponseMessage response = client.GetAsync(ConfigurationManager.AppSettings["GenerateIdUrl"]).Result)
                 {
-                    client.DefaultRequestHeaders.Add("Api-Version", ConfigurationManager.AppSettings["ApiVersion"]);
-                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ConfigurationManager.AppSettings["SubscriptionKey"]);
-                    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
-                    using (HttpResponseMessage response = client.GetAsync(ConfigurationManager.AppSettings["GenerateIdUrl"]).Result)
-                    {
-                        if (response.IsSuccessStatusCode)
-                            telemetryClient.TrackTrace($"Problem with getting new id, status code is {response.StatusCode}", Microsoft.ApplicationInsights.DataContracts.SeverityLevel.Error);
-                        id = response.Content.ReadAsStringAsync().Result;
-                    }
+                    id = response.Content.ReadAsStringAsync().Result;
                 }
-                id = new Uri(id).Segments.Last();
             }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
-            }
+            id = new Uri(id).Segments.Last();
             return id;
         }
 
@@ -58,17 +47,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         internal List<T> GetItems<T>(CommandDefinition command) where T : new()
         {
             List<T> result = new List<T>();
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    result = connection.Query<T>(command)
-                        .AsList<T>();
-                }
-            }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
+                result = connection.Query<T>(command)
+                    .AsList<T>();
             }
             return result;
         }
@@ -80,20 +62,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             List<T> resultT = new List<T>();
             List<K> resultK = new List<K>();
 
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
                 {
-                    using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
-                    {
-                        resultT = grid.Read<T>().ToList();
-                        resultK = grid.Read<K>().ToList();
-                    }
+                    resultT = grid.Read<T>().ToList();
+                    resultK = grid.Read<K>().ToList();
                 }
-            }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
             }
             return Tuple.Create<List<T>, List<K>>(resultT, resultK);
         }
@@ -101,17 +76,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         internal T GetItem<T>(CommandDefinition command) where T : new()
         {
             T result = new T();
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    result = connection.Query<T>(command)
-                        .SingleOrDefault();
-                }
-            }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
+                result = connection.Query<T>(command)
+                    .SingleOrDefault();
             }
             return result;
         }
@@ -122,61 +90,38 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             T resultT = new T();
             List<K> resultK = new List<K>();
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
                 {
-                    using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
-                    {
-                        resultT = grid.Read<T>().SingleOrDefault();
-                        resultK = grid.Read<K>().ToList();
-                    }
+                    resultT = grid.Read<T>().SingleOrDefault();
+                    resultK = grid.Read<K>().ToList();
                 }
-            }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
             }
             return Tuple.Create<T, List<K>>(resultT, resultK);
         }
 
         internal bool Execute(CommandDefinition command)
         {
-            try
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Execute(command);
-                }
-            }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
-                return false;
+                connection.Execute(command);
             }
             return true;
         }
 
         internal bool Execute(CommandDefinition[] commands)
-        {            
-            try
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
                 {
-                    connection.Open();
-                    using (SqlTransaction transaction = connection.BeginTransaction())
-                    {
-                        foreach (CommandDefinition command in commands)
-                            connection.Execute(command.CommandText, command.Parameters, transaction);
-                        transaction.Commit();
-                    }
-                    
+                    foreach (CommandDefinition command in commands)
+                        connection.Execute(command.CommandText, command.Parameters, transaction);
+                    transaction.Commit();
                 }
-            }
-            catch (Exception e)
-            {
-                telemetryClient.TrackException(e);
-                return false;
+
             }
             return true;
         }

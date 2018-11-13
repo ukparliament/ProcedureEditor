@@ -1,5 +1,4 @@
-﻿using Microsoft.ApplicationInsights.Extensibility;
-using System.Web;
+﻿using System.Web;
 using System.Web.Http;
 
 namespace Parliament.ProcedureEditor.Web
@@ -10,8 +9,6 @@ namespace Parliament.ProcedureEditor.Web
 
         protected void Application_Start()
         {
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new AIInitializer());
-
             GlobalConfiguration.Configuration.Filters.Add(new System.Web.Http.AuthorizeAttribute());
             GlobalConfiguration.Configuration.MapHttpAttributeRoutes();
             GlobalConfiguration.Configuration.EnsureInitialized();
