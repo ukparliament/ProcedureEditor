@@ -10,13 +10,14 @@
             self.businessItemDate = ko.observable(self.businessItem.BusinessItemDate);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.businessItem.TripleStoreId + " business item?";
+            self.isBeingSaved = ko.observable(false);
             self.workPackageSteps = ko.observableArray([]);
             self.workPackagedList = ko.observableArray([]);
             self.workPackages = ko.observableArray([]);
             if (self.businessItem.ProcedureWorkPackageId !== null)
                 self.workPackages.push({
                     Id: ko.observable(self.businessItem.ProcedureWorkPackageId)
-                });                
+                });
             else
                 self.workPackages.push({
                     Id: ko.observable(null)
@@ -114,7 +115,10 @@
             });
 
             self.canSave = ko.computed(function () {
-                return (self.workPackageIds().length > 0) && (self.steps() !== null) && (self.steps().length > 0);
+                return (self.workPackageIds().length > 0) &&
+                    (self.steps() !== null) &&
+                    (self.steps().length > 0) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.saveAndReturnToWorkPackaged = function () {
@@ -122,6 +126,7 @@
             };
 
             self.save = function (redirectUrl) {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.businessItem.Id)))
                     $.ajax(window.urls.addBusinessItem, {
                         method: "POST",
@@ -135,10 +140,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = redirectUrl || window.urls.getBusinessItems;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateBusinessItem.replace("{id}", self.businessItem.Id), {
@@ -153,10 +161,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = redirectUrl || window.urls.getBusinessItems;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 

@@ -33,17 +33,20 @@
                             return wp.ProcedureId === negativeId;
                         }));
                 });
-            });            
+            });
 
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete this work package preceding?";
+            self.isBeingSaved = ko.observable(false);
 
             self.canSave = ko.computed(function () {
                 return (self.workPackagedIsFollowedById() !== null) &&
-                    (self.workPackagedIsPrecededById() !== null);
+                    (self.workPackagedIsPrecededById() !== null) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.save = function () {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.workPackagedPreceding.Id)))
                     $.ajax(window.urls.addWorkPackagedPreceding, {
                         method: "POST",
@@ -55,10 +58,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showWorkPackagedPrecedings;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateWorkPackagedPreceding.replace("{id}", self.workPackagedPreceding.Id), {
@@ -71,10 +77,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showWorkPackagedPrecedings;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 

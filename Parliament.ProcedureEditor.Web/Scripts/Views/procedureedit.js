@@ -15,12 +15,15 @@
             self.procedureName = ko.observable(self.procedure.ProcedureName || "");
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.procedure.TripleStoreId + " procedure?";
+            self.isBeingSaved = ko.observable(false);
 
             self.canSave = ko.computed(function () {
-                return self.procedureName().length > 0;
+                return (self.procedureName().length > 0) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.save = function () {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.procedure.Id)))
                     $.ajax(window.urls.addProcedure, {
                         method: "POST",
@@ -31,10 +34,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showProcedures;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateProcedure.replace("{id}", self.procedure.Id), {
@@ -46,10 +52,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showProcedures;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 

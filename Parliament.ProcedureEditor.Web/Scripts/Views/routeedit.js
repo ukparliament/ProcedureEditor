@@ -21,6 +21,7 @@
             self.procedureRouteTypeId = ko.observable(self.route.ProcedureRouteTypeId);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.route.TripleStoreId + " route?";
+            self.isBeingSaved = ko.observable(false);
             self.procedures = ko.observableArray([]);
             self.routeTypes = ko.observableArray([]);
             self.steps = ko.observableArray([]);
@@ -45,7 +46,8 @@
                 return (self.procedureId() !== null) && (self.procedureId() > 0) &&
                     (self.fromProcedureStepId() !== null) && (self.fromProcedureStepId() > 0) &&
                     (self.toProcedureStepId() !== null) && (self.toProcedureStepId() > 0) &&
-                    (self.procedureRouteTypeId() !== null) && (self.procedureRouteTypeId() > 0);
+                    (self.procedureRouteTypeId() !== null) && (self.procedureRouteTypeId() > 0) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.saveAndReturnToProcedure = function () {
@@ -53,6 +55,7 @@
             };
 
             self.save = function (redirectUrl) {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.route.Id)))
                     $.ajax(window.urls.addRoute, {
                         method: "POST",
@@ -66,10 +69,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = redirectUrl || window.urls.showRoutes;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateRoute.replace("{id}", self.route.Id), {
@@ -84,10 +90,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = redirectUrl || window.urls.showRoutes;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 

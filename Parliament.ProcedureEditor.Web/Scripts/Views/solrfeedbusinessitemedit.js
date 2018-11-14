@@ -14,6 +14,7 @@
             self.isStartedBusinessItemAllowed = ko.observable(true);
             self.isNotValidResponse = ko.observable(false);
             self.warningText = "Are you sure you wish to delete '" + statutoryInstrument.Title + "' record?";
+            self.isBeingSaved = ko.observable(false);
             self.isDeletePopupVisible = ko.observable(false);
 
             self.assignSteps = function (steps, procedureTripleStoreId) {
@@ -114,7 +115,12 @@
                 self.isDeletePopupVisible(true);
             };
 
+            self.canSave = ko.computed(function () {
+                return self.isBeingSaved() === false;
+            });
+
             self.save = function () {
+                self.isBeingSaved(true);
                 var bis = [{
                     WebLink: self.webLink(),
                     ProcedureWorkPackageId: workPackageId,
@@ -152,10 +158,13 @@
                 }).done(function (data) {
                     if (data === true)
                         window.location = window.urls.showSolrBusinessItems;
-                    else
+                    else {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
+                    }
                 }).fail(function () {
                     self.isNotValidResponse(true);
+                    self.isBeingSaved(false);
                 });
             };
 

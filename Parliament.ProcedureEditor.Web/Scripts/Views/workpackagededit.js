@@ -46,6 +46,7 @@
 
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.workPackaged.TripleStoreId + " work package?";
+            self.isBeingSaved = ko.observable(false);
 
             self.isStatutoryInstrument = ko.computed(function () {
                 return self.procedureId() !== self.proposedNegativeStatutoryInstrumentId();
@@ -53,10 +54,13 @@
 
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
-                    (self.procedureId() !== null) && (self.isStatutoryInstrument() !== null);
+                    (self.procedureId() !== null) &&
+                    (self.isStatutoryInstrument() !== null) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.save = function () {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.workPackaged.Id)))
                     $.ajax(window.urls.addWorkPackaged, {
                         method: "POST",
@@ -76,10 +80,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showWorkPackagedList;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateWorkPackaged.replace("{id}", self.workPackaged.Id), {
@@ -100,10 +107,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showWorkPackagedList;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 

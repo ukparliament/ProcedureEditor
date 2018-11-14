@@ -17,6 +17,7 @@
             self.procedureId = ko.observable(null);
             self.isNotValidResponse = ko.observable(false);
             self.warningText = "Are you sure you wish to delete '" + statutoryInstrument.Title + "' record?";
+            self.isBeingSaved = ko.observable(false);
             self.isDeletePopupVisible = ko.observable(false);
             self.proposedNegativeStatutoryInstrumentId = ko.observable(null);
 
@@ -56,10 +57,12 @@
 
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
-                    (self.procedureId() !== null);
+                    (self.procedureId() !== null) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.save = function () {
+                self.isBeingSaved(true);
                 $.ajax(window.urls.addSolrStatutoryInstrument.replace("{id}", self.statutoryInstrument.Id), {
                     method: "POST",
                     dataType: "json",
@@ -78,10 +81,13 @@
                 }).done(function (data) {
                     if (data === true)
                         window.location = window.urls.showSolrStatutoryInstruments;
-                    else
+                    else {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
+                    }
                 }).fail(function () {
                     self.isNotValidResponse(true);
+                    self.isBeingSaved(false);
                 });
             };
 

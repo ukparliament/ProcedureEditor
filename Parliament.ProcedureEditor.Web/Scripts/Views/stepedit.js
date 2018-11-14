@@ -19,6 +19,7 @@
             self.selectedHouses = ko.observableArray(self.step.Houses);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.step.TripleStoreId + " step?";
+            self.isBeingSaved = ko.observable(false);
             self.houses = ko.observableArray();
 
             $.getJSON(window.urls.getHouses, function (data) {
@@ -26,10 +27,12 @@
             });
 
             self.canSave = ko.computed(function () {
-                return self.procedureStepName().length > 0;
+                return (self.procedureStepName().length > 0) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.save = function () {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.step.Id)))
                     $.ajax(window.urls.addStep, {
                         method: "POST",
@@ -42,10 +45,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showSteps;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateStep.replace("{id}", self.step.Id), {
@@ -59,10 +65,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showSteps;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 

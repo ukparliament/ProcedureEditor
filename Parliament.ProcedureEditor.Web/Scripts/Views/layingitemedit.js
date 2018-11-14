@@ -14,6 +14,7 @@
             self.layingDate = ko.observable(self.layingItem.LayingDate);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.layingItem.TripleStoreId + " business item?";
+            self.isBeingSaved = ko.observable(false);
             self.searchLayingBodyText = ko.observable("");
             self.businessItems = ko.observableArray([]);
             self.workPackagedList = ko.observableArray([]);
@@ -38,10 +39,14 @@
             });
 
             self.canSave = ko.computed(function () {
-                return (self.businessItem() !== null) && (self.businessItem().Id > 0) && (self.businessItem().ProcedureWorkPackageId > 0);
+                return (self.businessItem() !== null) &&
+                    (self.businessItem().Id > 0) &&
+                    (self.businessItem().ProcedureWorkPackageId > 0) &&
+                    (self.isBeingSaved() === false);
             });
 
             self.save = function () {
+                self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.layingItem.Id)))
                     $.ajax(window.urls.addLayingItem, {
                         method: "POST",
@@ -55,10 +60,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showLayingItems;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
                 else
                     $.ajax(window.urls.updateLayingItem.replace("{id}", self.layingItem.Id), {
@@ -73,10 +81,13 @@
                     }).done(function (data) {
                         if (data === true)
                             window.location = window.urls.showLayingItems;
-                        else
+                        else {
                             self.isNotValidResponse(true);
+                            self.isBeingSaved(false);
+                        }
                     }).fail(function () {
                         self.isNotValidResponse(true);
+                        self.isBeingSaved(false);
                     });
             };
 
