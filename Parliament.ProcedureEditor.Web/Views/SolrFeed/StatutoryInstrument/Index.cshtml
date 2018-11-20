@@ -6,13 +6,13 @@
     <div class="container">
         <h2 data-bind="visible: statutoryInstruments().length>0" style="display:none">Data imported from Solr</h2>
         <h2 data-bind="visible: statutoryInstruments().length===0" style="display:none">No data imported from Solr</h2>
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
     </div>
 </section>
 
 <section>
     <div class="container">
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <ul class="list-group list-group-flush" data-bind="foreach: statutoryInstruments">
             <li class="list-group-item">
                 <h5 data-bind="text: Title"></h5>

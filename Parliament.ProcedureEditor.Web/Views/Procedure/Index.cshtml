@@ -12,7 +12,8 @@
 
 <section>
     <div class="container">
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h6 class="text-muted">Procedure can be deleted only if its Route and Work Package are deleted first.</h6>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <ul class="list-group list-group-flush" data-bind="foreach: procedures">
             <li class="list-group-item">
                 <h5 data-bind="text: ProcedureName"></h5>

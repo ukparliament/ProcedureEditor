@@ -5,13 +5,14 @@
 <section>
     <div class="container">
         <h2>Business items</h2>
-        <a href="/BusinessItem/Add" class="btn btn-outline-primary btn-sm">Add business item</a>
+        <a href="/BusinessItem/Add" class="btn btn-outline-primary btn-sm">Add business item</a>        
     </div>
 </section>
 
 <section>
     <div class="container">
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h6 class="text-muted">Business item can be deleted only if its Laying is deleted first.</h6>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <ul class="list-group list-group-flush" data-bind="visible:businessItems().length>0, foreach: businessItems">
             <li class="list-group-item">
                 <business-item-list-item params="businessItem: $data"></business-item-list-item>

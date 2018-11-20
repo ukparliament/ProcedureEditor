@@ -11,7 +11,8 @@
 
 <section>
     <div class="container">
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h6 class="text-muted">Work package can be deleted only if its Business Item and Work Package Preceding are deleted first.</h6>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <ul class="list-group list-group-flush" data-bind="visible:workPackagedList().length>0, foreach: workPackagedList">
             <li class="list-group-item">
                 <work-packaged-list-item params="workPackaged: $data"></work-packaged-list-item>

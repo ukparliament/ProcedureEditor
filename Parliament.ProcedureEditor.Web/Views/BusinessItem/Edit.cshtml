@@ -21,7 +21,7 @@
 
 <section>
     <div class="container">
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <form>
             <div class="form-group">
                 <label>Work package*</label>
@@ -54,14 +54,18 @@
                     <input type="text" class="form-control form-control-md" data-bind="textInput: businessItem.TripleStoreId" readonly />
                 </div>
             }
-                <section>
-                    <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave, click: function(){save(null);}">@(Model.BusinessItemId.HasValue ? "Update" : "Add")</button>
-                    <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave, visible: workPackageIds().length===1, click: saveAndReturnToWorkPackaged">@(Model.BusinessItemId.HasValue ? "Update and return to work package" : "Add and return to work package")</button>
-                    @if (Model.BusinessItemId.HasValue)
-                    {
-                        <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
-                    }
-                </section>
+            @if (Model.BusinessItemId.HasValue)
+            {
+                <h6 class="text-muted">Business item can be deleted only if its Laying is deleted first.</h6>
+            }
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave, click: function(){save(null);}">@(Model.BusinessItemId.HasValue ? "Update" : "Add")</button>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave, visible: workPackageIds().length===1, click: saveAndReturnToWorkPackaged">@(Model.BusinessItemId.HasValue ? "Update and return to work package" : "Add and return to work package")</button>
+                @if (Model.BusinessItemId.HasValue)
+                {
+                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                }
+            </section>
         </form>
     </div>
 </section>

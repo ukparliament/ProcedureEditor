@@ -20,7 +20,7 @@
 
 <section>
     <div class="container">
-        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong. Please contact support.</h5>
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <form data-bind="submit: save">
             <div class="form-group">
                 <label>Name*</label>
@@ -45,6 +45,10 @@
                     <label>Id</label>
                     <input type="text" class="form-control form-control-md" data-bind="textInput: step.TripleStoreId" readonly />
                 </div>
+            }
+            @if (Model.HasValue)
+            {
+                <h6 class="text-muted">Step can be deleted only if its Route and Business Item are deleted first.</h6>
             }
             <section>
                 <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
