@@ -21,7 +21,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("procedure", ContentType.JSON)]
         public List<Procedure> Get()
         {
-            CommandDefinition command = new CommandDefinition("select Id, TripleStoreId, ProcedureName from [Procedure]");
+            CommandDefinition command = new CommandDefinition("select Id, TripleStoreId, ProcedureName, ProcedureDescription from [Procedure]");
             return GetItems<Procedure>(command);
         }
 
@@ -36,7 +36,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("procedure/{id:int}", ContentType.JSON)]
         public Procedure Get(int id)
         {
-            CommandDefinition command = new CommandDefinition("select Id, TripleStoreId, ProcedureName from [Procedure] where Id=@Id", new { Id = id });
+            CommandDefinition command = new CommandDefinition("select Id, TripleStoreId, ProcedureName, ProcedureDescription from [Procedure] where Id=@Id", new { Id = id });
             return GetItem<Procedure>(command);
         }
 
@@ -62,12 +62,14 @@ namespace Parliament.ProcedureEditor.Web.Api
                 return false;
             CommandDefinition command = new CommandDefinition(@"update [Procedure]
                 set ProcedureName=@ProcedureName,
+                    ProcedureDescription=@ProcedureDescription,
                     ModifiedBy=@ModifiedBy,
                     ModifiedAt=@ModifiedAt
                 where Id=@Id",
                 new
                 {
                     ProcedureName = procedure.ProcedureName.Trim(),
+                    ProcedureDescription = procedure.ProcedureDescription,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
@@ -84,12 +86,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             string tripleStoreId = GetTripleStoreId();
             if (string.IsNullOrWhiteSpace(tripleStoreId))
                 return false;
-            CommandDefinition command = new CommandDefinition(@"insert into [Procedure] (TripleStoreId, ProcedureName, ModifiedBy, ModifiedAt)
-                values (@TripleStoreId, @ProcedureName, @ModifiedBy, @ModifiedAt)",
+            CommandDefinition command = new CommandDefinition(@"insert into [Procedure] (TripleStoreId, ProcedureName, ProcedureDescription, ModifiedBy, ModifiedAt)
+                values (@TripleStoreId, @ProcedureName, @ProcedureDescription, @ModifiedBy, @ModifiedAt)",
                 new
                 {
                     TripleStoreId = tripleStoreId,
                     ProcedureName = procedure.ProcedureName.Trim(),
+                    ProcedureDescription = procedure.ProcedureDescription,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTime.UtcNow
                 });

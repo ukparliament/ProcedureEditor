@@ -6,13 +6,15 @@
                 self.procedure = {
                     Id: null,
                     TripleStoreId: null,
-                    ProcedureName: null
+                    ProcedureName: null,
+                    ProcedureDescription: null
                 };
             else
                 self.procedure = procedure;
 
             self.isNotValidResponse = ko.observable(false);
             self.procedureName = ko.observable(self.procedure.ProcedureName || "");
+            self.procedureDescription = ko.observable(self.procedure.ProcedureDescription || "");
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.procedure.TripleStoreId + " procedure?";
             self.isBeingSaved = ko.observable(false);
@@ -29,7 +31,8 @@
                         method: "POST",
                         dataType: "json",
                         data: {
-                            ProcedureName: self.procedureName()
+                            ProcedureName: self.procedureName(),
+                            ProcedureDescription: self.procedureDescription()
                         }
                     }).done(function (data) {
                         if (data === true)
@@ -47,7 +50,8 @@
                         method: "PUT",
                         dataType: "json",
                         data: {
-                            ProcedureName: self.procedureName()
+                            ProcedureName: self.procedureName(),
+                            ProcedureDescription: self.procedureDescription()
                         }
                     }).done(function (data) {
                         if (data === true)

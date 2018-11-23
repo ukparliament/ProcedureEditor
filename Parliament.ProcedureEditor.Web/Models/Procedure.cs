@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public string TripleStoreId { get; set; }
         public string ProcedureName { get; set; }
+        public string ProcedureDescription { get; set; }
     }
 }
