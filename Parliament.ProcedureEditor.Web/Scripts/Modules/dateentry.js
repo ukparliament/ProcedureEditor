@@ -31,7 +31,6 @@
             }            
 
             self.checkDate = ko.computed(function () {
-                console.log("checkDate");
                 var dateTxt = self.dateToString() + "T00:00:00+" + timeZoneOffset;
                 if (isNaN(Date.parse(dateTxt)) === false) {
                     self.date(dateTxt);
@@ -44,7 +43,6 @@
             });
 
             self.checkDateInput = ko.computed(function () {
-                console.log("checkDateInput");
                 var dateTxt = self.dateInput() + "T00:00:00+" + timeZoneOffset;
                 if (isNaN(Date.parse(dateTxt)) === false) {
                     self.date(dateTxt);

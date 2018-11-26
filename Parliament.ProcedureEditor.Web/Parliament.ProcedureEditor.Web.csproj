@@ -150,6 +150,7 @@
     <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\Modules\businessitemlistitem.js" />
+    <Content Include="Scripts\Modules\procedureselector.js" />
     <Content Include="Scripts\Modules\stepselector.js" />
     <Content Include="Scripts\Modules\routelistitem.js" />
     <Content Include="Scripts\Modules\workpackagedlistitem.js" />
@@ -214,6 +215,7 @@
     <Compile Include="Api\Configuration\ContentNegotiationAttribute.cs" />
     <Compile Include="Controllers\MvcController.cs" />
     <Compile Include="Models\BusinessItemSolrEditModel.cs" />
+    <Compile Include="Models\RouteProcedure.cs" />
     <Compile Include="Models\LayingItemEditParameters.cs" />
     <Compile Include="Models\StepSearchParameters.cs" />
     <Compile Include="Models\LayingItem.cs" />
@@ -284,6 +286,7 @@
     <Content Include="Views\Shared\LayingBodySelector.cshtml" />
     <Content Include="Views\SolrFeed\BusinessItem\Edit.cshtml" />
     <Content Include="Views\SolrFeed\StatutoryInstrument\Index.cshtml" />
+    <Content Include="Views\Shared\ProcedureSelector.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

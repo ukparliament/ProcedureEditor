@@ -7,7 +7,6 @@
 <input id="routeId" type="hidden" value="@Model" />
 <section>
     <div class="container">
-        <h2>Procedure: <span data-bind="text: route().ProcedureName"></span></h2>
         <h3 data-bind="text: route().FromProcedureStepName"></h3>
         <ul class="list-inline" data-bind="foreach: route().FromProcedureStepHouseNames">
             <li class="list-inline-item"><h4><small data-bind="text: $data"></small></h4></li>

@@ -6,7 +6,7 @@
                 self.route = {
                     Id: null,
                     TripleStoreId: null,
-                    ProcedureId: null,
+                    Procedures: [],
                     FromProcedureStepId: null,
                     ToProcedureStepId: null,
                     ProcedureRouteTypeId: null
@@ -15,7 +15,6 @@
                 self.route = route;
 
             self.isNotValidResponse = ko.observable(false);
-            self.procedureId = ko.observable(self.route.ProcedureId);
             self.fromProcedureStepId = ko.observable(self.route.FromProcedureStepId);
             self.toProcedureStepId = ko.observable(self.route.ToProcedureStepId);
             self.procedureRouteTypeId = ko.observable(self.route.ProcedureRouteTypeId);
@@ -29,6 +28,20 @@
             self.searchToStepText = ko.observable("");
             self.fromProcedureStepName = ko.observable("");
             self.toProcedureStepName = ko.observable("");
+            self.procedureList = ko.observableArray([]);
+            if (self.route.Procedures !== null)
+                self.route.Procedures.forEach(function (val) {
+                    self.procedures.push({
+                        Id: ko.observable(val)
+                    });
+                });
+            self.procedures.push({
+                Id: ko.observable(null)
+            });
+
+            $.getJSON(window.urls.getProcedures, function (data) {
+                self.procedureList(data);
+            });
 
             $.getJSON(window.urls.getRouteTypes, function (data) {
                 self.routeTypes(data);
@@ -38,12 +51,28 @@
                 self.steps(data);
             });
 
-            $.getJSON(window.urls.getProcedures, function (data) {
-                self.procedures(data);
+            self.removeProcedure = function (procedureId) {
+                self.procedures.remove(function (val) {
+                    return val.Id() === null;
+                });
+                self.procedures.push({ Id: ko.observable(null) });
+            };
+
+            self.addProcedure = function (procedure) {
+                self.procedures.push({ Id: ko.observable(null) });
+            };
+
+            self.routeProcedures = ko.pureComputed(function () {
+                return self.procedures().filter(function (itm) {
+                    return itm.Id() !== null;
+                })
+                    .map(function (itm) {
+                        return itm.Id();
+                    });
             });
 
             self.canSave = ko.computed(function () {
-                return (self.procedureId() !== null) && (self.procedureId() > 0) &&
+                return (self.routeProcedures().length > 0) &&
                     (self.fromProcedureStepId() !== null) && (self.fromProcedureStepId() > 0) &&
                     (self.toProcedureStepId() !== null) && (self.toProcedureStepId() > 0) &&
                     (self.procedureRouteTypeId() !== null) && (self.procedureRouteTypeId() > 0) &&
@@ -51,7 +80,7 @@
             });
 
             self.saveAndReturnToProcedure = function () {
-                self.save(window.urls.showProcedure.replace("{id}", self.procedureId()));
+                self.save(window.urls.showProcedure.replace("{id}", self.routeProcedures()[0]));
             };
 
             self.save = function (redirectUrl) {
@@ -61,10 +90,10 @@
                         method: "POST",
                         dataType: "json",
                         data: {
-                            ProcedureId: self.procedureId(),
                             FromProcedureStepId: self.fromProcedureStepId(),
                             ToProcedureStepId: self.toProcedureStepId(),
-                            ProcedureRouteTypeId: self.procedureRouteTypeId()
+                            ProcedureRouteTypeId: self.procedureRouteTypeId(),
+                            Procedures: self.routeProcedures()
                         }
                     }).done(function (data) {
                         if (data === true)
@@ -82,10 +111,10 @@
                         method: "PUT",
                         dataType: "json",
                         data: {
-                            ProcedureId: self.procedureId(),
                             FromProcedureStepId: self.fromProcedureStepId(),
                             ToProcedureStepId: self.toProcedureStepId(),
-                            ProcedureRouteTypeId: self.procedureRouteTypeId()
+                            ProcedureRouteTypeId: self.procedureRouteTypeId(),
+                            Procedures: self.routeProcedures()
                         }
                     }).done(function (data) {
                         if (data === true)

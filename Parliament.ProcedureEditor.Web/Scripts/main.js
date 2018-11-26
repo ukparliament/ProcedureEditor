@@ -103,4 +103,5 @@ define(["knockout", "jquery"], function (ko, $) {
     ko.components.register("business-item-list-item", { require: '/Scripts/Modules/businessitemlistitem.js' });
     ko.components.register("business-item-selector", { require: '/Scripts/Modules/businessitemselector.js' });    
     ko.components.register("laying-body-selector", { require: '/Scripts/Modules/layingbodyselector.js' });    
+    ko.components.register("procedure-selector", { require: '/Scripts/Modules/procedureselector.js' });    
 });

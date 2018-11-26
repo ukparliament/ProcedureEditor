@@ -15,35 +15,39 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route", ContentType.JSON)]
         public List<Route> SearchByProcedure(int procedureId)
         {
-            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
+            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
-                p.ProcedureName, rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
+                rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
                 ts.ProcedureStepName as ToProcedureStepName from ProcedureRoute r
-                join [Procedure] p on p.Id=r.ProcedureId
-                join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
+                join ProcedureRouteProcedure rp on rp.ProcedureRouteId=r.Id
+				join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId
-                where r.ProcedureId=@Id;
+                where rp.ProcedureId=@Id;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
                 join ProcedureRoute r on r.FromProcedureStepId=h.ProcedureStepId or r.ToProcedureStepId=h.ProcedureStepId
-                join [Procedure] p on p.Id=r.ProcedureId
-                where r.ProcedureId=@Id
+                join ProcedureRouteProcedure rp on rp.ProcedureRouteId=r.Id
+                where rp.ProcedureId=@Id
                 group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName",
                 new { Id = procedureId });
             Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
 
             tuple.Item1
-                .ForEach(r => r.FromProcedureStepHouseNames = tuple.Item2
-                    .Where(h => h.ProcedureStepId == r.FromProcedureStepId)
-                    .Select(h => h.HouseName)
-                    .ToList());
+                .ForEach(r =>
+                    r.FromProcedureStepHouseNames = tuple.Item2
+                        .Where(h => h.ProcedureStepId == r.FromProcedureStepId)
+                        .Select(h => h.HouseName)
+                        .ToList());
 
             tuple.Item1
                 .ForEach(r => r.ToProcedureStepHouseNames = tuple.Item2
                     .Where(h => h.ProcedureStepId == r.ToProcedureStepId)
                     .Select(h => h.HouseName)
                     .ToList());
+
+            tuple.Item1
+                .ForEach(r => r.Procedures = new int[] { procedureId });
 
             return tuple.Item1;
         }
@@ -52,11 +56,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route", ContentType.JSON)]
         public List<Route> SearchByStep(int stepId)
         {
-            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
+            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
-                p.ProcedureName, rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
+                rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
                 ts.ProcedureStepName as ToProcedureStepName from ProcedureRoute r
-                join [Procedure] p on p.Id=r.ProcedureId
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId
@@ -64,9 +67,12 @@ namespace Parliament.ProcedureEditor.Web.Api
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
                 where h.ProcedureStepId=@StepId
-                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName",
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName;
+                select rp.Id, rp.ProcedureRouteId, rp.ProcedureId from ProcedureRoute r
+                join ProcedureRouteProcedure rp on rp.ProcedureRouteId=r.Id
+                where ((r.FromProcedureStepId=@StepId) or (r.ToProcedureStepId=@StepId))",
                 new { StepId = stepId });
-            Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
+            Tuple<List<Route>, List<StepHouse>, List<RouteProcedure>> tuple = GetItems<Route, StepHouse, RouteProcedure>(command);
 
             tuple.Item1
                 .ForEach(r => r.FromProcedureStepHouseNames = tuple.Item2
@@ -78,6 +84,12 @@ namespace Parliament.ProcedureEditor.Web.Api
                 .ForEach(r => r.ToProcedureStepHouseNames = tuple.Item2
                     .Where(h => h.ProcedureStepId == r.ToProcedureStepId)
                     .Select(h => h.HouseName)
+                    .ToList());
+
+            tuple.Item1
+                .ForEach(r => r.Procedures = tuple.Item3
+                    .Where(rp=>rp.ProcedureRouteId==r.Id)
+                    .Select(rp=>rp.ProcedureId)
                     .ToList());
 
             return tuple.Item1;
@@ -94,18 +106,19 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route", ContentType.JSON)]
         public List<Route> Get()
         {
-            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
+            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
-                p.ProcedureName, rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
+                rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
                 ts.ProcedureStepName as ToProcedureStepName from ProcedureRoute r
-                join [Procedure] p on p.Id=r.ProcedureId
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
-                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName");
-            Tuple<List<Route>, List<StepHouse>> tuple = GetItems<Route, StepHouse>(command);
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName;
+                select rp.Id, rp.ProcedureRouteId, rp.ProcedureId from ProcedureRoute r
+                join ProcedureRouteProcedure rp on rp.ProcedureRouteId=r.Id");
+            Tuple<List<Route>, List<StepHouse>, List<RouteProcedure>> tuple = GetItems<Route, StepHouse, RouteProcedure>(command);
 
             tuple.Item1
                 .ForEach(r => r.FromProcedureStepHouseNames = tuple.Item2
@@ -117,6 +130,12 @@ namespace Parliament.ProcedureEditor.Web.Api
                 .ForEach(r => r.ToProcedureStepHouseNames = tuple.Item2
                     .Where(h => h.ProcedureStepId == r.ToProcedureStepId)
                     .Select(h => h.HouseName)
+                    .ToList());
+
+            tuple.Item1
+                .ForEach(r => r.Procedures = tuple.Item3
+                    .Where(rp => rp.ProcedureRouteId == r.Id)
+                    .Select(rp => rp.ProcedureId)
                     .ToList());
 
             return tuple.Item1;
@@ -133,11 +152,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public Route Get(int id)
         {
-            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId, r.ProcedureId,
+            CommandDefinition command = new CommandDefinition(@"select r.Id, r.TripleStoreId,
                 r.FromProcedureStepId, r.ToProcedureStepId, r.ProcedureRouteTypeId,
-                p.ProcedureName, rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
+                rt.ProcedureRouteTypeName, fs.ProcedureStepName as FromProcedureStepName,
                 ts.ProcedureStepName as ToProcedureStepName from ProcedureRoute r
-                join [Procedure] p on p.Id=r.ProcedureId
                 join ProcedureRouteType rt on rt.Id=r.ProcedureRouteTypeId
                 join ProcedureStep fs on fs.Id=r.FromProcedureStepId
                 join ProcedureStep ts on ts.Id=r.ToProcedureStepId
@@ -146,9 +164,12 @@ namespace Parliament.ProcedureEditor.Web.Api
                 join House hh on hh.Id=h.HouseId
                 join ProcedureRoute r on r.FromProcedureStepId=h.ProcedureStepId or r.ToProcedureStepId=h.ProcedureStepId
                 where r.Id=@Id
-                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName",
+                group by h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName;
+                select rp.Id, rp.ProcedureRouteId, rp.ProcedureId from ProcedureRoute r
+                join ProcedureRouteProcedure rp on rp.ProcedureRouteId=r.Id
+                where r.Id=@Id",
                 new { Id = id });
-            Tuple<Route, List<StepHouse>> tuple = GetItem<Route, StepHouse>(command);
+            Tuple<Route, List<StepHouse>, List<RouteProcedure>> tuple = GetItem<Route, StepHouse, RouteProcedure>(command);
 
             tuple.Item1.FromProcedureStepHouseNames = tuple.Item2
                     .Where(h => h.ProcedureStepId == tuple.Item1.FromProcedureStepId)
@@ -158,6 +179,11 @@ namespace Parliament.ProcedureEditor.Web.Api
             tuple.Item1.ToProcedureStepHouseNames = tuple.Item2
                     .Where(h => h.ProcedureStepId == tuple.Item1.ToProcedureStepId)
                     .Select(h => h.HouseName)
+                    .ToList();
+
+            tuple.Item1.Procedures = tuple.Item3
+                    .Where(rp => rp.ProcedureRouteId == tuple.Item1.Id)
+                    .Select(rp => rp.ProcedureId)
                     .ToList();
 
             return tuple.Item1;
@@ -181,13 +207,13 @@ namespace Parliament.ProcedureEditor.Web.Api
         [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public bool Put(int id, [FromBody]Route route)
         {
-            if ((route == null) || (route.ProcedureId == 0) ||
+            if ((route == null) || (route.Procedures == null) ||
                 (route.FromProcedureStepId == 0) || (route.ToProcedureStepId == 0) ||
                 (route.ProcedureRouteTypeId == 0))
                 return false;
-            CommandDefinition command = new CommandDefinition(@"update ProcedureRoute
-                set ProcedureId=@ProcedureId,
-                    FromProcedureStepId=@FromProcedureStepId, 
+            List<CommandDefinition> updates = new List<CommandDefinition>();
+            updates.Add(new CommandDefinition(@"update ProcedureRoute
+                set FromProcedureStepId=@FromProcedureStepId, 
                     ToProcedureStepId=@ToProcedureStepId, 
                     ProcedureRouteTypeId=@ProcedureRouteTypeId,
                     ModifiedBy=@ModifiedBy,
@@ -195,52 +221,71 @@ namespace Parliament.ProcedureEditor.Web.Api
                 where Id=@Id",
                 new
                 {
-                    ProcedureId = route.ProcedureId,
                     FromProcedureStepId = route.FromProcedureStepId,
                     ToProcedureStepId = route.ToProcedureStepId,
                     ProcedureRouteTypeId = route.ProcedureRouteTypeId,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
-                });
-            return Execute(command);
+                }));
+            updates.Add(new CommandDefinition(@"delete from ProcedureRouteProcedure where ProcedureRouteId=@Id",
+                new { Id = id }));
+            updates.AddRange(route.Procedures.Select(p => new CommandDefinition(@"insert into ProcedureRouteProcedure
+                    (ProcedureRouteId, ProcedureId)
+                    values (@Id, @ProcedureId)",
+                        new
+                        {
+                            Id = id,
+                            ProcedureId = p
+                        })));
+            return Execute(updates.ToArray());
         }
 
         [HttpPost]
         [ContentNegotiation("route", ContentType.JSON)]
         public bool Post([FromBody]Route route)
         {
-            if ((route == null) || (route.ProcedureId == 0) ||
+            if ((route == null) || (route.Procedures == null) ||
                 (route.FromProcedureStepId == 0) || (route.ToProcedureStepId == 0) ||
                 (route.ProcedureRouteTypeId == 0))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             if (string.IsNullOrWhiteSpace(tripleStoreId))
                 return false;
-            CommandDefinition command = new CommandDefinition(@"insert into ProcedureRoute
-                (ProcedureId, FromProcedureStepId, ToProcedureStepId, ProcedureRouteTypeId,
+            List<CommandDefinition> commands = new List<CommandDefinition>();
+            commands.Add(new CommandDefinition(@"insert into ProcedureRoute
+                (FromProcedureStepId, ToProcedureStepId, ProcedureRouteTypeId,
                     ModifiedBy,ModifiedAt,TripleStoreId)
-                values(@ProcedureId, @FromProcedureStepId, @ToProcedureStepId, @ProcedureRouteTypeId,
+                values(@FromProcedureStepId, @ToProcedureStepId, @ProcedureRouteTypeId,
                     @ModifiedBy,@ModifiedAt,@TripleStoreId)",
                 new
                 {
-                    ProcedureId = route.ProcedureId,
                     FromProcedureStepId = route.FromProcedureStepId,
                     ToProcedureStepId = route.ToProcedureStepId,
                     ProcedureRouteTypeId = route.ProcedureRouteTypeId,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     TripleStoreId = tripleStoreId
-                });
-            return Execute(command);
+                }));
+            commands.AddRange(route.Procedures.Select(p => new CommandDefinition(@"insert into ProcedureRouteProcedure
+                    (ProcedureRouteId, ProcedureId)
+                    select Id, @ProcedureId from ProcedureRoute where TripleStoreId=@TripleStoreId",
+                            new
+                            {
+                                TripleStoreId = tripleStoreId,
+                                ProcedureId = p
+                            })));
+            return Execute(commands.ToArray());
         }
 
         [HttpDelete]
         [ContentNegotiation("route/{id:int}", ContentType.JSON)]
         public bool Delete(int id)
         {
-            CommandDefinition command = new CommandDefinition(@"delete from ProcedureRoute where Id=@Id", new { Id = id });
-            return Execute(command);
+            List<CommandDefinition> commands = new List<CommandDefinition>();
+            commands.Add(new CommandDefinition(@"delete from ProcedureRouteProcedure where ProcedureRouteId=@Id", new { Id = id }));
+            commands.Add(new CommandDefinition(@"delete from ProcedureRoute where Id=@Id", new { Id = id }));
+            return Execute(commands.ToArray());
         }
     }
 

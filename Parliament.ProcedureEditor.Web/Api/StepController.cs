@@ -20,12 +20,14 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from (
 	                select unionsteps.step from (
 		                select wp.Id as wp, s.Id as step from ProcedureWorkPackagedThing wp
-		                join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
+		                join ProcedureRouteProcedure rp on rp.ProcedureId=wp.ProcedureId
+						join ProcedureRoute r on r.Id=rp.ProcedureRouteId
 		                join ProcedureStep s on s.Id=r.FromProcedureStepId
 		                where wp.Id in @ids
 		                union
 		                select wp.Id as wp, s.Id as step from ProcedureWorkPackagedThing wp
-		                join ProcedureRoute r on r.ProcedureId=wp.ProcedureId
+		                join ProcedureRouteProcedure rp on rp.ProcedureId=wp.ProcedureId
+						join ProcedureRoute r on r.Id=rp.ProcedureRouteId
 		                join ProcedureStep s on s.Id=r.ToProcedureStepId
 		                where wp.Id in @ids
 		                group by wp.Id, s.Id) unionsteps
