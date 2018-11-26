@@ -7,7 +7,7 @@ AS
 BEGIN
     SET NOCOUNT ON
 
-	select top 1 Id from ProcedureRoute where ProcedureId=@ProcedureId
+	select top 1 Id from ProcedureRouteProcedure where ProcedureId=@ProcedureId
 	union
 	select top 1 Id from ProcedureWorkPackagedThing where ProcedureId=@ProcedureId
 
