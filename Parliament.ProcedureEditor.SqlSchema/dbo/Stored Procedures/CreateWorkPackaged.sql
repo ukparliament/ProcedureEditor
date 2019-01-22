@@ -4,7 +4,7 @@
 	@WebLink nvarchar(max),
 	@ProcedureWorkPackageTripleStoreId nvarchar(16),
 	@ProcedureId int,
-	@IsStatutoryInstrument bit,
+	@WorkPackagedKind int,
 	@WorkPackagedThingName nvarchar(max),
 	@StatutoryInstrumentNumber int=null,
 	@StatutoryInstrumentNumberPrefix nvarchar(32)=null,
@@ -27,7 +27,7 @@ BEGIN
 	
 	set @id=SCOPE_IDENTITY()
 	
-	if (@IsStatutoryInstrument=1)
+	if (@WorkPackagedKind=1)
 	begin
 		insert into ProcedureStatutoryInstrument (Id, ProcedureStatutoryInstrumentName, StatutoryInstrumentNumber,
 			StatutoryInstrumentNumberPrefix, StatutoryInstrumentNumberYear, ComingIntoForceNote,
@@ -37,10 +37,17 @@ BEGIN
 			@ComingIntoForceDate, @MadeDate)
 	end
 	else
+		if (@WorkPackagedKind=2)
 		begin
 			insert into ProcedureProposedNegativeStatutoryInstrument (Id, ProcedureProposedNegativeStatutoryInstrumentName)
 			values (@id, @WorkPackagedThingName)
 		end
+			else
+				if (@WorkPackagedKind=3)
+				begin
+					insert into ProcedureTreaty (Id, ProcedureTreatyName)
+					values (@id, @WorkPackagedThingName)
+				end
 
 	if (@SolarFeedId is not null)
 	begin

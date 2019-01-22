@@ -39,7 +39,7 @@
                 <label>Link</label>
                 <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
             </div>
-            <div data-bind="visible: isStatutoryInstrument">
+            <div data-bind="visible: workPackagedKind()===1">
                 <div class="form-group">
                     <label>Prefix</label>
                     <input type="text" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberPrefix" />

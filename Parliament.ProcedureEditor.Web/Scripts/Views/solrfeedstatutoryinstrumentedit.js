@@ -76,7 +76,7 @@
                         ComingIntoForceDate: self.comingIntoForceDate(),
                         MadeDate: self.madeDate(),
                         ProcedureId: self.procedureId(),
-                        IsStatutoryInstrument: self.isStatutoryInstrument()
+                        WorkPackagedKind: self.isStatutoryInstrument() ? 1 : 2
                     }
                 }).done(function (data) {
                     if (data === true)

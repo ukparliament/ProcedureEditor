@@ -23,13 +23,14 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select li.Id, li.ProcedureBusinessItemId,
                     li.ProcedureWorkPackagedId, li.LayingDate, li.LayingBodyId, li.PersonTripleStoreId,
 	                lb.LayingBodyName, b.TripleStoreId,
-                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName
+                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
                     from ProcedureLaying li
                 left join LayingBody lb on lb.Id=li.LayingBodyId
                 join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
                 join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
-                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id");
+                left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id");
             return GetItems<LayingItem>(command);
         }
 
@@ -47,13 +48,14 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select li.Id, li.ProcedureBusinessItemId,
                     li.ProcedureWorkPackagedId, li.LayingDate, li.LayingBodyId, li.PersonTripleStoreId,
 	                lb.LayingBodyName, b.TripleStoreId,
-                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName
+                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
                     from ProcedureLaying li
                 left join LayingBody lb on lb.Id=li.LayingBodyId
                 join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
                 join ProcedureWorkPackagedThing wp on wp.Id=li.ProcedureWorkPackagedId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 where li.Id=@Id",
                 new { Id = id });
             return GetItem<LayingItem>(command);

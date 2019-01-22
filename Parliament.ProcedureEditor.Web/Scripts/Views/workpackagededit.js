@@ -2,6 +2,7 @@
     requirejs(["knockout", "jquery"], function (ko, $) {
         var viewModel = function (workPackaged) {
             var self = this;
+
             if (workPackaged === null)
                 self.workPackaged = {
                     Id: null,
@@ -17,8 +18,7 @@
                     ComingIntoForceDate: null,
                     MadeDate: null,
 
-                    WorkPackagedThingName: null,
-                    IsStatutoryInstrument: true
+                    WorkPackagedThingName: null
                 };
             else
                 self.workPackaged = workPackaged;
@@ -33,29 +33,38 @@
             self.comingIntoForceDate = ko.observable(self.workPackaged.ComingIntoForceDate);
             self.madeDate = ko.observable(self.workPackaged.MadeDate);
             self.procedureId = ko.observable(self.workPackaged.ProcedureId);
-            self.proposedNegativeStatutoryInstrumentId = ko.observable(null);
 
             self.procedures = ko.observableArray([]);
+            self.procedureDictionary = ko.observable(null);
             $.getJSON(window.urls.getProcedures, function (data) {
                 self.procedures(data);
                 var procedureDictionary = {};
                 for (i = 0; i < data.length; i++)
-                    procedureDictionary[data[i].TripleStoreId] = data[i].Id;
-                self.proposedNegativeStatutoryInstrumentId(procedureDictionary["iCdMN1MW"]);
+                    procedureDictionary[data[i].Id.toString()] = data[i].TripleStoreId;
+                self.procedureDictionary(procedureDictionary);
+            });
+
+            self.workPackagedKind = ko.computed(function () {
+                if ((self.procedureId() === null) || (self.procedureDictionary()===null))
+                    return 1;
+                var id = self.procedureDictionary()[self.procedureId().toString()];
+                switch (id) {
+                    case "iCdMN1MW":
+                        return 2;
+                    case "HJwc3Jpp":
+                        return 3;
+                    default:
+                        return 1;
+                }
             });
 
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.workPackaged.TripleStoreId + " work package?";
             self.isBeingSaved = ko.observable(false);
 
-            self.isStatutoryInstrument = ko.computed(function () {
-                return self.procedureId() !== self.proposedNegativeStatutoryInstrumentId();
-            });
-
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null) &&
-                    (self.isStatutoryInstrument() !== null) &&
                     (self.isBeingSaved() === false);
             });
 
@@ -75,7 +84,7 @@
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
                             ProcedureId: self.procedureId(),
-                            IsStatutoryInstrument: self.isStatutoryInstrument()
+                            WorkPackagedKind: self.workPackagedKind()
                         }
                     }).done(function (data) {
                         if (data === true)
@@ -101,8 +110,7 @@
                             WebLink: self.webLink(),
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
-                            ProcedureId: self.procedureId(),
-                            IsStatutoryInstrument: self.isStatutoryInstrument()
+                            WorkPackagedKind: self.workPackagedKind()
                         }
                     }).done(function (data) {
                         if (data === true)

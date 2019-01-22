@@ -18,11 +18,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.ProcedureWorkPackageId, b.BusinessItemDate,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where b.ProcedureWorkPackageId=@ProcedureWorkPackageId;
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
@@ -46,11 +47,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.ProcedureWorkPackageId, b.BusinessItemDate,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where exists (select top 1 bs.Id from ProcedureBusinessItemProcedureStep bs where bs.ProcedureBusinessItemId=b.Id and bs.ProcedureStepId=@StepId);
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
@@ -81,11 +83,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.ProcedureWorkPackageId, b.BusinessItemDate,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId;
                 select s.Id, s.ProcedureBusinessItemId, s.ProcedureStepId from ProcedureBusinessItemProcedureStep s
                 join ProcedureBusinessItem b on b.Id=s.ProcedureBusinessItemId");
@@ -113,11 +116,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             CommandDefinition command = new CommandDefinition(@"select b.Id, b.TripleStoreId, b.WebLink,
                 b.ProcedureWorkPackageId, b.BusinessItemDate,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
                 wp.ProcedureId, p.ProcedureName from ProcedureBusinessItem b
                 join ProcedureWorkPackagedThing wp on wp.Id=b.ProcedureWorkPackageId
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where b.Id=@Id;
                 select Id, ProcedureBusinessItemId, ProcedureStepId from ProcedureBusinessItemProcedureStep

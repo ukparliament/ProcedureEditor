@@ -17,12 +17,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
-	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where wp.ProcedureId=@ProcedureId",
                 new { ProcedureId = procedureId });
@@ -43,12 +44,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
-	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId");
             return GetItems<WorkPackaged>(command);
         }
@@ -67,12 +69,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
-	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where wp.Id=@Id",
                 new { Id = id });
@@ -86,12 +89,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select wp.Id, wp.TripleStoreId, wp.WebLink, wp.ProcedureWorkPackageTripleStoreId,
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
-	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as WorkPackagedThingName,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
 	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
+                left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where wp.TripleStoreId=@TripleStoreId",
                 new { TripleStoreId = tripleStoreId });
@@ -137,7 +141,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
                 }));
-            if (workPackaged.IsStatutoryInstrument)
+            if (workPackaged.WorkPackagedKind == WorkPackagedType.StatutoryInstrumentPaper)
                 updates.Add(new CommandDefinition(@"insert into ProcedureStatutoryInstrument
                     (Id, ProcedureStatutoryInstrumentName, StatutoryInstrumentNumber, 
                     StatutoryInstrumentNumberPrefix, StatutoryInstrumentNumberYear,
@@ -155,6 +159,16 @@ namespace Parliament.ProcedureEditor.Web.Api
                         ComingIntoForceNote = workPackaged.ComingIntoForceNote,
                         ComingIntoForceDate = workPackaged.ComingIntoForceDate,
                         MadeDate = workPackaged.MadeDate
+                    }));
+            else
+            if (workPackaged.WorkPackagedKind == WorkPackagedType.Treaty)
+                updates.Add(new CommandDefinition(@"insert into ProcedureTreaty
+                    (Id, ProcedureTreatyName)
+                    values (@Id, @ProcedureTreatyName)",
+                    new
+                    {
+                        Id = id,
+                        ProcedureTreatyName = workPackaged.WorkPackagedThingName.Trim(),
                     }));
             else
                 updates.Add(new CommandDefinition(@"insert into ProcedureProposedNegativeStatutoryInstrument
@@ -186,7 +200,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@WebLink", workPackaged.WebLink);
             parameters.Add("@ProcedureWorkPackageTripleStoreId", workPackageTripleStoreId);
             parameters.Add("@ProcedureId", workPackaged.ProcedureId);
-            parameters.Add("@IsStatutoryInstrument", workPackaged.IsStatutoryInstrument);
+            parameters.Add("@WorkPackagedKind", (int)workPackaged.WorkPackagedKind);
             parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
             parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
             parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);

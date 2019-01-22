@@ -20,6 +20,7 @@ BEGIN
 		begin
 			delete from ProcedureStatutoryInstrument where Id=@WorkPackagedId
 			delete from ProcedureProposedNegativeStatutoryInstrument where Id=@WorkPackagedId
+			delete from ProcedureTreaty where Id=@WorkPackagedId
 			delete from ProcedureWorkPackagedThing where Id=@WorkPackagedId
 			set @IsSuccess=1
 		end

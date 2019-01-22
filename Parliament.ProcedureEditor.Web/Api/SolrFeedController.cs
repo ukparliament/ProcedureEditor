@@ -120,7 +120,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@WebLink", workPackaged.WebLink);
             parameters.Add("@ProcedureWorkPackageTripleStoreId", workPackageTripleStoreId);
             parameters.Add("@ProcedureId", workPackaged.ProcedureId);
-            parameters.Add("@IsStatutoryInstrument", workPackaged.IsStatutoryInstrument);
+            parameters.Add("@WorkPackagedKind", (int)workPackaged.WorkPackagedKind);
             parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
             parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
             parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
