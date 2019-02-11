@@ -94,5 +94,8 @@
     <Build Include="dbo\Stored Procedures\InsertUpdateSolrStatutoryInstrument.sql" />
     <Build Include="dbo\Tables\SolrBusinessItem.sql" />
     <Build Include="dbo\Tables\ProcedureRouteProcedure.sql" />
+    <Build Include="dbo\Tables\SolrTreatyData.sql" />
+    <Build Include="dbo\Tables\ProcedureTreaty.sql" />
+    <Build Include="dbo\Stored Procedures\InsertUpdateSolrTreaty.sql" />
   </ItemGroup>
 </Project>

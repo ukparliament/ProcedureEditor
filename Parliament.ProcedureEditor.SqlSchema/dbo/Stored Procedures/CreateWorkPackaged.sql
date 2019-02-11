@@ -51,9 +51,18 @@ BEGIN
 
 	if (@SolarFeedId is not null)
 	begin
-		update SolrStatutoryInstrumentData
-                set TripleStoreId=@TripleStoreId 
-		where Id=@SolarFeedId
+		if (@WorkPackagedKind=3)
+		begin
+			update SolrTreatyData
+					set TripleStoreId=@TripleStoreId 
+			where Id=@SolarFeedId
+		end
+		else
+			begin
+				update SolrStatutoryInstrumentData
+						set TripleStoreId=@TripleStoreId 
+				where Id=@SolarFeedId
+			end
 	end
 
 END

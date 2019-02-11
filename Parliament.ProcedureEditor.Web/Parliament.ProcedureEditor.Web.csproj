@@ -168,6 +168,8 @@
     <Content Include="Scripts\Views\layingitemedit.js" />
     <Content Include="Scripts\Views\layingitemlist.js" />
     <Content Include="Scripts\Views\layingitemview.js" />
+    <Content Include="Scripts\Views\solrfeedtreatyedit.js" />
+    <Content Include="Scripts\Views\solrfeedtreatylist.js" />
     <Content Include="Scripts\Views\solrfeedstatutoryinstrumentlist.js" />
     <Content Include="Scripts\Views\solrfeedbusinessitemlist.js" />
     <Content Include="Scripts\Views\routeedit.js" />
@@ -217,6 +219,7 @@
     <Compile Include="Models\BusinessItemSolrEditModel.cs" />
     <Compile Include="Models\RouteProcedure.cs" />
     <Compile Include="Models\LayingItemEditParameters.cs" />
+    <Compile Include="Models\SolrTreaty.cs" />
     <Compile Include="Models\StepSearchParameters.cs" />
     <Compile Include="Models\LayingItem.cs" />
     <Compile Include="Models\BusinessItemEditParameters.cs" />
@@ -288,6 +291,8 @@
     <Content Include="Views\SolrFeed\BusinessItem\Edit.cshtml" />
     <Content Include="Views\SolrFeed\StatutoryInstrument\Index.cshtml" />
     <Content Include="Views\Shared\ProcedureSelector.cshtml" />
+    <Content Include="Views\SolrFeed\Treaty\Index.cshtml" />
+    <Content Include="Views\SolrFeed\Treaty\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,0 +1,42 @@
+﻿@model int
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input id="treatyId" type="hidden" value="@Model" />
+<section>
+    <div class="container">
+        <h2>Create work package from treaty</h2>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
+        <form data-bind="submit: save">
+            <div class="form-group">
+                <label>Procedure*</label>
+                <p data-bind="text: procedureName"></p>
+            </div>
+            <div class="form-group">
+                <label>Name*</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: workPackagedThingName" />
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
+            </div>
+            <section>
+                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">Add</button>
+                <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+            </section>
+        </form>
+    </div>
+</section>
+
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteTreaty, actionText: 'Delete'"></popup>
+
+@section scripts{
+    <script data-main="/Scripts/Views/solrfeedtreatyedit.js" src="~/Scripts/require.js"></script>
+}

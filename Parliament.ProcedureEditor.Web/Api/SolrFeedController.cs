@@ -11,6 +11,13 @@ namespace Parliament.ProcedureEditor.Web.Api
     public class SolrFeedController : BaseApiController
     {
         [HttpGet]
+        [ContentNegotiation("solrfeed/treaty", ContentType.HTML)]
+        public IHttpActionResult GetViewTreaty()
+        {
+            return RenderView("Treaty/Index");
+        }
+
+        [HttpGet]
         [ContentNegotiation("solrfeed/statutoryinstrument", ContentType.HTML)]
         public IHttpActionResult GetViewStatutoryInstrument()
         {
@@ -22,6 +29,16 @@ namespace Parliament.ProcedureEditor.Web.Api
         public IHttpActionResult GetViewBusinessItem()
         {
             return RenderView("BusinessItem/Index");
+        }
+
+        [HttpGet]
+        [ContentNegotiation("solrfeed/treaty", ContentType.JSON)]
+        public List<SolrStatutoryInstrument> GetTreaties()
+        {
+            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
+                s.WebUrl from SolrTreatyData s
+                where s.TripleStoreId is null and s.IsDeleted=0");
+            return GetItems<SolrStatutoryInstrument>(command);
         }
 
         [HttpGet]
@@ -53,6 +70,17 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 where s.TripleStoreId is not null and s.IsDeleted=0 and not exists (select 1 from SolrBusinessItem sbi where sbi.SolrStatutoryInstrumentDataId=s.Id)");
             return GetItems<SolrStatutoryInstrument>(command);
+        }
+
+        [HttpGet]
+        [ContentNegotiation("solrfeed/treaty/{id:int}", ContentType.JSON)]
+        public SolrStatutoryInstrument GetTreaty(int id)
+        {
+            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
+                s.WebUrl from SolrTreatyData s
+                where s.TripleStoreId is null and s.IsDeleted=0 and s.Id=@Id",
+                new { Id = id });
+            return GetItem<SolrStatutoryInstrument>(command);
         }
 
         [HttpGet]
@@ -89,6 +117,13 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpGet]
+        [ContentNegotiation("solrfeed/treaty/edit/{id:int}", ContentType.HTML)]
+        public IHttpActionResult GetEditTreaty(int id)
+        {
+            return RenderView("Treaty/Edit", id);
+        }
+
+        [HttpGet]
         [ContentNegotiation("solrfeed/statutoryinstrument/edit/{id:int}", ContentType.HTML)]
         public IHttpActionResult GetEditStatutoryInstrument(int id)
         {
@@ -100,6 +135,34 @@ namespace Parliament.ProcedureEditor.Web.Api
         public IHttpActionResult GetEditBusinessItem(int id)
         {
             return RenderView("BusinessItem/Edit", id);
+        }
+
+        [HttpPost]
+        [ContentNegotiation("solrfeed/treaty/{id:int}", ContentType.JSON)]
+        public bool PostTreaty(int id, [FromBody]WorkPackaged workPackaged)
+        {
+            if ((workPackaged == null) ||
+                (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
+                (workPackaged.ProcedureId == 0))
+                return false;
+            string tripleStoreId = GetTripleStoreId();
+            string workPackageTripleStoreId = GetTripleStoreId();
+            if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
+                (string.IsNullOrWhiteSpace(workPackageTripleStoreId)))
+                return false;
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@TripleStoreId", tripleStoreId);
+            parameters.Add("@WebLink", workPackaged.WebLink);
+            parameters.Add("@ProcedureWorkPackageTripleStoreId", workPackageTripleStoreId);
+            parameters.Add("@ProcedureId", workPackaged.ProcedureId);
+            parameters.Add("@WorkPackagedKind", (int)WorkPackagedType.Treaty);
+            parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
+            parameters.Add("@SolarFeedId", id);
+            parameters.Add("@ModifiedBy", EMail);
+            CommandDefinition command = new CommandDefinition("CreateWorkPackaged",
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure);
+            return Execute(command);
         }
 
         [HttpPost]
@@ -190,6 +253,19 @@ namespace Parliament.ProcedureEditor.Web.Api
             }
 
             return Execute(updates.ToArray());
+        }
+
+        [HttpDelete]
+        [ContentNegotiation("solrfeed/treaty/{id:int}", ContentType.JSON)]
+        public bool DeleteTreaty(int id)
+        {
+            CommandDefinition command = new CommandDefinition(@"update SolrTreatyData
+                set IsDeleted=1 where Id=@id",
+                new { Id = id });
+            if (Execute(command))
+                return true;
+            else
+                return false;
         }
 
         [HttpDelete]

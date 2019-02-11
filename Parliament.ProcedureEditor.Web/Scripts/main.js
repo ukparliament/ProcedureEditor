@@ -77,15 +77,21 @@ var urls = {
     showWorkPackagedPrecedings: "/WorkPackagePreceding",
     showWorkPackagedPreceding: "/WorkPackagePreceding/{id}",
 
+    getSolrTreaties: "/solrfeed/treaty",
     getSolrStatutoryInstruments: "/solrfeed/statutoryinstrument",
     getSolrBusinessItems: "/solrfeed/businessitem",
+    getSolrTreaty: "/solrfeed/treaty/{id}",
     getSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
     getSolrBusinessItem: "/solrfeed/businessitem/{id}",
+    addSolrTreaty: "/solrfeed/treaty/{id}",
     addSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
     addSolrBusinessItem: "/solrfeed/businessitem/{id}",
+    deleteSolrTreaty: "/solrfeed/treaty/{id}",
     deleteSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
+    editSolrTreaty: "/SolrFeed/Treaty/Edit/{id}",
     editSolrStatutoryInstrument: "/SolrFeed/StatutoryInstrument/Edit/{id}",
     editSolrBusinessItem: "/SolrFeed/BusinessItem/Edit/{id}",
+    showSolrTreaties: "/SolrFeed/Treaty",
     showSolrStatutoryInstruments: "/SolrFeed/StatutoryInstrument",
     showSolrBusinessItems: "/SolrFeed/BusinessItem"
 
