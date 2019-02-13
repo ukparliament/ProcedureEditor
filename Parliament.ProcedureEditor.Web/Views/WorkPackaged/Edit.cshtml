@@ -39,7 +39,7 @@
                 <label>Link</label>
                 <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
             </div>
-            <div data-bind="visible: workPackagedKind()===1">
+            <div data-bind="visible: workPackagedKind()===1 || workPackagedKind()===3">
                 <div class="form-group">
                     <label>Prefix</label>
                     <input type="text" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberPrefix" />
@@ -48,6 +48,8 @@
                     <label>Number</label>
                     <input type="number" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumber" />
                 </div>
+            </div>
+            <div data-bind="visible: workPackagedKind()===1">
                 <div class="form-group">
                     <label>Year</label>
                     <input type="number" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberYear" />

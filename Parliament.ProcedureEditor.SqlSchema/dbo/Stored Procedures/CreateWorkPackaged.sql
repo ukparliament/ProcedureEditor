@@ -45,8 +45,8 @@ BEGIN
 			else
 				if (@WorkPackagedKind=3)
 				begin
-					insert into ProcedureTreaty (Id, ProcedureTreatyName)
-					values (@id, @WorkPackagedThingName)
+					insert into ProcedureTreaty (Id, ProcedureTreatyName, TreatyNumber, TreatyPrefix)
+					values (@id, @WorkPackagedThingName, @StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix)
 				end
 
 	if (@SolarFeedId is not null)

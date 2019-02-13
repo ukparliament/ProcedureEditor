@@ -18,8 +18,9 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
-	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
+                    coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
+                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
@@ -45,8 +46,9 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
-	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
+                    coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
+                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
@@ -70,8 +72,9 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
-	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
+                    coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
+                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
@@ -90,8 +93,9 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                wp.ProcedureId, p.ProcedureName,
 	                (select max(b.BusinessItemDate) from ProcedureBusinessItem b where b.ProcedureWorkPackageId=wp.Id) as MostRecentBusinessItemDate,
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
-	                si.StatutoryInstrumentNumber, si.StatutoryInstrumentNumberPrefix, si.StatutoryInstrumentNumberYear,
-	                si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
+                    coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
+                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
@@ -127,6 +131,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition("delete from ProcedureStatutoryInstrument where Id=@Id", new { Id = id }));
             updates.Add(new CommandDefinition("delete from ProcedureProposedNegativeStatutoryInstrument where Id=@Id", new { Id = id }));
+            updates.Add(new CommandDefinition("delete from ProcedureTreaty where Id=@Id", new { Id = id }));
             updates.Add(new CommandDefinition(@"update ProcedureWorkPackagedThing
                 set WebLink=@WebLink,
                     ProcedureId=@ProcedureId,
@@ -163,12 +168,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             else
             if (workPackaged.WorkPackagedKind == WorkPackagedType.Treaty)
                 updates.Add(new CommandDefinition(@"insert into ProcedureTreaty
-                    (Id, ProcedureTreatyName)
-                    values (@Id, @ProcedureTreatyName)",
+                    (Id, ProcedureTreatyName, TreatyNumber, TreatyPrefix)
+                    values (@Id, @ProcedureTreatyName, @TreatyNumber, @TreatyPrefix)",
                     new
                     {
                         Id = id,
                         ProcedureTreatyName = workPackaged.WorkPackagedThingName.Trim(),
+                        TreatyNumber = workPackaged.StatutoryInstrumentNumber,
+                        TreatyPrefix = workPackaged.StatutoryInstrumentNumberPrefix
+
                     }));
             else
                 updates.Add(new CommandDefinition(@"insert into ProcedureProposedNegativeStatutoryInstrument

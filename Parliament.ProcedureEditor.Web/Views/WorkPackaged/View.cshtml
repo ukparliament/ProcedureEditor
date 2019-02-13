@@ -12,7 +12,7 @@
         <h3>Work packaged Id: <span data-bind="text: workPackaged().TripleStoreId"></span></h3>
         <h3>Work package Id: <span data-bind="text: workPackaged().ProcedureWorkPackageTripleStoreId"></span></h3>
         <h3 data-bind="visible: (workPackaged().StatutoryInstrumentNumberPrefix||'').length>0">Prefix: <span data-bind="text: workPackaged().StatutoryInstrumentNumberPrefix"></span></h3>
-        <h3 data-bind="visible: (workPackaged().StatutoryInstrumentNumber||'').length>0">Number: <span data-bind="text: workPackaged().StatutoryInstrumentNumber"></span></h3>
+        <h3 data-bind="visible: (workPackaged().StatutoryInstrumentNumber!==null">Number: <span data-bind="text: workPackaged().StatutoryInstrumentNumber"></span></h3>
         <h3 data-bind="visible: workPackaged().StatutoryInstrumentNumberYear!==null">Year: <span data-bind="text: workPackaged().StatutoryInstrumentNumberYear"></span></h3>
         <a href="/WorkPackage/Edit/@Model" class="btn btn-outline-primary btn-sm">Edit</a>
         <a href="/BusinessItem/Add?workPackageId=@Model" class="btn btn-outline-secondary btn-sm">Add business item</a>

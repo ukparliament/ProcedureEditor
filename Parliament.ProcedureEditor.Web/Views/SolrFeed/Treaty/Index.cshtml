@@ -16,6 +16,8 @@
         <ul class="list-group list-group-flush" data-bind="foreach: treaties">
             <li class="list-group-item">
                 <h5 data-bind="text: Title"></h5>
+                <h6 data-bind="visible: SIPrefix!=null"><span>Prefix: </span><span data-bind="text: SIPrefix"></span></h6>
+                <h6 data-bind="visible: SINumber!=null"><span>Number: </span><span data-bind="text: SINumber"></span></h6>
                 <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:window.urls.editSolrTreaty.replace('{id}',Id) }">Create work package</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>

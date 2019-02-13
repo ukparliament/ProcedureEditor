@@ -1,7 +1,10 @@
 ﻿
+
 CREATE PROCEDURE [dbo].[InsertUpdateSolrTreaty]
 (
 	@Uri nvarchar(128),
+	@Prefix nvarchar(32),
+	@Number int,
 	@WebUrl nvarchar(max),
 	@Title nvarchar(max),
 	@Series nvarchar(max),
@@ -20,8 +23,8 @@ BEGIN
 
 	IF (@Id is Null)
 		BEGIN
-			insert into [dbo].[SolrTreatyData] ([Uri],[WebUrl],[Title],[Series],IsTreaty)
-			values (@Uri,@WebUrl,@Title,@Series,@IsTreaty)
+			insert into [dbo].[SolrTreatyData] ([Uri],[Prefix],[Number],[WebUrl],[Title],[Series],IsTreaty)
+			values (@Uri,@Prefix,@Number,@WebUrl,@Title,@Series,@IsTreaty)
 			select @Message = 'New row added'
 		END
 	ELSE
@@ -29,7 +32,7 @@ BEGIN
 			IF (@TripleStoreId is Null) AND (@IsDeleted = 0)
 				BEGIN
 					update [dbo].[SolrTreatyData]
-						set WebUrl = @WebUrl, Title=@Title, Series=@Series, IsTreaty=@IsTreaty
+						set Prefix = @Prefix, Number = @Number, WebUrl = @WebUrl, Title=@Title, Series=@Series, IsTreaty=@IsTreaty
 					where Id=@Id
 					SELECT @Message = 'Current row updated'
 				END

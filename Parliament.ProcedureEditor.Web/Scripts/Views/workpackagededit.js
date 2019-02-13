@@ -110,6 +110,7 @@
                             WebLink: self.webLink(),
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
+                            ProcedureId: self.procedureId(),
                             WorkPackagedKind: self.workPackagedKind()
                         }
                     }).done(function (data) {

@@ -4,6 +4,8 @@
             var self = this;
             self.treaty = treaty;
             self.workPackagedThingName = ko.observable(treaty.Title);
+            self.treatyNumber = ko.observable(treaty.SINumber);
+            self.treatyPrefix = ko.observable(treaty.SIPrefix);
             self.webLink = ko.observable(treaty.WebUrl);
             self.procedureWorkPackageableThingTypeId = ko.observable(null);
             self.procedureName = ko.observable(null);
@@ -39,6 +41,8 @@
                     dataType: "json",
                     data: {
                         WorkPackagedThingName: self.workPackagedThingName(),
+                        StatutoryInstrumentNumber: self.treatyNumber(),
+                        StatutoryInstrumentNumberPrefix: self.treatyPrefix(),
                         WebLink: self.webLink(),
                         ProcedureId: self.procedureId()
                     }

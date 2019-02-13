@@ -36,7 +36,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<SolrStatutoryInstrument> GetTreaties()
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
-                s.WebUrl from SolrTreatyData s
+                s.WebUrl, s.Prefix as SIPrefix, s.Number as SINumber from SolrTreatyData s
                 where s.TripleStoreId is null and s.IsDeleted=0");
             return GetItems<SolrStatutoryInstrument>(command);
         }
@@ -77,7 +77,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public SolrStatutoryInstrument GetTreaty(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
-                s.WebUrl from SolrTreatyData s
+                s.WebUrl, s.Prefix as SIPrefix, s.Number as SINumber from SolrTreatyData s
                 where s.TripleStoreId is null and s.IsDeleted=0 and s.Id=@Id",
                 new { Id = id });
             return GetItem<SolrStatutoryInstrument>(command);
@@ -157,6 +157,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@ProcedureId", workPackaged.ProcedureId);
             parameters.Add("@WorkPackagedKind", (int)WorkPackagedType.Treaty);
             parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
+            parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
+            parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
             parameters.Add("@SolarFeedId", id);
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("CreateWorkPackaged",
