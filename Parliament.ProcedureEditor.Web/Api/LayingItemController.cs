@@ -23,7 +23,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select li.Id, li.ProcedureBusinessItemId,
                     li.ProcedureWorkPackagedId, li.LayingDate, li.LayingBodyId, li.PersonTripleStoreId,
 	                lb.LayingBodyName, b.TripleStoreId,
-                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
+                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName
                     from ProcedureLaying li
                 left join LayingBody lb on lb.Id=li.LayingBodyId
                 join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
@@ -48,7 +48,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             CommandDefinition command = new CommandDefinition(@"select li.Id, li.ProcedureBusinessItemId,
                     li.ProcedureWorkPackagedId, li.LayingDate, li.LayingBodyId, li.PersonTripleStoreId,
 	                lb.LayingBodyName, b.TripleStoreId,
-                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
+                    coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName
                     from ProcedureLaying li
                 left join LayingBody lb on lb.Id=li.LayingBodyId
                 join ProcedureBusinessItem b on b.Id=li.ProcedureBusinessItemId
