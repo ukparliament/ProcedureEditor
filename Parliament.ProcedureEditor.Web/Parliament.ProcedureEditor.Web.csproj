@@ -150,6 +150,7 @@
     <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\Modules\businessitemlistitem.js" />
+    <Content Include="Scripts\Modules\governmentorganisationselector.js" />
     <Content Include="Scripts\Modules\procedureselector.js" />
     <Content Include="Scripts\Modules\stepselector.js" />
     <Content Include="Scripts\Modules\routelistitem.js" />
@@ -219,6 +220,7 @@
     <Compile Include="Models\BusinessItemSolrEditModel.cs" />
     <Compile Include="Models\RouteProcedure.cs" />
     <Compile Include="Models\LayingItemEditParameters.cs" />
+    <Compile Include="Models\SeriesMembershipType.cs" />
     <Compile Include="Models\SolrTreaty.cs" />
     <Compile Include="Models\StepSearchParameters.cs" />
     <Compile Include="Models\LayingItem.cs" />
@@ -239,6 +241,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Procedure.cs" />
+    <Compile Include="Models\WorkPackagedTreaty.cs" />
     <Compile Include="Models\WorkPackagedType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -293,6 +296,7 @@
     <Content Include="Views\Shared\ProcedureSelector.cshtml" />
     <Content Include="Views\SolrFeed\Treaty\Index.cshtml" />
     <Content Include="Views\SolrFeed\Treaty\Edit.cshtml" />
+    <Content Include="Views\Shared\GovernmentOrganisationSelector.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

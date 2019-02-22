@@ -4,12 +4,17 @@
             var self = this;
             self.treaty = treaty;
             self.workPackagedThingName = ko.observable(treaty.Title);
-            self.treatyNumber = ko.observable(treaty.SINumber);
-            self.treatyPrefix = ko.observable(treaty.SIPrefix);
+            self.treatyNumber = ko.observable(treaty.Number);
+            self.treatyPrefix = ko.observable(treaty.Prefix);
+            self.comingIntoForceNote = ko.observable(null);
+            self.comingIntoForceDate = ko.observable(null);
+            self.leadGovernmentOrganisationTripleStoreId = ko.observable(null);
+            self.citation = ko.observable(treaty.Citation);
             self.webLink = ko.observable(treaty.WebUrl);
             self.procedureWorkPackageableThingTypeId = ko.observable(null);
             self.procedureName = ko.observable(null);
             self.procedureId = ko.observable(null);
+            self.seriesMembershipIds = ko.observableArray([]);
             self.isNotValidResponse = ko.observable(false);
             self.warningText = "Are you sure you wish to delete '" + treaty.Title + "' record?";
             self.isBeingSaved = ko.observable(false);
@@ -31,6 +36,7 @@
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null) &&
+                    (self.seriesMembershipIds().length>0) &&
                     (self.isBeingSaved() === false);
             });
 
@@ -43,7 +49,12 @@
                         WorkPackagedThingName: self.workPackagedThingName(),
                         StatutoryInstrumentNumber: self.treatyNumber(),
                         StatutoryInstrumentNumberPrefix: self.treatyPrefix(),
+                        ComingIntoForceNote: self.comingIntoForceNote(),
                         WebLink: self.webLink(),
+                        ComingIntoForceDate: self.comingIntoForceDate(),
+                        LeadGovernmentOrganisationTripleStoreId: self.leadGovernmentOrganisationTripleStoreId(),
+                        Citation: self.citation(),
+                        SeriesMembershipIds: self.seriesMembershipIds(),
                         ProcedureId: self.procedureId()
                     }
                 }).done(function (data) {

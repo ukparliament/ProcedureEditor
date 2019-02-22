@@ -1,8 +1,7 @@
-﻿CREATE PROCEDURE [dbo].[CreateWorkPackaged]
+﻿CREATE PROCEDURE [dbo].[UpdateWorkPackaged]
 (
-	@TripleStoreId nvarchar(16),
+	@WorkPackagedId int,
 	@WebLink nvarchar(max),
-	@ProcedureWorkPackageTripleStoreId nvarchar(16),
 	@ProcedureId int,
 	@WorkPackagedKind int,
 	@WorkPackagedThingName nvarchar(max),
@@ -18,27 +17,45 @@
 	@IsEuropeanUnionSeriesMembership bit=null,
 	@IsMiscellaneousSeriesMembership bit=null,
 	@IsTreatySeriesMembership bit=null,
-	@SolarFeedId int=null,
 	@ModifiedBy [nvarchar](max)
 )
 AS
 BEGIN
     SET NOCOUNT ON
-	declare @id int
-
-	insert into ProcedureWorkPackagedThing (TripleStoreId, WebLink, ProcedureWorkPackageTripleStoreId,
-		ProcedureId, ModifiedAt, ModifiedBy)
-	values (@TripleStoreId, @WebLink, @ProcedureWorkPackageTripleStoreId,
-		@ProcedureId, GETUTCDATE(), @ModifiedBy)
 	
-	set @id=SCOPE_IDENTITY()
+	delete from ProcedureStatutoryInstrument where Id=@WorkPackagedId
+	delete from ProcedureProposedNegativeStatutoryInstrument where Id=@WorkPackagedId
+			
+	declare @seriesId int
+	select top 1 @seriesId=s.Id from ProcedureSeriesMembership s
+	left join ProcerdureCountrySeriesMembership c on c.Id=s.Id
+	left join ProcerdureEuropeanUnionSeriesMembership e on e.Id=s.Id
+	left join ProcerdureMiscellaneousSeriesMembership m on m.Id=s.Id
+	left join ProcerdureTreatySeriesMembership t on t.Id=s.Id
+	where coalesce(c.ProcedureTreatyId,e.ProcedureTreatyId,m.ProcedureTreatyId,t.ProcedureTreatyId)=@WorkPackagedId
+			
+	delete from ProcerdureCountrySeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcerdureEuropeanUnionSeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcerdureMiscellaneousSeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcerdureTreatySeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcedureSeriesMembership where Id=@seriesId
+			
+	delete from ProcedureTreaty where Id=@WorkPackagedId
+
+
+	update ProcedureWorkPackagedThing 
+		set WebLink=@WebLink,
+			ProcedureId=@ProcedureId,
+			ModifiedAt=GETUTCDATE(),
+			ModifiedBy=@ModifiedBy
+	where Id=@WorkPackagedId
 	
 	if (@WorkPackagedKind=1)
 	begin
 		insert into ProcedureStatutoryInstrument (Id, ProcedureStatutoryInstrumentName, StatutoryInstrumentNumber,
 			StatutoryInstrumentNumberPrefix, StatutoryInstrumentNumberYear, ComingIntoForceNote,
 			ComingIntoForceDate, MadeDate)
-		values (@id, @WorkPackagedThingName, @StatutoryInstrumentNumber,
+		values (@WorkPackagedId, @WorkPackagedThingName, @StatutoryInstrumentNumber,
 			@StatutoryInstrumentNumberPrefix, @StatutoryInstrumentNumberYear, @ComingIntoForceNote,
 			@ComingIntoForceDate, @MadeDate)
 	end
@@ -46,16 +63,15 @@ BEGIN
 		if (@WorkPackagedKind=2)
 		begin
 			insert into ProcedureProposedNegativeStatutoryInstrument (Id, ProcedureProposedNegativeStatutoryInstrumentName)
-			values (@id, @WorkPackagedThingName)
+			values (@WorkPackagedId, @WorkPackagedThingName)
 		end
 			else
 				if (@WorkPackagedKind=3)
 				begin
-					declare @seriesId int
-
+					
 					insert into ProcedureTreaty (Id, ProcedureTreatyName, TreatyNumber, TreatyPrefix,
 						ComingIntoForceNote, ComingIntoForceDate, LeadGovernmentOrganisationTripleStoreId)
-					values (@id, @WorkPackagedThingName, @StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix,
+					values (@WorkPackagedId, @WorkPackagedThingName, @StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix,
 						@ComingIntoForceNote, @ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
 
 					insert into ProcedureSeriesMembership(Citation)
@@ -66,39 +82,23 @@ BEGIN
 					if (@IsCountrySeriesMembership=1)
 					begin
 						insert into ProcerdureCountrySeriesMembership (Id, ProcedureTreatyId)
-						values (@seriesId, @id)
+						values (@seriesId, @WorkPackagedId)
 					end
 					if (@IsEuropeanUnionSeriesMembership=1)
 					begin
 						insert into ProcerdureEuropeanUnionSeriesMembership (Id, ProcedureTreatyId)
-						values (@seriesId, @id)
+						values (@seriesId, @WorkPackagedId)
 					end
 					if (@IsMiscellaneousSeriesMembership=1)
 					begin
 						insert into ProcerdureMiscellaneousSeriesMembership (Id, ProcedureTreatyId)
-						values (@seriesId, @id)
+						values (@seriesId, @WorkPackagedId)
 					end
 					if (@IsTreatySeriesMembership=1)
 					begin
 						insert into ProcerdureTreatySeriesMembership (Id, ProcedureTreatyId)
-						values (@seriesId, @id)
+						values (@seriesId, @WorkPackagedId)
 					end
 				end
-
-	if (@SolarFeedId is not null)
-	begin
-		if (@WorkPackagedKind=3)
-		begin
-			update SolrTreatyData
-					set TripleStoreId=@TripleStoreId 
-			where Id=@SolarFeedId
-		end
-		else
-			begin
-				update SolrStatutoryInstrumentData
-						set TripleStoreId=@TripleStoreId 
-				where Id=@SolarFeedId
-			end
-	end
 
 END

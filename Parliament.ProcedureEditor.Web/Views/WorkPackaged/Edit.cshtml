@@ -39,7 +39,7 @@
                 <label>Link</label>
                 <input type="text" class="form-control form-control-md" data-bind="textInput: webLink" />
             </div>
-            <div data-bind="visible: workPackagedKind()===1 || workPackagedKind()===3">
+            <div data-bind="visible: workPackagedKind()===@((int)WorkPackagedType.StatutoryInstrumentPaper) || workPackagedKind()===@((int)WorkPackagedType.Treaty)">
                 <div class="form-group">
                     <label>Prefix</label>
                     <input type="text" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberPrefix" />
@@ -47,12 +47,6 @@
                 <div class="form-group">
                     <label>Number</label>
                     <input type="number" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumber" />
-                </div>
-            </div>
-            <div data-bind="visible: workPackagedKind()===1">
-                <div class="form-group">
-                    <label>Year</label>
-                    <input type="number" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberYear" />
                 </div>
                 <div class="form-group">
                     <label>Coming into force note</label>
@@ -62,33 +56,68 @@
                     <label>Coming into force date</label>
                     <date-entry params="date: comingIntoForceDate"></date-entry>
                 </div>
+            </div>
+            <div data-bind="visible: workPackagedKind()===@((int)WorkPackagedType.StatutoryInstrumentPaper)">
+                <div class="form-group">
+                    <label>Year</label>
+                    <input type="number" class="form-control form-control-md" data-bind="textInput: statutoryInstrumentNumberYear" />
+                </div>
                 <div class="form-group">
                     <label>Made date</label>
                     <date-entry params="date: madeDate"></date-entry>
                 </div>
             </div>
-            @if (Model.HasValue)
-            {
+            <div data-bind="visible: workPackagedKind()===@((int)WorkPackagedType.Treaty)">
                 <div class="form-group">
-                    <label>Work packaged Id</label>
-                    <input type="text" class="form-control form-control-md" data-bind="textInput: workPackaged.TripleStoreId" readonly />
+                    <label>Citation</label>
+                    <input type="text" class="form-control form-control-md" data-bind="textInput: citation" />
                 </div>
                 <div class="form-group">
-                    <label>Work package Id</label>
-                    <input type="text" class="form-control form-control-md" data-bind="textInput: workPackaged.ProcedureWorkPackageTripleStoreId" readonly />
+                    <label>Series*</label>
+                    <div class="form-check">
+                        <input id="s1" class="form-check-input" type="checkbox" name="series" data-bind="checked: seriesMembershipIds, checkedValue: @((int)SeriesMembershipType.Country)" />
+                        <label for="s1">Country</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="s2" class="form-check-input" type="checkbox" name="series" data-bind="checked: seriesMembershipIds, checkedValue: @((int)SeriesMembershipType.EuropeanUnion)" />
+                        <label for="s2">European Union</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="s3" class="form-check-input" type="checkbox" name="series" data-bind="checked: seriesMembershipIds, checkedValue: @((int)SeriesMembershipType.Miscellaneous)" />
+                        <label for="s3">Miscellaneous</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="s4" class="form-check-input" type="checkbox" name="series" data-bind="checked: seriesMembershipIds, checkedValue: @((int)SeriesMembershipType.Treaty)" />
+                        <label for="s4">Treaty</label>
+                    </div>
                 </div>
-            }
-            @if (Model.HasValue)
-            {
-                <h6 class="text-muted">Work package can be deleted only if its Business Item and Work Package Preceding are deleted first.</h6>
-            }
-            <section>
-                <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                <div class="form-group">
+                    <label>Lead government organisation</label>
+                    <government-organisation-selector params="governmentOrganisationId: leadGovernmentOrganisationTripleStoreId"></government-organisation-selector>
+                </div>
+            </div>
                 @if (Model.HasValue)
                 {
-                    <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                    <div class="form-group">
+                        <label>Work packaged Id</label>
+                        <input type="text" class="form-control form-control-md" data-bind="textInput: workPackaged.TripleStoreId" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label>Work package Id</label>
+                        <input type="text" class="form-control form-control-md" data-bind="textInput: workPackaged.ProcedureWorkPackageTripleStoreId" readonly />
+                    </div>
                 }
-            </section>
+                @if (Model.HasValue)
+                {
+                    <h6 class="text-muted">Work package can be deleted only if its Business Item and Work Package Preceding are deleted first.</h6>
+                }
+                <section>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" data-bind="enable: canSave">@(Model.HasValue ? "Update" : "Add")</button>
+                    @if (Model.HasValue)
+                    {
+                        <button data-bind="click: showDeletePopup" type="button" class="btn btn-outline-secondary btn-sm">Delete</button>
+                    }
+                </section>
         </form>
     </div>
 </section>

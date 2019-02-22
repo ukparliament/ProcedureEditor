@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Parliament.ProcedureEditor.Web.Models
 {
@@ -19,7 +20,22 @@ namespace Parliament.ProcedureEditor.Web.Models
 
         public string WorkPackagedThingName { get; set; }
         public WorkPackagedType WorkPackagedKind { get; set; }
+        
         public string ProcedureName { get; set; }
         public DateTimeOffset? MostRecentBusinessItemDate { get; set; }
+
+        public string Citation { get; set; }
+        public string LeadGovernmentOrganisationTripleStoreId { get; set; }
+        public int[] SeriesMembershipIds { get; set; }
+        public SeriesMembershipType[] SeriesMemberships
+        {
+            get
+            {
+                return SeriesMembershipIds?
+                    .Where(s => Enum.IsDefined(typeof(SeriesMembershipType), s))
+                    .Select(s => (SeriesMembershipType)Enum.ToObject(typeof(SeriesMembershipType), s))
+                    .ToArray();
+            }
+        }
     }
 }

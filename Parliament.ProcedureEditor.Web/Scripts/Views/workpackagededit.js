@@ -18,7 +18,10 @@
                     ComingIntoForceDate: null,
                     MadeDate: null,
 
-                    WorkPackagedThingName: null
+                    WorkPackagedThingName: null,
+                    LeadGovernmentOrganisationTripleStoreId: null,
+                    Citation: null,
+                    SeriesMembershipIds:[]
                 };
             else
                 self.workPackaged = workPackaged;
@@ -33,6 +36,9 @@
             self.comingIntoForceDate = ko.observable(self.workPackaged.ComingIntoForceDate);
             self.madeDate = ko.observable(self.workPackaged.MadeDate);
             self.procedureId = ko.observable(self.workPackaged.ProcedureId);
+            self.leadGovernmentOrganisationTripleStoreId = ko.observable(self.workPackaged.LeadGovernmentOrganisationTripleStoreId);
+            self.citation = ko.observable(self.workPackaged.Citation);
+            self.seriesMembershipIds = ko.observableArray(self.workPackaged.SeriesMembershipIds);
 
             self.procedures = ko.observableArray([]);
             self.procedureDictionary = ko.observable(null);
@@ -65,6 +71,7 @@
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null) &&
+                    (((self.workPackagedKind() === 3) && (self.seriesMembershipIds().length > 0)) || (self.workPackagedKind()!==3)) &&
                     (self.isBeingSaved() === false);
             });
 
@@ -83,6 +90,9 @@
                             WebLink: self.webLink(),
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
+                            LeadGovernmentOrganisationTripleStoreId: self.leadGovernmentOrganisationTripleStoreId(),
+                            Citation: self.citation(),
+                            SeriesMembershipIds: self.seriesMembershipIds(),
                             ProcedureId: self.procedureId(),
                             WorkPackagedKind: self.workPackagedKind()
                         }
@@ -110,6 +120,9 @@
                             WebLink: self.webLink(),
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
+                            LeadGovernmentOrganisationTripleStoreId: self.leadGovernmentOrganisationTripleStoreId(),
+                            Citation: self.citation(),
+                            SeriesMembershipIds: self.seriesMembershipIds(),
                             ProcedureId: self.procedureId(),
                             WorkPackagedKind: self.workPackagedKind()
                         }

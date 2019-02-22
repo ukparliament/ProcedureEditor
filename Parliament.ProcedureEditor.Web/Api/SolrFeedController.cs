@@ -33,12 +33,12 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpGet]
         [ContentNegotiation("solrfeed/treaty", ContentType.JSON)]
-        public List<SolrStatutoryInstrument> GetTreaties()
+        public List<SolrTreaty> GetTreaties()
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
-                s.WebUrl, s.Prefix as SIPrefix, s.Number as SINumber from SolrTreatyData s
+                s.WebUrl, s.Prefix, s.Number, s.Series as Citation from SolrTreatyData s
                 where s.TripleStoreId is null and s.IsDeleted=0");
-            return GetItems<SolrStatutoryInstrument>(command);
+            return GetItems<SolrTreaty>(command);
         }
 
         [HttpGet]
@@ -74,13 +74,13 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpGet]
         [ContentNegotiation("solrfeed/treaty/{id:int}", ContentType.JSON)]
-        public SolrStatutoryInstrument GetTreaty(int id)
+        public SolrTreaty GetTreaty(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
-                s.WebUrl, s.Prefix as SIPrefix, s.Number as SINumber from SolrTreatyData s
+                s.WebUrl, s.Prefix, s.Number, s.Series as Citation from SolrTreatyData s
                 where s.TripleStoreId is null and s.IsDeleted=0 and s.Id=@Id",
                 new { Id = id });
-            return GetItem<SolrStatutoryInstrument>(command);
+            return GetItem<SolrTreaty>(command);
         }
 
         [HttpGet]
@@ -143,7 +143,9 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             if ((workPackaged == null) ||
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
-                (workPackaged.ProcedureId == 0))
+                (workPackaged.ProcedureId == 0) ||
+                (workPackaged.SeriesMemberships==null) || 
+                (workPackaged.SeriesMemberships?.Any() == false))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
@@ -159,6 +161,14 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
             parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
             parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
+            parameters.Add("@ComingIntoForceNote", workPackaged.ComingIntoForceNote);
+            parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
+            parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId); 
+            parameters.Add("@Citation", workPackaged.Citation);
+            parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.Country));
+            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.EuropeanUnion));
+            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.Miscellaneous));
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.Treaty));
             parameters.Add("@SolarFeedId", id);
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("CreateWorkPackaged",

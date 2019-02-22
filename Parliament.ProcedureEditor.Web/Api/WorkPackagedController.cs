@@ -3,6 +3,7 @@ using Parliament.ProcedureEditor.Web.Api.Configuration;
 using Parliament.ProcedureEditor.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 
 namespace Parliament.ProcedureEditor.Web.Api
@@ -20,15 +21,47 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
                     coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
-                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+                    si.StatutoryInstrumentNumberYear, si.MadeDate, t.LeadGovernmentOrganisationTripleStoreId,
+                    coalesce(si.ComingIntoForceNote, t.ComingIntoForceNote) as ComingIntoForceNote,
+                    coalesce(si.ComingIntoForceDate, t.ComingIntoForceDate) as ComingIntoForceDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
+                where wp.ProcedureId=@ProcedureId;
+                select t.Id, sm.Citation, 
+	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
+	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
+	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
+	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
+                from ProcedureWorkPackagedThing wp
+                join ProcedureTreaty t on t.Id=wp.Id
+                left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
+                left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
+                left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
+                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)
                 where wp.ProcedureId=@ProcedureId",
                 new { ProcedureId = procedureId });
-            return GetItems<WorkPackaged>(command);
+
+
+            Tuple<List<WorkPackaged>, List<WorkPackagedTreaty>> tuple = GetItems<WorkPackaged, WorkPackagedTreaty>(command);
+
+            tuple.Item1
+                .ForEach(wp =>
+                {
+                    wp.Citation = tuple.Item2
+                        .Where(t => t.Id == wp.Id)
+                        .SingleOrDefault()?
+                        .Citation;
+                    wp.SeriesMembershipIds= tuple.Item2
+                        .Where(t => t.Id == wp.Id)
+                        .SingleOrDefault()?
+                        .SeriesMembershipIds;
+                });
+
+            return tuple.Item1;
         }
 
         [HttpGet]
@@ -48,13 +81,42 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
                     coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
-                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+                    si.StatutoryInstrumentNumberYear, si.MadeDate, t.LeadGovernmentOrganisationTripleStoreId,
+                    coalesce(si.ComingIntoForceNote, t.ComingIntoForceNote) as ComingIntoForceNote,
+                    coalesce(si.ComingIntoForceDate, t.ComingIntoForceDate) as ComingIntoForceDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 left join ProcedureTreaty t on t.Id=wp.Id
-                join [Procedure] p on p.Id=wp.ProcedureId");
-            return GetItems<WorkPackaged>(command);
+                join [Procedure] p on p.Id=wp.ProcedureId;
+                select t.Id, sm.Citation, 
+	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
+	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
+	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
+	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
+                from ProcedureTreaty t
+                left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
+                left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
+                left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
+                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)");
+
+            Tuple<List<WorkPackaged>, List<WorkPackagedTreaty>> tuple = GetItems<WorkPackaged, WorkPackagedTreaty>(command);
+
+            tuple.Item1
+                .ForEach(wp =>
+                {
+                    wp.Citation = tuple.Item2
+                        .Where(t => t.Id == wp.Id)
+                        .SingleOrDefault()?
+                        .Citation;
+                    wp.SeriesMembershipIds = tuple.Item2
+                        .Where(t => t.Id == wp.Id)
+                        .SingleOrDefault()?
+                        .SeriesMembershipIds;
+                });
+
+            return tuple.Item1;
         }
 
         [HttpGet]
@@ -74,15 +136,39 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
                     coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
-                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+                    si.StatutoryInstrumentNumberYear, si.MadeDate, t.LeadGovernmentOrganisationTripleStoreId,
+                    coalesce(si.ComingIntoForceNote, t.ComingIntoForceNote) as ComingIntoForceNote,
+                    coalesce(si.ComingIntoForceDate, t.ComingIntoForceDate) as ComingIntoForceDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
-                where wp.Id=@Id",
+                where wp.Id=@Id;
+                select t.Id, sm.Citation, 
+	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
+	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
+	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
+	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
+                from ProcedureTreaty t
+                left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
+                left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
+                left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
+                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)
+                where t.Id=@Id",
                 new { Id = id });
-            return GetItem<WorkPackaged>(command);
+
+            Tuple<WorkPackaged, List<WorkPackagedTreaty>> tuple = GetItem<WorkPackaged, WorkPackagedTreaty>(command);
+
+            tuple.Item1.Citation = tuple.Item2
+                        .SingleOrDefault()?
+                        .Citation;
+            tuple.Item1.SeriesMembershipIds = tuple.Item2
+                        .SingleOrDefault()?
+                        .SeriesMembershipIds;
+
+            return tuple.Item1;
         }
 
         [HttpGet]
@@ -95,15 +181,40 @@ namespace Parliament.ProcedureEditor.Web.Api
 	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
 	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as StatutoryInstrumentNumber,
                     coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as StatutoryInstrumentNumberPrefix,
-                    si.StatutoryInstrumentNumberYear, si.ComingIntoForceNote, si.ComingIntoForceDate, si.MadeDate
+                    si.StatutoryInstrumentNumberYear, si.MadeDate, t.LeadGovernmentOrganisationTripleStoreId,
+                    coalesce(si.ComingIntoForceNote, t.ComingIntoForceNote) as ComingIntoForceNote,
+                    coalesce(si.ComingIntoForceDate, t.ComingIntoForceDate) as ComingIntoForceDate
                 from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
+                where wp.TripleStoreId=@TripleStoreId;
+                select t.Id, sm.Citation, 
+	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
+	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
+	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
+	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
+                from ProcedureWorkPackagedThing wp
+                join ProcedureTreaty t on t.Id=wp.Id
+                left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
+                left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
+                left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
+                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)
                 where wp.TripleStoreId=@TripleStoreId",
                 new { TripleStoreId = tripleStoreId });
-            return GetItem<WorkPackaged>(command);
+
+            Tuple<WorkPackaged, List<WorkPackagedTreaty>> tuple = GetItem<WorkPackaged, WorkPackagedTreaty>(command);
+
+            tuple.Item1.Citation = tuple.Item2
+                        .SingleOrDefault()?
+                        .Citation;
+            tuple.Item1.SeriesMembershipIds = tuple.Item2
+                        .SingleOrDefault()?
+                        .SeriesMembershipIds;
+
+            return tuple.Item1;
         }
 
         [HttpGet]
@@ -126,68 +237,33 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             if ((workPackaged == null) ||
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
-                (workPackaged.ProcedureId == 0))
+                (workPackaged.ProcedureId == 0) ||
+                ((workPackaged.WorkPackagedKind==WorkPackagedType.Treaty) &&
+                ((workPackaged.SeriesMemberships == null) ||
+                (workPackaged.SeriesMemberships?.Any() == false))))
                 return false;
-            List<CommandDefinition> updates = new List<CommandDefinition>();
-            updates.Add(new CommandDefinition("delete from ProcedureStatutoryInstrument where Id=@Id", new { Id = id }));
-            updates.Add(new CommandDefinition("delete from ProcedureProposedNegativeStatutoryInstrument where Id=@Id", new { Id = id }));
-            updates.Add(new CommandDefinition("delete from ProcedureTreaty where Id=@Id", new { Id = id }));
-            updates.Add(new CommandDefinition(@"update ProcedureWorkPackagedThing
-                set WebLink=@WebLink,
-                    ProcedureId=@ProcedureId,
-                    ModifiedBy=@ModifiedBy,
-                    ModifiedAt=@ModifiedAt
-                where Id=@Id",
-                new
-                {
-                    WebLink = workPackaged.WebLink,
-                    ProcedureId = workPackaged.ProcedureId,
-                    ModifiedBy = EMail,
-                    ModifiedAt = DateTimeOffset.UtcNow,
-                    Id = id
-                }));
-            if (workPackaged.WorkPackagedKind == WorkPackagedType.StatutoryInstrumentPaper)
-                updates.Add(new CommandDefinition(@"insert into ProcedureStatutoryInstrument
-                    (Id, ProcedureStatutoryInstrumentName, StatutoryInstrumentNumber, 
-                    StatutoryInstrumentNumberPrefix, StatutoryInstrumentNumberYear,
-	                ComingIntoForceNote, ComingIntoForceDate, MadeDate)
-                    values (@Id, @ProcedureStatutoryInstrumentName, @StatutoryInstrumentNumber, 
-                    @StatutoryInstrumentNumberPrefix, @StatutoryInstrumentNumberYear,
-	                @ComingIntoForceNote, @ComingIntoForceDate, @MadeDate)",
-                    new
-                    {
-                        Id = id,
-                        ProcedureStatutoryInstrumentName = workPackaged.WorkPackagedThingName.Trim(),
-                        StatutoryInstrumentNumber = workPackaged.StatutoryInstrumentNumber,
-                        StatutoryInstrumentNumberPrefix = workPackaged.StatutoryInstrumentNumberPrefix,
-                        StatutoryInstrumentNumberYear = workPackaged.StatutoryInstrumentNumberYear,
-                        ComingIntoForceNote = workPackaged.ComingIntoForceNote,
-                        ComingIntoForceDate = workPackaged.ComingIntoForceDate,
-                        MadeDate = workPackaged.MadeDate
-                    }));
-            else
-            if (workPackaged.WorkPackagedKind == WorkPackagedType.Treaty)
-                updates.Add(new CommandDefinition(@"insert into ProcedureTreaty
-                    (Id, ProcedureTreatyName, TreatyNumber, TreatyPrefix)
-                    values (@Id, @ProcedureTreatyName, @TreatyNumber, @TreatyPrefix)",
-                    new
-                    {
-                        Id = id,
-                        ProcedureTreatyName = workPackaged.WorkPackagedThingName.Trim(),
-                        TreatyNumber = workPackaged.StatutoryInstrumentNumber,
-                        TreatyPrefix = workPackaged.StatutoryInstrumentNumberPrefix
-
-                    }));
-            else
-                updates.Add(new CommandDefinition(@"insert into ProcedureProposedNegativeStatutoryInstrument
-                    (Id, ProcedureProposedNegativeStatutoryInstrumentName)
-                    values (@Id, @ProcedureProposedNegativeStatutoryInstrumentName)",
-                    new
-                    {
-                        Id = id,
-                        ProcedureProposedNegativeStatutoryInstrumentName = workPackaged.WorkPackagedThingName.Trim(),
-                    }));
-            return Execute(updates.ToArray());
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@WorkPackagedId", id);
+            parameters.Add("@WebLink", workPackaged.WebLink);
+            parameters.Add("@ProcedureId", workPackaged.ProcedureId);
+            parameters.Add("@WorkPackagedKind", (int)WorkPackagedType.Treaty);
+            parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
+            parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
+            parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
+            parameters.Add("@ComingIntoForceNote", workPackaged.ComingIntoForceNote);
+            parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
+            parameters.Add("@MadeDate", workPackaged.MadeDate);
+            parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
+            parameters.Add("@Citation", workPackaged.Citation);
+            parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Country));
+            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.EuropeanUnion));
+            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Miscellaneous));
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Treaty));
+            parameters.Add("@ModifiedBy", EMail);
+            CommandDefinition command = new CommandDefinition("UpdateWorkPackaged",
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure);
+            return Execute(command);
         }
 
         [HttpPost]
@@ -196,7 +272,10 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             if ((workPackaged == null) ||
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
-                (workPackaged.ProcedureId == 0))
+                (workPackaged.ProcedureId == 0) ||
+                ((workPackaged.WorkPackagedKind == WorkPackagedType.Treaty) &&
+                ((workPackaged.SeriesMemberships == null) ||
+                (workPackaged.SeriesMemberships?.Any() == false))))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
@@ -216,6 +295,12 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@ComingIntoForceNote", workPackaged.ComingIntoForceNote);
             parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
             parameters.Add("@MadeDate", workPackaged.MadeDate);
+            parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
+            parameters.Add("@Citation", workPackaged.Citation);
+            parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Country));
+            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.EuropeanUnion));
+            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Miscellaneous));
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Treaty));
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("CreateWorkPackaged",
                 parameters,
