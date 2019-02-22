@@ -14,6 +14,7 @@
 	@MadeDate datetimeoffset(0)=null,
 	@LeadGovernmentOrganisationTripleStoreId nvarchar(16)=null,
 	@Citation nvarchar(max)=null,
+	@SeriesMembershipTripleStoreId nvarchar(16)=null,
 	@IsCountrySeriesMembership bit=null,
 	@IsEuropeanUnionSeriesMembership bit=null,
 	@IsMiscellaneousSeriesMembership bit=null,
@@ -58,8 +59,8 @@ BEGIN
 					values (@id, @WorkPackagedThingName, @StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix,
 						@ComingIntoForceNote, @ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
 
-					insert into ProcedureSeriesMembership(Citation)
-					values (@Citation)
+					insert into ProcedureSeriesMembership(TripleStoreId, Citation)
+					values (@SeriesMembershipTripleStoreId, @Citation)
 
 					set @seriesId=SCOPE_IDENTITY()
 

@@ -38,7 +38,6 @@ BEGIN
 	delete from ProcerdureEuropeanUnionSeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureMiscellaneousSeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureTreatySeriesMembership where ProcedureTreatyId=@WorkPackagedId
-	delete from ProcedureSeriesMembership where Id=@seriesId
 			
 	delete from ProcedureTreaty where Id=@WorkPackagedId
 
@@ -74,10 +73,9 @@ BEGIN
 					values (@WorkPackagedId, @WorkPackagedThingName, @StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix,
 						@ComingIntoForceNote, @ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
 
-					insert into ProcedureSeriesMembership(Citation)
-					values (@Citation)
-
-					set @seriesId=SCOPE_IDENTITY()
+					update ProcedureSeriesMembership
+						set Citation=@Citation
+					where Id=@seriesId
 
 					if (@IsCountrySeriesMembership=1)
 					begin

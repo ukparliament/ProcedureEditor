@@ -279,6 +279,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
+            string seriesMembershipTripleStoreId = GetTripleStoreId();
             if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
                 (string.IsNullOrWhiteSpace(workPackageTripleStoreId)))
                 return false;
@@ -297,6 +298,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@MadeDate", workPackaged.MadeDate);
             parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
             parameters.Add("@Citation", workPackaged.Citation);
+            parameters.Add("@SeriesMembershipTripleStoreId", seriesMembershipTripleStoreId);
             parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Country));
             parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.EuropeanUnion));
             parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Miscellaneous));
