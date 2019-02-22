@@ -30,36 +30,36 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where wp.ProcedureId=@ProcedureId;
-                select t.Id, sm.Citation, 
-	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
-	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
-	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
-	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
-                from ProcedureWorkPackagedThing wp
-                join ProcedureTreaty t on t.Id=wp.Id
+                select t.Id, sm.TripleStoreId, sm.Citation, 
+	                case when cs.Id is null then 
+		                case when eus.Id is null then 
+			                case when ms.Id is null then null
+	                else 3 end else 2 end else 1 end as SeriesMembershipId	
+                from ProcedureTreaty t
+                join ProcedureWorkPackagedThing wp on wp.Id=t.Id
                 left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
                 left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
                 left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
-                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
-                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id)
+                where wp.ProcedureId=@ProcedureId
+                union
+                select t.Id, sm.TripleStoreId, sm.Citation, 4 as SeriesMembershipId
+                from ProcedureTreaty t
+                join ProcedureWorkPackagedThing wp on wp.Id=t.Id
+                join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                join ProcedureSeriesMembership sm on sm.Id=ts.Id
                 where wp.ProcedureId=@ProcedureId",
                 new { ProcedureId = procedureId });
 
 
-            Tuple<List<WorkPackaged>, List<WorkPackagedTreaty>> tuple = GetItems<WorkPackaged, WorkPackagedTreaty>(command);
+            Tuple<List<WorkPackaged>, List<SeriesMembership>> tuple = GetItems<WorkPackaged, SeriesMembership>(command);
 
             tuple.Item1
                 .ForEach(wp =>
-                {
-                    wp.Citation = tuple.Item2
+                    wp.SeriesMemberships = tuple.Item2
                         .Where(t => t.Id == wp.Id)
-                        .SingleOrDefault()?
-                        .Citation;
-                    wp.SeriesMembershipIds= tuple.Item2
-                        .Where(t => t.Id == wp.Id)
-                        .SingleOrDefault()?
-                        .SeriesMembershipIds;
-                });
+                        ?.ToArray()
+                );
 
             return tuple.Item1;
         }
@@ -89,32 +89,30 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId;
-                select t.Id, sm.Citation, 
-	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
-	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
-	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
-	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
+                select t.Id, sm.TripleStoreId, sm.Citation, 
+	                case when cs.Id is null then 
+		                case when eus.Id is null then 
+			                case when ms.Id is null then null
+	                else 3 end else 2 end else 1 end as SeriesMembershipId	
                 from ProcedureTreaty t
                 left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
                 left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
                 left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
-                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
-                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)");
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id)
+                union
+                select t.Id, sm.TripleStoreId, sm.Citation, 4 as SeriesMembershipId
+                from ProcedureTreaty t
+                join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                join ProcedureSeriesMembership sm on sm.Id=ts.Id");
 
-            Tuple<List<WorkPackaged>, List<WorkPackagedTreaty>> tuple = GetItems<WorkPackaged, WorkPackagedTreaty>(command);
+            Tuple<List<WorkPackaged>, List<SeriesMembership>> tuple = GetItems<WorkPackaged, SeriesMembership>(command);
 
             tuple.Item1
                 .ForEach(wp =>
-                {
-                    wp.Citation = tuple.Item2
+                    wp.SeriesMemberships = tuple.Item2
                         .Where(t => t.Id == wp.Id)
-                        .SingleOrDefault()?
-                        .Citation;
-                    wp.SeriesMembershipIds = tuple.Item2
-                        .Where(t => t.Id == wp.Id)
-                        .SingleOrDefault()?
-                        .SeriesMembershipIds;
-                });
+                        ?.ToArray()
+                );
 
             return tuple.Item1;
         }
@@ -145,29 +143,29 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where wp.Id=@Id;
-                select t.Id, sm.Citation, 
-	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
-	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
-	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
-	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
+                select t.Id, sm.TripleStoreId, sm.Citation, 
+	                case when cs.Id is null then 
+		                case when eus.Id is null then 
+			                case when ms.Id is null then null
+	                else 3 end else 2 end else 1 end as SeriesMembershipId	
                 from ProcedureTreaty t
                 left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
                 left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
                 left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
-                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
-                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id)
+                where t.Id=@Id
+                union
+                select t.Id, sm.TripleStoreId, sm.Citation, 4 as SeriesMembershipId
+                from ProcedureTreaty t
+                join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                join ProcedureSeriesMembership sm on sm.Id=ts.Id
                 where t.Id=@Id",
                 new { Id = id });
 
-            Tuple<WorkPackaged, List<WorkPackagedTreaty>> tuple = GetItem<WorkPackaged, WorkPackagedTreaty>(command);
+            Tuple<WorkPackaged, List<SeriesMembership>> tuple = GetItem<WorkPackaged, SeriesMembership>(command);
 
-            tuple.Item1.Citation = tuple.Item2
-                        .SingleOrDefault()?
-                        .Citation;
-            tuple.Item1.SeriesMembershipIds = tuple.Item2
-                        .SingleOrDefault()?
-                        .SeriesMembershipIds;
-
+            tuple.Item1.SeriesMemberships = tuple.Item2?.ToArray();
+                
             return tuple.Item1;
         }
 
@@ -190,29 +188,30 @@ namespace Parliament.ProcedureEditor.Web.Api
                 left join ProcedureTreaty t on t.Id=wp.Id
                 join [Procedure] p on p.Id=wp.ProcedureId
                 where wp.TripleStoreId=@TripleStoreId;
-                select t.Id, sm.Citation, 
-	                case when cs.Id is null then 0 else 1 end as IsCountrySeriesMembership, 
-	                case when eus.Id is null then 0 else 1 end as IsEuropeanUnionSeriesMembership,
-	                case when ms.Id is null then 0 else 1 end as IsMiscellaneousSeriesMembership, 
-	                case when ts.Id is null then 0 else 1 end as IsTreatySeriesMembership
-                from ProcedureWorkPackagedThing wp
-                join ProcedureTreaty t on t.Id=wp.Id
+                select t.Id, sm.TripleStoreId, sm.Citation, 
+	                case when cs.Id is null then 
+		                case when eus.Id is null then 
+			                case when ms.Id is null then null
+	                else 3 end else 2 end else 1 end as SeriesMembershipId	
+                from ProcedureTreaty t
+                join ProcedureWorkPackagedThing wp on wp.Id=t.Id
                 left join ProcerdureCountrySeriesMembership cs on cs.ProcedureTreatyId=t.Id
                 left join ProcerdureEuropeanUnionSeriesMembership eus on eus.ProcedureTreatyId=t.Id
                 left join ProcerdureMiscellaneousSeriesMembership ms on ms.ProcedureTreatyId=t.Id
-                left join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
-                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id,ts.Id)
+                left join ProcedureSeriesMembership sm on sm.Id=coalesce(cs.Id,eus.Id,ms.Id)
+                where wp.TripleStoreId=@TripleStoreId
+                union
+                select t.Id, sm.TripleStoreId, sm.Citation, 4 as SeriesMembershipId
+                from ProcedureTreaty t
+                join ProcedureWorkPackagedThing wp on wp.Id=t.Id
+                join ProcerdureTreatySeriesMembership ts on ts.ProcedureTreatyId=t.Id
+                join ProcedureSeriesMembership sm on sm.Id=ts.Id
                 where wp.TripleStoreId=@TripleStoreId",
                 new { TripleStoreId = tripleStoreId });
 
-            Tuple<WorkPackaged, List<WorkPackagedTreaty>> tuple = GetItem<WorkPackaged, WorkPackagedTreaty>(command);
+            Tuple<WorkPackaged, List<SeriesMembership>> tuple = GetItem<WorkPackaged, SeriesMembership>(command);
 
-            tuple.Item1.Citation = tuple.Item2
-                        .SingleOrDefault()?
-                        .Citation;
-            tuple.Item1.SeriesMembershipIds = tuple.Item2
-                        .SingleOrDefault()?
-                        .SeriesMembershipIds;
+            tuple.Item1.SeriesMemberships = tuple.Item2?.ToArray();
 
             return tuple.Item1;
         }
@@ -239,14 +238,16 @@ namespace Parliament.ProcedureEditor.Web.Api
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
                 (workPackaged.ProcedureId == 0) ||
                 ((workPackaged.WorkPackagedKind==WorkPackagedType.Treaty) &&
-                ((workPackaged.SeriesMemberships == null) ||
-                (workPackaged.SeriesMemberships?.Any() == false))))
+                (workPackaged.NonTreatySeriesMembership==null)))
+                return false;
+            string seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
+            if (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId))
                 return false;
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@WorkPackagedId", id);
             parameters.Add("@WebLink", workPackaged.WebLink);
             parameters.Add("@ProcedureId", workPackaged.ProcedureId);
-            parameters.Add("@WorkPackagedKind", (int)WorkPackagedType.Treaty);
+            parameters.Add("@WorkPackagedKind", (int)workPackaged.WorkPackagedKind);
             parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
             parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
             parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
@@ -254,11 +255,13 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
             parameters.Add("@MadeDate", workPackaged.MadeDate);
             parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
-            parameters.Add("@Citation", workPackaged.Citation);
-            parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Country));
-            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.EuropeanUnion));
-            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Miscellaneous));
-            parameters.Add("@IsTreatySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Treaty));
+            parameters.Add("@SeriesCitation", workPackaged.NonTreatySeriesMembership?.Citation);
+            parameters.Add("@SeriesTreatyCitation", workPackaged?.TreatySeriesMembership?.Citation);
+            parameters.Add("@SeriesMembershipTreatyTripleStoreId", seriesMembershipTreatyTripleStoreId);
+            parameters.Add("@IsCountrySeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Country);
+            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.EuropeanUnion);
+            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Miscellaneous);
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.TreatySeriesMembership !=null);
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("UpdateWorkPackaged",
                 parameters,
@@ -274,14 +277,16 @@ namespace Parliament.ProcedureEditor.Web.Api
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
                 (workPackaged.ProcedureId == 0) ||
                 ((workPackaged.WorkPackagedKind == WorkPackagedType.Treaty) &&
-                ((workPackaged.SeriesMemberships == null) ||
-                (workPackaged.SeriesMemberships?.Any() == false))))
+                (workPackaged.NonTreatySeriesMembership == null)))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
             string seriesMembershipTripleStoreId = GetTripleStoreId();
+            string seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
             if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
-                (string.IsNullOrWhiteSpace(workPackageTripleStoreId)))
+                (string.IsNullOrWhiteSpace(workPackageTripleStoreId)) ||
+                (string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||
+                (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId)))
                 return false;
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@TripleStoreId", tripleStoreId);
@@ -297,12 +302,14 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
             parameters.Add("@MadeDate", workPackaged.MadeDate);
             parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
-            parameters.Add("@Citation", workPackaged.Citation);
+            parameters.Add("@SeriesCitation", workPackaged.NonTreatySeriesMembership?.Citation);
+            parameters.Add("@SeriesTreatyCitation", workPackaged?.TreatySeriesMembership?.Citation);
             parameters.Add("@SeriesMembershipTripleStoreId", seriesMembershipTripleStoreId);
-            parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Country));
-            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.EuropeanUnion));
-            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Miscellaneous));
-            parameters.Add("@IsTreatySeriesMembership", workPackaged.SeriesMemberships?.Contains(SeriesMembershipType.Treaty));
+            parameters.Add("@SeriesMembershipTreatyTripleStoreId", seriesMembershipTreatyTripleStoreId);
+            parameters.Add("@IsCountrySeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Country);
+            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.EuropeanUnion);
+            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Miscellaneous);
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.TreatySeriesMembership != null);
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("CreateWorkPackaged",
                 parameters,

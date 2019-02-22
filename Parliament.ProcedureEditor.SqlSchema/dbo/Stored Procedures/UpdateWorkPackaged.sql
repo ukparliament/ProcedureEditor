@@ -12,7 +12,9 @@
 	@ComingIntoForceDate datetimeoffset(0)=null,
 	@MadeDate datetimeoffset(0)=null,
 	@LeadGovernmentOrganisationTripleStoreId nvarchar(16)=null,
-	@Citation nvarchar(max)=null,
+	@SeriesCitation nvarchar(max)=null,
+	@SeriesTreatyCitation nvarchar(max)=null,
+	@SeriesMembershipTreatyTripleStoreId nvarchar(16)=null,	/*always new*/
 	@IsCountrySeriesMembership bit=null,
 	@IsEuropeanUnionSeriesMembership bit=null,
 	@IsMiscellaneousSeriesMembership bit=null,
@@ -25,23 +27,18 @@ BEGIN
 	
 	delete from ProcedureStatutoryInstrument where Id=@WorkPackagedId
 	delete from ProcedureProposedNegativeStatutoryInstrument where Id=@WorkPackagedId
-			
+
 	declare @seriesId int
-	select top 1 @seriesId=s.Id from ProcedureSeriesMembership s
+	select @seriesId=s.Id from ProcedureSeriesMembership s
 	left join ProcerdureCountrySeriesMembership c on c.Id=s.Id
 	left join ProcerdureEuropeanUnionSeriesMembership e on e.Id=s.Id
-	left join ProcerdureMiscellaneousSeriesMembership m on m.Id=s.Id
-	left join ProcerdureTreatySeriesMembership t on t.Id=s.Id
-	where coalesce(c.ProcedureTreatyId,e.ProcedureTreatyId,m.ProcedureTreatyId,t.ProcedureTreatyId)=@WorkPackagedId
-			
+	left join ProcerdureMiscellaneousSeriesMembership m on m.Id=s.Id					
+	where coalesce(c.ProcedureTreatyId,e.ProcedureTreatyId,m.ProcedureTreatyId)=@WorkPackagedId
+						
 	delete from ProcerdureCountrySeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureEuropeanUnionSeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureMiscellaneousSeriesMembership where ProcedureTreatyId=@WorkPackagedId
-	delete from ProcerdureTreatySeriesMembership where ProcedureTreatyId=@WorkPackagedId
-			
-	delete from ProcedureTreaty where Id=@WorkPackagedId
-
-
+	
 	update ProcedureWorkPackagedThing 
 		set WebLink=@WebLink,
 			ProcedureId=@ProcedureId,
@@ -68,13 +65,17 @@ BEGIN
 				if (@WorkPackagedKind=3)
 				begin
 					
-					insert into ProcedureTreaty (Id, ProcedureTreatyName, TreatyNumber, TreatyPrefix,
-						ComingIntoForceNote, ComingIntoForceDate, LeadGovernmentOrganisationTripleStoreId)
-					values (@WorkPackagedId, @WorkPackagedThingName, @StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix,
-						@ComingIntoForceNote, @ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
+					update ProcedureTreaty set
+						ProcedureTreatyName=@WorkPackagedThingName,
+						TreatyNumber=@StatutoryInstrumentNumber,
+						TreatyPrefix=@StatutoryInstrumentNumberPrefix,
+						ComingIntoForceNote=@ComingIntoForceNote,
+						ComingIntoForceDate=@ComingIntoForceDate,
+						LeadGovernmentOrganisationTripleStoreId=@LeadGovernmentOrganisationTripleStoreId
+					where Id=@WorkPackagedId					
 
 					update ProcedureSeriesMembership
-						set Citation=@Citation
+						set Citation=@SeriesCitation
 					where Id=@seriesId
 
 					if (@IsCountrySeriesMembership=1)
@@ -92,10 +93,34 @@ BEGIN
 						insert into ProcerdureMiscellaneousSeriesMembership (Id, ProcedureTreatyId)
 						values (@seriesId, @WorkPackagedId)
 					end
+					declare @treatySeriesId int=null
+
+					select @treatySeriesId=s.Id from ProcedureSeriesMembership s
+					join ProcerdureTreatySeriesMembership t on t.Id=s.Id
+					where t.ProcedureTreatyId=@WorkPackagedId
+			
 					if (@IsTreatySeriesMembership=1)
 					begin
-						insert into ProcerdureTreatySeriesMembership (Id, ProcedureTreatyId)
-						values (@seriesId, @WorkPackagedId)
+						if (@treatySeriesId is null)
+						begin
+							insert into ProcedureSeriesMembership(TripleStoreId, Citation)
+							values (@SeriesMembershipTreatyTripleStoreId, @SeriesTreatyCitation)
+
+							set @treatySeriesId=SCOPE_IDENTITY()
+							insert into ProcerdureTreatySeriesMembership (Id, ProcedureTreatyId)
+							values (@treatySeriesId, @WorkPackagedId)
+						end
+						else
+						begin
+							update ProcedureSeriesMembership
+								set Citation=@SeriesTreatyCitation
+							where Id=@treatySeriesId
+						end
+					end
+					else
+					begin
+						delete from ProcerdureTreatySeriesMembership where ProcedureTreatyId=@WorkPackagedId
+						delete from ProcedureSeriesMembership where Id=@treatySeriesId
 					end
 				end
 

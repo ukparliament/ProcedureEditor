@@ -144,14 +144,16 @@ namespace Parliament.ProcedureEditor.Web.Api
             if ((workPackaged == null) ||
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
                 (workPackaged.ProcedureId == 0) ||
-                (workPackaged.SeriesMemberships==null) || 
-                (workPackaged.SeriesMemberships?.Any() == false))
+                (workPackaged.NonTreatySeriesMembership == null))
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
             string seriesMembershipTripleStoreId = GetTripleStoreId();
+            string seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
             if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
-                (string.IsNullOrWhiteSpace(workPackageTripleStoreId)))
+                (string.IsNullOrWhiteSpace(workPackageTripleStoreId))||
+                (string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||
+                (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId)))
                 return false;
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@TripleStoreId", tripleStoreId);
@@ -164,13 +166,15 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
             parameters.Add("@ComingIntoForceNote", workPackaged.ComingIntoForceNote);
             parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
-            parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId); 
-            parameters.Add("@Citation", workPackaged.Citation);
+            parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
+            parameters.Add("@SeriesCitation", workPackaged.NonTreatySeriesMembership.Citation);
+            parameters.Add("@SeriesTreatyCitation", workPackaged?.TreatySeriesMembership?.Citation);
             parameters.Add("@SeriesMembershipTripleStoreId", seriesMembershipTripleStoreId);
-            parameters.Add("@IsCountrySeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.Country));
-            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.EuropeanUnion));
-            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.Miscellaneous));
-            parameters.Add("@IsTreatySeriesMembership", workPackaged.SeriesMemberships.Contains(SeriesMembershipType.Treaty));
+            parameters.Add("@SeriesMembershipTreatyTripleStoreId", seriesMembershipTreatyTripleStoreId);
+            parameters.Add("@IsCountrySeriesMembership", workPackaged.NonTreatySeriesMembership.SeriesMembershipKind == SeriesMembershipType.Country);
+            parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.NonTreatySeriesMembership.SeriesMembershipKind == SeriesMembershipType.EuropeanUnion);
+            parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.NonTreatySeriesMembership.SeriesMembershipKind == SeriesMembershipType.Miscellaneous);
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.TreatySeriesMembership != null);
             parameters.Add("@SolarFeedId", id);
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("CreateWorkPackaged",

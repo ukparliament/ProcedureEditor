@@ -13,8 +13,10 @@
 	@ComingIntoForceDate datetimeoffset(0)=null,
 	@MadeDate datetimeoffset(0)=null,
 	@LeadGovernmentOrganisationTripleStoreId nvarchar(16)=null,
-	@Citation nvarchar(max)=null,
+	@SeriesCitation nvarchar(max)=null,
+	@SeriesTreatyCitation nvarchar(max)=null,
 	@SeriesMembershipTripleStoreId nvarchar(16)=null,
+	@SeriesMembershipTreatyTripleStoreId nvarchar(16)=null,
 	@IsCountrySeriesMembership bit=null,
 	@IsEuropeanUnionSeriesMembership bit=null,
 	@IsMiscellaneousSeriesMembership bit=null,
@@ -60,7 +62,7 @@ BEGIN
 						@ComingIntoForceNote, @ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
 
 					insert into ProcedureSeriesMembership(TripleStoreId, Citation)
-					values (@SeriesMembershipTripleStoreId, @Citation)
+					values (@SeriesMembershipTripleStoreId, @SeriesCitation)
 
 					set @seriesId=SCOPE_IDENTITY()
 
@@ -81,6 +83,10 @@ BEGIN
 					end
 					if (@IsTreatySeriesMembership=1)
 					begin
+						insert into ProcedureSeriesMembership(TripleStoreId, Citation)
+						values (@SeriesMembershipTreatyTripleStoreId, @SeriesTreatyCitation)
+
+						set @seriesId=SCOPE_IDENTITY()
 						insert into ProcerdureTreatySeriesMembership (Id, ProcedureTreatyId)
 						values (@seriesId, @id)
 					end

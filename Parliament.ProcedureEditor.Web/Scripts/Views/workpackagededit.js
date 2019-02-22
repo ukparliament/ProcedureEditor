@@ -20,8 +20,8 @@
 
                     WorkPackagedThingName: null,
                     LeadGovernmentOrganisationTripleStoreId: null,
-                    Citation: null,
-                    SeriesMembershipIds:[]
+                    NonTreatySeriesMembership: null,
+                    TreatySeriesMembership: null
                 };
             else
                 self.workPackaged = workPackaged;
@@ -38,8 +38,10 @@
             self.procedureId = ko.observable(self.workPackaged.ProcedureId);
             self.leadGovernmentOrganisationTripleStoreId = ko.observable(self.workPackaged.LeadGovernmentOrganisationTripleStoreId);
             self.citation = ko.observable(self.workPackaged.Citation);
-            self.seriesMembershipIds = ko.observableArray(self.workPackaged.SeriesMembershipIds);
-
+            self.seriesCitation = ko.observable(null);
+            self.seriesTreatyCitation = ko.observable(null);
+            self.seriesMembershipId = ko.observable(null);
+            self.isTreatySeriesMembership = ko.observable(false);
             self.procedures = ko.observableArray([]);
             self.procedureDictionary = ko.observable(null);
             $.getJSON(window.urls.getProcedures, function (data) {
@@ -50,8 +52,16 @@
                 self.procedureDictionary(procedureDictionary);
             });
 
+            if (self.workPackaged.NonTreatySeriesMembership !== null) {
+                self.seriesCitation(self.workPackaged.NonTreatySeriesMembership.Citation);
+                self.seriesMembershipId(self.workPackaged.NonTreatySeriesMembership.SeriesMembershipId);
+            }
+            if (self.workPackaged.TreatySeriesMembership !== null) {
+                self.seriesTreatyCitation(self.workPackaged.TreatySeriesMembership.Citation);
+                self.isTreatySeriesMembership(true);
+            }
             self.workPackagedKind = ko.computed(function () {
-                if ((self.procedureId() === null) || (self.procedureDictionary()===null))
+                if ((self.procedureId() === null) || (self.procedureDictionary() === null))
                     return 1;
                 var id = self.procedureDictionary()[self.procedureId().toString()];
                 switch (id) {
@@ -71,12 +81,23 @@
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null) &&
-                    (((self.workPackagedKind() === 3) && (self.seriesMembershipIds().length > 0)) || (self.workPackagedKind()!==3)) &&
+                    (((self.workPackagedKind() === 3) && (self.seriesMembershipId() !== null)) || (self.workPackagedKind() !== 3)) &&
                     (self.isBeingSaved() === false);
             });
 
             self.save = function () {
                 self.isBeingSaved(true);
+                var seriesMemberships = [];
+                if (self.seriesMembershipId() !== null)
+                    seriesMemberships.push({
+                        SeriesMembershipId: self.seriesMembershipId(),
+                        Citation: self.seriesCitation()
+                    });
+                if (self.isTreatySeriesMembership() === true)
+                    seriesMemberships.push({
+                        SeriesMembershipId: 4,
+                        Citation: self.seriesTreatyCitation()
+                    });
                 if (Number.isNaN(Number.parseInt(self.workPackaged.Id)))
                     $.ajax(window.urls.addWorkPackaged, {
                         method: "POST",
@@ -91,8 +112,7 @@
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
                             LeadGovernmentOrganisationTripleStoreId: self.leadGovernmentOrganisationTripleStoreId(),
-                            Citation: self.citation(),
-                            SeriesMembershipIds: self.seriesMembershipIds(),
+                            SeriesMemberships: seriesMemberships,
                             ProcedureId: self.procedureId(),
                             WorkPackagedKind: self.workPackagedKind()
                         }
@@ -121,8 +141,7 @@
                             ComingIntoForceDate: self.comingIntoForceDate(),
                             MadeDate: self.madeDate(),
                             LeadGovernmentOrganisationTripleStoreId: self.leadGovernmentOrganisationTripleStoreId(),
-                            Citation: self.citation(),
-                            SeriesMembershipIds: self.seriesMembershipIds(),
+                            SeriesMemberships: seriesMemberships,
                             ProcedureId: self.procedureId(),
                             WorkPackagedKind: self.workPackagedKind()
                         }

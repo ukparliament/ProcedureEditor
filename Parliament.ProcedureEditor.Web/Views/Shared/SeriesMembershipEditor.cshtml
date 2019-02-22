@@ -1,0 +1,27 @@
+﻿<label>Series*</label>
+<div class="form-group">
+    <div class="form-check">
+        <input id="s1" class="form-check-input" type="radio" name="series" data-bind="checked: seriesMembershipId, checkedValue: @((int)SeriesMembershipType.Country)" />
+        <label for="s1">Country</label>
+    </div>
+    <div class="form-check">
+        <input id="s2" class="form-check-input" type="radio" name="series" data-bind="checked: seriesMembershipId, checkedValue: @((int)SeriesMembershipType.EuropeanUnion)" />
+        <label for="s2">European Union</label>
+    </div>
+    <div class="form-check">
+        <input id="s3" class="form-check-input" type="radio" name="series" data-bind="checked: seriesMembershipId, checkedValue: @((int)SeriesMembershipType.Miscellaneous)" />
+        <label for="s3">Miscellaneous</label>
+    </div>
+    <div class="form-group">
+        <label>Series citation</label>
+        <input type="text" class="form-control form-control-md" data-bind="textInput: seriesCitation" />
+    </div>
+</div>
+<div class="form-check">
+    <input id="s4" class="form-check-input" type="checkbox" name="series" data-bind="checked: isTreatySeriesMembership" />
+    <label for="s4">Treaty</label>
+</div>
+<div class="form-group" data-bind="visible: isTreatySeriesMembership">
+    <label>Series citation (treaty)</label>
+    <input type="text" class="form-control form-control-md" data-bind="textInput: seriesTreatyCitation" />
+</div>

@@ -111,4 +111,5 @@ define(["knockout", "jquery"], function (ko, $) {
     ko.components.register("laying-body-selector", { require: '/Scripts/Modules/layingbodyselector.js' });    
     ko.components.register("government-organisation-selector", { require: '/Scripts/Modules/governmentorganisationselector.js' });    
     ko.components.register("procedure-selector", { require: '/Scripts/Modules/procedureselector.js' });    
+    ko.components.register("series-membership-editor", { require: '/Scripts/Modules/seriesmembershipeditor.js' });    
 });

@@ -150,6 +150,7 @@
     <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\Modules\businessitemlistitem.js" />
+    <Content Include="Scripts\Modules\seriesmembershipeditor.js" />
     <Content Include="Scripts\Modules\governmentorganisationselector.js" />
     <Content Include="Scripts\Modules\procedureselector.js" />
     <Content Include="Scripts\Modules\stepselector.js" />
@@ -241,7 +242,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Procedure.cs" />
-    <Compile Include="Models\WorkPackagedTreaty.cs" />
+    <Compile Include="Models\SeriesMembership.cs" />
     <Compile Include="Models\WorkPackagedType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -297,6 +298,7 @@
     <Content Include="Views\SolrFeed\Treaty\Index.cshtml" />
     <Content Include="Views\SolrFeed\Treaty\Edit.cshtml" />
     <Content Include="Views\Shared\GovernmentOrganisationSelector.cshtml" />
+    <Content Include="Views\Shared\SeriesMembershipEditor.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

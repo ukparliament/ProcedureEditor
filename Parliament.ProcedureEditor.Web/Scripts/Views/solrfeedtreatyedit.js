@@ -9,12 +9,14 @@
             self.comingIntoForceNote = ko.observable(null);
             self.comingIntoForceDate = ko.observable(null);
             self.leadGovernmentOrganisationTripleStoreId = ko.observable(null);
-            self.citation = ko.observable(treaty.Citation);
+            self.seriesCitation = ko.observable(treaty.Citation);
+            self.seriesTreatyCitation = ko.observable(null);
             self.webLink = ko.observable(treaty.WebUrl);
             self.procedureWorkPackageableThingTypeId = ko.observable(null);
             self.procedureName = ko.observable(null);
             self.procedureId = ko.observable(null);
-            self.seriesMembershipIds = ko.observableArray([]);
+            self.seriesMembershipId = ko.observable(null);
+            self.isTreatySeriesMembership = ko.observable(false);
             self.isNotValidResponse = ko.observable(false);
             self.warningText = "Are you sure you wish to delete '" + treaty.Title + "' record?";
             self.isBeingSaved = ko.observable(false);
@@ -26,7 +28,7 @@
                         self.procedureId(data[i].Id);
                         self.procedureName(data[i].ProcedureName);
                         break;
-                    }                
+                    }
             });
 
             self.showDeletePopup = function () {
@@ -36,12 +38,23 @@
             self.canSave = ko.computed(function () {
                 return (self.workPackagedThingName().length > 0) &&
                     (self.procedureId() !== null) &&
-                    (self.seriesMembershipIds().length>0) &&
+                    (self.seriesMembershipId() !== null) &&
                     (self.isBeingSaved() === false);
             });
 
             self.save = function () {
                 self.isBeingSaved(true);
+                var seriesMemberships = [];
+                if (self.seriesMembershipId() !== null)
+                    seriesMemberships.push({
+                        SeriesMembershipId: self.seriesMembershipId(),
+                        Citation: self.seriesCitation()
+                    });
+                if (self.isTreatySeriesMembership() === true)
+                    seriesMemberships.push({
+                        SeriesMembershipId: 4,
+                        Citation: self.seriesTreatyCitation()
+                    });
                 $.ajax(window.urls.addSolrTreaty.replace("{id}", self.treaty.Id), {
                     method: "POST",
                     dataType: "json",
@@ -53,8 +66,7 @@
                         WebLink: self.webLink(),
                         ComingIntoForceDate: self.comingIntoForceDate(),
                         LeadGovernmentOrganisationTripleStoreId: self.leadGovernmentOrganisationTripleStoreId(),
-                        Citation: self.citation(),
-                        SeriesMembershipIds: self.seriesMembershipIds(),
+                        SeriesMemberships: seriesMemberships,
                         ProcedureId: self.procedureId()
                     }
                 }).done(function (data) {
