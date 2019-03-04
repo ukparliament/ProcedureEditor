@@ -13,6 +13,7 @@
 	@MadeDate datetimeoffset(0)=null,
 	@LeadGovernmentOrganisationTripleStoreId nvarchar(16)=null,
 	@SeriesCitation nvarchar(max)=null,
+	@SeriesMembershipTripleStoreId nvarchar(16)=null,	/*always new*/
 	@SeriesTreatyCitation nvarchar(max)=null,
 	@SeriesMembershipTreatyTripleStoreId nvarchar(16)=null,	/*always new*/
 	@IsCountrySeriesMembership bit=null,
@@ -38,6 +39,7 @@ BEGIN
 	delete from ProcerdureCountrySeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureEuropeanUnionSeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureMiscellaneousSeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcedureTreaty where Id=@WorkPackagedId
 	
 	update ProcedureWorkPackagedThing 
 		set WebLink=@WebLink,
@@ -65,18 +67,26 @@ BEGIN
 				if (@WorkPackagedKind=3)
 				begin
 					
-					update ProcedureTreaty set
-						ProcedureTreatyName=@WorkPackagedThingName,
-						TreatyNumber=@StatutoryInstrumentNumber,
-						TreatyPrefix=@StatutoryInstrumentNumberPrefix,
-						ComingIntoForceNote=@ComingIntoForceNote,
-						ComingIntoForceDate=@ComingIntoForceDate,
-						LeadGovernmentOrganisationTripleStoreId=@LeadGovernmentOrganisationTripleStoreId
-					where Id=@WorkPackagedId					
+					insert into ProcedureTreaty (Id, ProcedureTreatyName,
+						TreatyNumber, TreatyPrefix, ComingIntoForceNote,
+						ComingIntoForceDate, LeadGovernmentOrganisationTripleStoreId)
+					values (@WorkPackagedId, @WorkPackagedThingName,
+						@StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix, @ComingIntoForceNote,
+						@ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
 
-					update ProcedureSeriesMembership
-						set Citation=@SeriesCitation
-					where Id=@seriesId
+					if (@seriesId is null)
+					begin
+						insert into ProcedureSeriesMembership(TripleStoreId, Citation)
+						values (@SeriesMembershipTripleStoreId, @SeriesCitation)
+
+						set @seriesId=SCOPE_IDENTITY()
+					end
+					else
+					begin
+						update ProcedureSeriesMembership
+							set Citation=@SeriesCitation
+						where Id=@seriesId
+					end
 
 					if (@IsCountrySeriesMembership=1)
 					begin
