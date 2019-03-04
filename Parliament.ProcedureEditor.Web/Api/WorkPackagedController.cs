@@ -240,8 +240,10 @@ namespace Parliament.ProcedureEditor.Web.Api
                 ((workPackaged.WorkPackagedKind==WorkPackagedType.Treaty) &&
                 (workPackaged.NonTreatySeriesMembership==null)))
                 return false;
+            string seriesMembershipTripleStoreId = GetTripleStoreId();
             string seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
-            if (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId))
+            if ((string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||
+                (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId)))
                 return false;
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@WorkPackagedId", id);
@@ -256,6 +258,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@MadeDate", workPackaged.MadeDate);
             parameters.Add("@LeadGovernmentOrganisationTripleStoreId", workPackaged.LeadGovernmentOrganisationTripleStoreId);
             parameters.Add("@SeriesCitation", workPackaged.NonTreatySeriesMembership?.Citation);
+            parameters.Add("@SeriesMembershipTripleStoreId", seriesMembershipTripleStoreId);
             parameters.Add("@SeriesTreatyCitation", workPackaged?.TreatySeriesMembership?.Citation);
             parameters.Add("@SeriesMembershipTreatyTripleStoreId", seriesMembershipTreatyTripleStoreId);
             parameters.Add("@IsCountrySeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Country);

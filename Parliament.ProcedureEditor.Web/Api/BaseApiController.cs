@@ -146,7 +146,12 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Execute(command);
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    connection.Execute(sql: command.CommandText, param: command.Parameters, transaction: transaction, commandType: command.CommandType);
+                    transaction.Commit();
+                }
             }
             return true;
         }
