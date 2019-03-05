@@ -55,21 +55,26 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpGet]
         [ContentNegotiation("solrfeed/businessitem", ContentType.JSON)]
-        public List<SolrStatutoryInstrument> GetWorkPackaged()
+        public List<BusinessItemCandidateModel> GetBusinessItemCandidates()
         {
-            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as Title,
-                si.StatutoryInstrumentNumberPrefix as SIPrefix, si.StatutoryInstrumentNumber as SINumber,
-                s.WebUrl, si.ComingIntoForceNote,
-                si.ComingIntoForceDate, s.MadeDate, s.LaidDate, p.ProcedureName as SIProcedure,
-                case when si.ProcedureStatutoryInstrumentName is null then cast (0 as bit) else cast (1 as bit) end as IsStatutoryInstrument
-                from SolrStatutoryInstrumentData s
-                join ProcedureWorkPackagedThing wp on wp.TripleStoreId=s.TripleStoreId
-                join [Procedure] p on p.Id=wp.ProcedureId
+            CommandDefinition command = new CommandDefinition(@"select wp.Id as WorkPackagedId, wp.TripleStoreId as WorkPackagedTripleStoreId, p.ProcedureName,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
+	                coalesce(ssi.LaidDate, st.LaidDate) as LaidDate, ssi.MadeDate,
+	                coalesce(ssi.WebUrl, st.WebUrl) as WebUrl,
+	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as Number,
+                    coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as Prefix,
+                    wp.ProcedureId
+                from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
-                where s.TripleStoreId is not null and s.IsDeleted=0 and not exists (select 1 from SolrBusinessItem sbi where sbi.SolrStatutoryInstrumentDataId=s.Id)");
-            return GetItems<SolrStatutoryInstrument>(command);
+                left join ProcedureTreaty t on t.Id=wp.Id
+                left join SolrStatutoryInstrumentData ssi on ssi.TripleStoreId=wp.TripleStoreId 
+	                and ssi.IsDeleted=0 and not exists (select 1 from SolrBusinessItem sbi where sbi.SolrStatutoryInstrumentDataId=ssi.Id)
+                left join SolrTreatyData st on st.TripleStoreId=wp.TripleStoreId 
+	                and st.IsDeleted=0 and not exists (select 1 from SolrTreatyBusinessItem stbi where stbi.SolrTreatyDataId=st.Id)
+                join [Procedure] p on p.Id=wp.ProcedureId
+                where ssi.Id is not null or st.Id is not null");
+            return GetItems<BusinessItemCandidateModel>(command);
         }
 
         [HttpGet]
@@ -98,22 +103,27 @@ namespace Parliament.ProcedureEditor.Web.Api
 
         [HttpGet]
         [ContentNegotiation("solrfeed/businessitem/{id:int}", ContentType.JSON)]
-        public SolrStatutoryInstrument GetWorkPackaged(int id)
+        public BusinessItemCandidateModel GetBusinessItemCandidate(int id)
         {
-            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId,
-                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName) as Title,
-                si.StatutoryInstrumentNumberPrefix as SIPrefix, si.StatutoryInstrumentNumber as SINumber,
-                s.WebUrl, si.ComingIntoForceNote,
-                si.ComingIntoForceDate, s.MadeDate, s.LaidDate, p.ProcedureName as SIProcedure,
-                case when si.ProcedureStatutoryInstrumentName is null then cast (0 as bit) else cast (1 as bit) end as IsStatutoryInstrument
-                from SolrStatutoryInstrumentData s
-                join ProcedureWorkPackagedThing wp on wp.TripleStoreId=s.TripleStoreId
-                join [Procedure] p on p.Id=wp.ProcedureId
+            CommandDefinition command = new CommandDefinition(@"select wp.Id as WorkPackagedId, wp.TripleStoreId as WorkPackagedTripleStoreId, p.ProcedureName,
+	                coalesce(si.ProcedureStatutoryInstrumentName, nsi.ProcedureProposedNegativeStatutoryInstrumentName, t.ProcedureTreatyName) as WorkPackagedThingName,
+	                coalesce(ssi.LaidDate, st.LaidDate) as LaidDate, ssi.MadeDate,
+	                coalesce(ssi.WebUrl, st.WebUrl) as WebUrl,
+	                coalesce(si.StatutoryInstrumentNumber, t.TreatyNumber) as Number,
+                    coalesce(si.StatutoryInstrumentNumberPrefix, t.TreatyPrefix) as Prefix,
+                    wp.ProcedureId
+                from ProcedureWorkPackagedThing wp
                 left join ProcedureStatutoryInstrument si on si.Id=wp.Id
                 left join ProcedureProposedNegativeStatutoryInstrument nsi on nsi.Id=wp.Id
-                where s.TripleStoreId is not null and s.IsDeleted=0 and s.Id=@Id and not exists (select 1 from SolrBusinessItem sbi where sbi.SolrStatutoryInstrumentDataId=s.Id)",
+                left join ProcedureTreaty t on t.Id=wp.Id
+                left join SolrStatutoryInstrumentData ssi on ssi.TripleStoreId=wp.TripleStoreId 
+	                and ssi.IsDeleted=0 and not exists (select 1 from SolrBusinessItem sbi where sbi.SolrStatutoryInstrumentDataId=ssi.Id)
+                left join SolrTreatyData st on st.TripleStoreId=wp.TripleStoreId 
+	                and st.IsDeleted=0 and not exists (select 1 from SolrTreatyBusinessItem stbi where stbi.SolrTreatyDataId=st.Id)
+                join [Procedure] p on p.Id=wp.ProcedureId
+                where (ssi.Id is not null or st.Id is not null) and wp.Id=@Id",
                 new { Id = id });
-            return GetItem<SolrStatutoryInstrument>(command);
+            return GetItem<BusinessItemCandidateModel>(command);
         }
 
         [HttpGet]
@@ -218,8 +228,8 @@ namespace Parliament.ProcedureEditor.Web.Api
         }
 
         [HttpPost]
-        [ContentNegotiation("solrfeed/businessitem/{id:int}", ContentType.JSON)]
-        public bool PostBusinessItem(int id, [FromBody]BusinessItemSolrEditModel[] businessItems)
+        [ContentNegotiation("solrfeed/businessitem/{id}", ContentType.JSON)]
+        public bool PostBusinessItem(string id, [FromBody]BusinessItemSolrEditModel[] businessItems)
         {
             if ((businessItems == null) ||
                 (businessItems.Any() == false))
@@ -266,8 +276,11 @@ namespace Parliament.ProcedureEditor.Web.Api
                         ModifiedAt = DateTimeOffset.UtcNow
                     }));
                 updates.Add(new CommandDefinition(@"insert into SolrBusinessItem (SolrStatutoryInstrumentDataId, TripleStoreId)
-                    values(@SolrStatutoryInstrumentDataId, @TripleStoreId)",
-                new { SolrStatutoryInstrumentDataId = id, TripleStoreId = tripleStoreId }));
+                    select Id, @TripleStoreId from SolrStatutoryInstrumentData where TripleStoreId=@Id",
+                new { TripleStoreId = tripleStoreId, Id=id }));
+                updates.Add(new CommandDefinition(@"insert into SolrTreatyBusinessItem (SolrTreatyDataId, TripleStoreId)
+                    select Id, @TripleStoreId from SolrTreatyData where TripleStoreId=@Id",
+                new { TripleStoreId = tripleStoreId, Id = id }));
             }
 
             return Execute(updates.ToArray());
@@ -294,6 +307,23 @@ namespace Parliament.ProcedureEditor.Web.Api
                 set IsDeleted=1 where Id=@id",
                 new { Id = id });
             if (Execute(command))
+                return true;
+            else
+                return false;
+        }
+
+        [HttpDelete]
+        [ContentNegotiation("solrfeed/businessitem/{id}", ContentType.JSON)]
+        public bool DeleteBusinessItemCandidate(string id)
+        {
+            List<CommandDefinition> updates = new List<CommandDefinition>();
+            updates.Add(new CommandDefinition(@"update SolrStatutoryInstrumentData
+                set IsDeleted=1 where TripleStoreId=@TripleStoreId",
+                new { TripleStoreId = id }));
+            updates.Add(new CommandDefinition(@"update SolrTreatyData
+                set IsDeleted=1 where TripleStoreId=@TripleStoreId",
+                new { TripleStoreId = id }));
+            if (Execute(updates.ToArray()))
                 return true;
             else
                 return false;

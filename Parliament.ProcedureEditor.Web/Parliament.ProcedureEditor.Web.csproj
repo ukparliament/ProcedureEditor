@@ -218,6 +218,7 @@
     <Compile Include="Api\WorkPackagedController.cs" />
     <Compile Include="Api\Configuration\ContentNegotiationAttribute.cs" />
     <Compile Include="Controllers\MvcController.cs" />
+    <Compile Include="Models\BusinessItemCandidateModel.cs" />
     <Compile Include="Models\BusinessItemSolrEditModel.cs" />
     <Compile Include="Models\RouteProcedure.cs" />
     <Compile Include="Models\LayingItemEditParameters.cs" />

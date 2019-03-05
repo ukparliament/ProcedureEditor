@@ -14,13 +14,13 @@
         <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <ul class="list-group list-group-flush" data-bind="foreach: businessItems">
             <li class="list-group-item">
-                <h5 data-bind="text: Title"></h5>
-                <h6><span>Work packaged Id: </span><span data-bind="text: TripleStoreId"></span></h6>
-                <h6 data-bind="visible: SIProcedure!=null"><span>Procedure: </span><span data-bind="text: SIProcedure"></span></h6>
-                <h6 data-bind="visible: SIPrefix!=null"><span>Prefix: </span><span data-bind="text: SIPrefix"></span></h6>
-                <h6 data-bind="visible: SINumber!=null"><span>Number: </span><span data-bind="text: SINumber"></span></h6>
+                <h5 data-bind="text: WorkPackagedThingName"></h5>
+                <h6><span>Work packaged Id: </span><span data-bind="text: WorkPackagedTripleStoreId"></span></h6>
+                <h6 data-bind="visible: ProcedureName!=null"><span>Procedure: </span><span data-bind="text: ProcedureName"></span></h6>
+                <h6 data-bind="visible: Prefix!=null"><span>Prefix: </span><span data-bind="text: Prefix"></span></h6>
+                <h6 data-bind="visible: Number!=null"><span>Number: </span><span data-bind="text: Number"></span></h6>
                 <h6 data-bind="visible: WebUrl!=null"><span>Link: </span><span data-bind="text: WebUrl"></span></h6>
-                <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:window.urls.editSolrBusinessItem.replace('{id}',Id) }">Create business items</a>
+                <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:window.urls.editSolrBusinessItem.replace('{id}',WorkPackagedId) }">Create business items</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
         </ul>
@@ -29,7 +29,7 @@
 
 
 
-<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteStatutoryInstrument, actionText: 'Delete'"></popup>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteSolrBusinessItem, actionText: 'Delete'"></popup>
 
 @section scripts{
     <script data-main="/Scripts/Views/solrfeedbusinessitemlist.js" src="~/Scripts/require.js"></script>

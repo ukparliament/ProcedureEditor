@@ -103,5 +103,6 @@
     <Build Include="dbo\Tables\ProcerdureCountrySeriesMembership.sql" />
     <Build Include="dbo\Tables\ProcedureSeriesMembership.sql" />
     <Build Include="dbo\Stored Procedures\UpdateWorkPackaged.sql" />
+    <Build Include="dbo\Tables\SolrTreatyBusinessItem.sql" />
   </ItemGroup>
 </Project>

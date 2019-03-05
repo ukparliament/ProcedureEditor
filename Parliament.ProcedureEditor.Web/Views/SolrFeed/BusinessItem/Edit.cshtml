@@ -4,10 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<input id="statutoryInstrumentId" type="hidden" value="@Model" />
+<input id="workPackagedId" type="hidden" value="@Model" />
 <section>
     <div class="container">
-        <h2>Create business items from statutory instrument</h2>
+        <h2>Create business items from Solr</h2>
     </div>
 </section>
 
@@ -15,12 +15,12 @@
     <div class="container">
         <h5 class="text-danger" data-bind="visible: isNotValidResponse" style="display:none">Something went wrong.</h5>
         <div>
-            <h5 data-bind="text: statutoryInstrument.Title"></h5>
-            <h6 data-bind="text: statutoryInstrument.SIProcedure"></h6>
-            <h6 data-bind="text: statutoryInstrument.WebUrl"></h6>
-            <h6 data-bind="text: statutoryInstrument.SIPrefix"></h6>
-            <h6 data-bind="text: statutoryInstrument.SINumber"></h6>
-            <h6 data-bind="text: statutoryInstrument.TripleStoreId"></h6>
+            <h5 data-bind="text: businessItemCandidate.WorkPackagedThingName"></h5>
+            <h6 data-bind="text: businessItemCandidate.ProcedureName"></h6>
+            <h6 data-bind="text: businessItemCandidate.WebUrl"></h6>
+            <h6 data-bind="text: businessItemCandidate.Prefix"></h6>
+            <h6 data-bind="text: businessItemCandidate.Number"></h6>
+            <h6 data-bind="text: businessItemCandidate.WorkPackagedTripleStoreId"></h6>
             <section>
                 <h6>Business item (created)</h6>
                 <div class="form-group">
@@ -78,7 +78,7 @@
     </div>
 </section>
 
-<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteStatutoryInstrument, actionText: 'Delete'"></popup>
+<popup params="popupText:warningText, isPopupVisible:isDeletePopupVisible, action:deleteSolrBusinessItem, actionText: 'Delete'"></popup>
 
 @section scripts{
     <script data-main="/Scripts/Views/solrfeedbusinessitemedit.js" src="~/Scripts/require.js"></script>

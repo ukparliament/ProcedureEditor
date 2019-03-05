@@ -9,14 +9,14 @@
             self.isNotValidResponse = ko.observable(false);
             self.soonToBeDeleted = null;
 
-            self.showDeletePopup = function (statutoryInstruments) {
-                self.soonToBeDeleted = statutoryInstruments;
-                self.warningText("Are you sure you wish to delete '" + statutoryInstruments.Title + "' record?");
+            self.showDeletePopup = function (businessItem) {
+                self.soonToBeDeleted = businessItem;
+                self.warningText("Are you sure you wish to delete '" + businessItem.WorkPackagedThingName + "' record?");
                 self.isDeletePopupVisible(true);
             };
 
-            self.deleteStatutoryInstrument = function () {
-                $.ajax(window.urls.deleteSolrStatutoryInstrument.replace("{id}", self.soonToBeDeleted.Id), {
+            self.deleteSolrBusinessItem = function () {
+                $.ajax(window.urls.deleteSolrBusinessItem.replace("{tripleStoreId}", self.soonToBeDeleted.WorkPackagedTripleStoreId), {
                     method: "DELETE",
                     dataType: "json"
                 }).done(function (data) {
