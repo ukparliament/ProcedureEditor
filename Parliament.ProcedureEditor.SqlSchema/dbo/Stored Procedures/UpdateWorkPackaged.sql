@@ -13,9 +13,9 @@
 	@MadeDate datetimeoffset(0)=null,
 	@LeadGovernmentOrganisationTripleStoreId nvarchar(16)=null,
 	@SeriesCitation nvarchar(max)=null,
-	@SeriesMembershipTripleStoreId nvarchar(16)=null,	/*always new*/
+	@SeriesMembershipTripleStoreId nvarchar(16)=null,
 	@SeriesTreatyCitation nvarchar(max)=null,
-	@SeriesMembershipTreatyTripleStoreId nvarchar(16)=null,	/*always new*/
+	@SeriesMembershipTreatyTripleStoreId nvarchar(16)=null,
 	@IsCountrySeriesMembership bit=null,
 	@IsEuropeanUnionSeriesMembership bit=null,
 	@IsMiscellaneousSeriesMembership bit=null,
@@ -29,16 +29,12 @@ BEGIN
 	delete from ProcedureStatutoryInstrument where Id=@WorkPackagedId
 	delete from ProcedureProposedNegativeStatutoryInstrument where Id=@WorkPackagedId
 
-	declare @seriesId int
-	select @seriesId=s.Id from ProcedureSeriesMembership s
-	left join ProcerdureCountrySeriesMembership c on c.Id=s.Id
-	left join ProcerdureEuropeanUnionSeriesMembership e on e.Id=s.Id
-	left join ProcerdureMiscellaneousSeriesMembership m on m.Id=s.Id					
-	where coalesce(c.ProcedureTreatyId,e.ProcedureTreatyId,m.ProcedureTreatyId)=@WorkPackagedId
-						
 	delete from ProcerdureCountrySeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureEuropeanUnionSeriesMembership where ProcedureTreatyId=@WorkPackagedId
 	delete from ProcerdureMiscellaneousSeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcerdureTreatySeriesMembership where ProcedureTreatyId=@WorkPackagedId
+	delete from ProcedureSeriesMembership where TripleStoreId=@SeriesMembershipTripleStoreId
+	delete from ProcedureSeriesMembership where TripleStoreId=@SeriesMembershipTreatyTripleStoreId
 	delete from ProcedureTreaty where Id=@WorkPackagedId
 	
 	update ProcedureWorkPackagedThing 
@@ -74,20 +70,13 @@ BEGIN
 						@StatutoryInstrumentNumber, @StatutoryInstrumentNumberPrefix, @ComingIntoForceNote,
 						@ComingIntoForceDate, @LeadGovernmentOrganisationTripleStoreId)
 
-					if (@seriesId is null)
-					begin
-						insert into ProcedureSeriesMembership(TripleStoreId, Citation)
-						values (@SeriesMembershipTripleStoreId, @SeriesCitation)
+					declare @seriesId int;
 
-						set @seriesId=SCOPE_IDENTITY()
-					end
-					else
-					begin
-						update ProcedureSeriesMembership
-							set Citation=@SeriesCitation
-						where Id=@seriesId
-					end
+					insert into ProcedureSeriesMembership(TripleStoreId, Citation)
+					values (@SeriesMembershipTripleStoreId, @SeriesCitation)
 
+					set @seriesId=SCOPE_IDENTITY()
+					
 					if (@IsCountrySeriesMembership=1)
 					begin
 						insert into ProcerdureCountrySeriesMembership (Id, ProcedureTreatyId)
@@ -102,36 +91,18 @@ BEGIN
 					begin
 						insert into ProcerdureMiscellaneousSeriesMembership (Id, ProcedureTreatyId)
 						values (@seriesId, @WorkPackagedId)
-					end
-					declare @treatySeriesId int=null
+					end					
 
-					select @treatySeriesId=s.Id from ProcedureSeriesMembership s
-					join ProcerdureTreatySeriesMembership t on t.Id=s.Id
-					where t.ProcedureTreatyId=@WorkPackagedId
-			
 					if (@IsTreatySeriesMembership=1)
 					begin
-						if (@treatySeriesId is null)
-						begin
-							insert into ProcedureSeriesMembership(TripleStoreId, Citation)
-							values (@SeriesMembershipTreatyTripleStoreId, @SeriesTreatyCitation)
+						declare @treatySeriesId int=null
+						insert into ProcedureSeriesMembership(TripleStoreId, Citation)
+						values (@SeriesMembershipTreatyTripleStoreId, @SeriesTreatyCitation)
 
-							set @treatySeriesId=SCOPE_IDENTITY()
-							insert into ProcerdureTreatySeriesMembership (Id, ProcedureTreatyId)
-							values (@treatySeriesId, @WorkPackagedId)
-						end
-						else
-						begin
-							update ProcedureSeriesMembership
-								set Citation=@SeriesTreatyCitation
-							where Id=@treatySeriesId
-						end
-					end
-					else
-					begin
-						delete from ProcerdureTreatySeriesMembership where ProcedureTreatyId=@WorkPackagedId
-						delete from ProcedureSeriesMembership where Id=@treatySeriesId
-					end
+						set @treatySeriesId=SCOPE_IDENTITY()
+						insert into ProcerdureTreatySeriesMembership (Id, ProcedureTreatyId)
+						values (@treatySeriesId, @WorkPackagedId)						
+					end					
 				end
 
 END
