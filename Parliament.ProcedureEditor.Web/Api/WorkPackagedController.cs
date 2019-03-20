@@ -165,7 +165,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             Tuple<WorkPackaged, List<SeriesMembership>> tuple = GetItem<WorkPackaged, SeriesMembership>(command);
 
             tuple.Item1.SeriesMemberships = tuple.Item2?.ToArray();
-                
+
             return tuple.Item1;
         }
 
@@ -237,14 +237,29 @@ namespace Parliament.ProcedureEditor.Web.Api
             if ((workPackaged == null) ||
                 (string.IsNullOrWhiteSpace(workPackaged.WorkPackagedThingName)) ||
                 (workPackaged.ProcedureId == 0) ||
-                ((workPackaged.WorkPackagedKind==WorkPackagedType.Treaty) &&
-                (workPackaged.NonTreatySeriesMembership==null)))
+                ((workPackaged.WorkPackagedKind == WorkPackagedType.Treaty) &&
+                (workPackaged.NonTreatySeriesMembership == null)))
                 return false;
-            string seriesMembershipTripleStoreId = GetTripleStoreId();
-            string seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
-            if ((string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||
-                (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId)))
-                return false;
+            string seriesMembershipTripleStoreId = null;
+            string seriesMembershipTreatyTripleStoreId = null;
+            if (workPackaged.WorkPackagedKind == WorkPackagedType.Treaty)
+            {
+                if (string.IsNullOrWhiteSpace(workPackaged.NonTreatySeriesMembership.TripleStoreId))
+                    seriesMembershipTripleStoreId = GetTripleStoreId();
+                else
+                    seriesMembershipTripleStoreId = workPackaged.NonTreatySeriesMembership.TripleStoreId;
+                if (workPackaged.TreatySeriesMembership != null)
+                {
+                    if (string.IsNullOrWhiteSpace(workPackaged.TreatySeriesMembership.TripleStoreId))
+                        seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
+                    else
+                        seriesMembershipTreatyTripleStoreId = workPackaged.TreatySeriesMembership.TripleStoreId;
+                    if (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId))
+                        return false;
+                }
+                if (string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId))
+                    return false;
+            }
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@WorkPackagedId", id);
             parameters.Add("@WebLink", workPackaged.WebLink);
@@ -264,7 +279,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@IsCountrySeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Country);
             parameters.Add("@IsEuropeanUnionSeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.EuropeanUnion);
             parameters.Add("@IsMiscellaneousSeriesMembership", workPackaged.NonTreatySeriesMembership?.SeriesMembershipKind == SeriesMembershipType.Miscellaneous);
-            parameters.Add("@IsTreatySeriesMembership", workPackaged.TreatySeriesMembership !=null);
+            parameters.Add("@IsTreatySeriesMembership", workPackaged.TreatySeriesMembership != null);
             parameters.Add("@ModifiedBy", EMail);
             CommandDefinition command = new CommandDefinition("UpdateWorkPackaged",
                 parameters,
@@ -284,8 +299,16 @@ namespace Parliament.ProcedureEditor.Web.Api
                 return false;
             string tripleStoreId = GetTripleStoreId();
             string workPackageTripleStoreId = GetTripleStoreId();
-            string seriesMembershipTripleStoreId = GetTripleStoreId();
-            string seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
+            string seriesMembershipTripleStoreId = null;
+            string seriesMembershipTreatyTripleStoreId = null;
+            if (workPackaged.WorkPackagedKind == WorkPackagedType.Treaty)
+            {
+                seriesMembershipTripleStoreId = GetTripleStoreId();
+                seriesMembershipTreatyTripleStoreId = GetTripleStoreId();
+                if ((string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||
+                    (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId)))
+                    return false;
+            }
             if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
                 (string.IsNullOrWhiteSpace(workPackageTripleStoreId)) ||
                 (string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||

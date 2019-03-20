@@ -88,16 +88,26 @@
             self.save = function () {
                 self.isBeingSaved(true);
                 var seriesMemberships = [];
-                if (self.seriesMembershipId() !== null)
+                if (self.seriesMembershipId() !== null) {
+                    var seriesTripleStoreId = null;
+                    if (self.workPackaged.NonTreatySeriesMembership !== null)
+                        seriesTripleStoreId = self.workPackaged.NonTreatySeriesMembership.TripleStoreId;
                     seriesMemberships.push({
+                        TripleStoreId: seriesTripleStoreId,
                         SeriesMembershipId: self.seriesMembershipId(),
                         Citation: self.seriesCitation()
                     });
-                if (self.isTreatySeriesMembership() === true)
+                }
+                if (self.isTreatySeriesMembership() === true) {
+                    var treatySeriesTripleStoreId = null;
+                    if (self.workPackaged.TreatySeriesMembership !== null)
+                        treatySeriesTripleStoreId = self.workPackaged.TreatySeriesMembership.TripleStoreId;
                     seriesMemberships.push({
+                        TripleStoreId: treatySeriesTripleStoreId,
                         SeriesMembershipId: 4,
                         Citation: self.seriesTreatyCitation()
                     });
+                }
                 if (Number.isNaN(Number.parseInt(self.workPackaged.Id)))
                     $.ajax(window.urls.addWorkPackaged, {
                         method: "POST",
