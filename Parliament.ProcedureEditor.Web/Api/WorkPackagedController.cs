@@ -310,9 +310,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     return false;
             }
             if ((string.IsNullOrWhiteSpace(tripleStoreId)) ||
-                (string.IsNullOrWhiteSpace(workPackageTripleStoreId)) ||
-                (string.IsNullOrWhiteSpace(seriesMembershipTripleStoreId)) ||
-                (string.IsNullOrWhiteSpace(seriesMembershipTreatyTripleStoreId)))
+                (string.IsNullOrWhiteSpace(workPackageTripleStoreId)))
                 return false;
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@TripleStoreId", tripleStoreId);
