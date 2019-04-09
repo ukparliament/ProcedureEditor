@@ -17,7 +17,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             if (searchParameters == null)
                 return null;
-            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from (
+            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription, s.ProcedureStepScopeNote, s.ProcedureStepLinkNote, s.ProcedureStepDateNote from (
 	                select unionsteps.step from (
 		                select wp.Id as wp, s.Id as step from ProcedureWorkPackagedThing wp
 		                join ProcedureRouteProcedure rp on rp.ProcedureId=wp.ProcedureId
@@ -66,7 +66,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<Step> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName,
-                s.ProcedureStepDescription from ProcedureStep s;
+                s.ProcedureStepDescription, s.ProcedureStepScopeNote, s.ProcedureStepLinkNote, s.ProcedureStepDateNote from ProcedureStep s;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId");
             Tuple<List<Step>, List<StepHouse>> tuple = GetItems<Step, StepHouse>(command);
@@ -98,7 +98,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public Step Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, ProcedureStepName,
-                ProcedureStepDescription from ProcedureStep
+                ProcedureStepDescription, ProcedureStepScopeNote, ProcedureStepLinkNote, ProcedureStepDateNote from ProcedureStep
                 where Id=@Id;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
@@ -142,6 +142,9 @@ namespace Parliament.ProcedureEditor.Web.Api
             updates.Add(new CommandDefinition(@"update ProcedureStep
                 set ProcedureStepName=@ProcedureStepName,
                     ProcedureStepDescription=@ProcedureStepDescription,
+                    ProcedureStepScopeNote=@ProcedureStepScopeNote, 
+                    ProcedureStepLinkNote=@ProcedureStepLinkNote,
+                    ProcedureStepDateNote=@ProcedureStepDateNote,
                     ModifiedBy=@ModifiedBy,
                     ModifiedAt=@ModifiedAt
                 where Id=@Id",
@@ -149,6 +152,9 @@ namespace Parliament.ProcedureEditor.Web.Api
                 {
                     ProcedureStepName = step.ProcedureStepName.Trim(),
                     ProcedureStepDescription = step.ProcedureStepDescription,
+                    ProcedureStepScopeNote = step.ProcedureStepScopeNote,
+                    ProcedureStepLinkNote = step.ProcedureStepLinkNote,
+                    ProcedureStepDateNote = step.ProcedureStepDateNote,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
@@ -180,13 +186,21 @@ namespace Parliament.ProcedureEditor.Web.Api
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"insert into ProcedureStep
                 (ProcedureStepName,ProcedureStepDescription,
+                    ProcedureStepScopeNote,
+                    ProcedureStepLinkNote,
+                    ProcedureStepDateNote,
                     ModifiedBy,ModifiedAt,TripleStoreId)
-                values(@ProcedureStepName,@ProcedureStepDescription,
+                values(@ProcedureStepName,@ProcedureStepDescription, @ProcedureStepScopeNote,
+                    @ProcedureStepLinkNote,
+                    @ProcedureStepDateNote,
                     @ModifiedBy,@ModifiedAt,@TripleStoreId)",
                 new
                 {
                     ProcedureStepName = step.ProcedureStepName.Trim(),
                     ProcedureStepDescription = step.ProcedureStepDescription,
+                    ProcedureStepScopeNote = step.ProcedureStepScopeNote,
+                    ProcedureStepLinkNote = step.ProcedureStepLinkNote,
+                    ProcedureStepDateNote = step.ProcedureStepDateNote,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     TripleStoreId = tripleStoreId

@@ -8,6 +8,9 @@
                     TripleStoreId: null,
                     ProcedureStepName: null,
                     ProcedureStepDescription: null,
+                    ProcedureStepScopeNote: null,
+                    ProcedureStepLinkNote: null,
+                    ProcedureStepDateNote: null,
                     Houses: []
                 };
             else
@@ -16,6 +19,9 @@
             self.isNotValidResponse = ko.observable(false);
             self.procedureStepName = ko.observable(self.step.ProcedureStepName || "");
             self.procedureStepDescription = ko.observable(self.step.ProcedureStepDescription || "");
+            self.procedureStepScopeNote = ko.observable(self.step.ProcedureStepScopeNote || "");
+            self.procedureStepLinkNote = ko.observable(self.step.ProcedureStepLinkNote || "");
+            self.procedureStepDateNote = ko.observable(self.step.ProcedureStepDateNote || "");
             self.selectedHouses = ko.observableArray(self.step.Houses);
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.step.TripleStoreId + " step?";
@@ -40,6 +46,9 @@
                         data: {
                             ProcedureStepName: self.procedureStepName(),
                             ProcedureStepDescription: self.procedureStepDescription(),
+                            ProcedureStepScopeNote: self.procedureStepScopeNote(),
+                            ProcedureStepLinkNote: self.procedureStepLinkNote(),
+                            ProcedureStepDateNote: self.procedureStepDateNote(),
                             Houses: self.selectedHouses()
                         }
                     }).done(function (data) {
@@ -60,6 +69,9 @@
                         data: {
                             ProcedureStepName: self.procedureStepName(),
                             ProcedureStepDescription: self.procedureStepDescription(),
+                            ProcedureStepScopeNote: self.procedureStepScopeNote(),
+                            ProcedureStepLinkNote: self.procedureStepLinkNote(),
+                            ProcedureStepDateNote: self.procedureStepDateNote(),
                             Houses: self.selectedHouses()
                         }
                     }).done(function (data) {

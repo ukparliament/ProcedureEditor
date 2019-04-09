@@ -5,9 +5,14 @@
     [ModifiedBy]               NVARCHAR (MAX)     NOT NULL,
     [ModifiedAt]               DATETIMEOFFSET (0) NOT NULL,
     [ProcedureStepDescription] NVARCHAR (MAX)     NULL,
+    [ProcedureStepScopeNote]   NVARCHAR (MAX)     NULL,
+    [ProcedureStepLinkNote]    NVARCHAR (MAX)     NULL,
+    [ProcedureStepDateNote]    NVARCHAR (MAX)     NULL,
     CONSTRAINT [PK_ProcedureStep] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [IX_ProcedureStep] UNIQUE NONCLUSTERED ([TripleStoreId] ASC)
 );
+
+
 
 
 
