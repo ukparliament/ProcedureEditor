@@ -104,5 +104,6 @@
     <Build Include="dbo\Tables\ProcedureSeriesMembership.sql" />
     <Build Include="dbo\Stored Procedures\UpdateWorkPackaged.sql" />
     <Build Include="dbo\Tables\SolrTreatyBusinessItem.sql" />
+    <Build Include="dbo\Tables\ProcedureStepPublication.sql" />
   </ItemGroup>
 </Project>

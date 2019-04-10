@@ -16,7 +16,17 @@ BEGIN
 	else
 		begin
 			delete from ProcedureStepHouse where ProcedureStepId=@StepId
-			delete from ProcedureStep where Id=@StepId			
+
+			declare @PublicationId int;
+
+			select @PublicationId=psp.Id from ProcedureStepPublication psp
+			join ProcedureStep ps on ps.ProcedureStepPublicationId=psp.Id
+			where ps.Id=@StepId
+
+			delete from ProcedureStep where Id=@StepId	
+			
+			delete from ProcedureStepPublication  where Id=@PublicationId
+	
 			set @IsSuccess=1
 		end
 

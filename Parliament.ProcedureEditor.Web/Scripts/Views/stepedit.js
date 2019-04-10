@@ -11,7 +11,9 @@
                     ProcedureStepScopeNote: null,
                     ProcedureStepLinkNote: null,
                     ProcedureStepDateNote: null,
-                    Houses: []
+                    CommonlyActualisedAlongsideProcedureStepId: null,
+                    Houses: [],
+                    Publication: {TripleStoreId: null, PublicationName:null, PublicationUrl:null}
                 };
             else
                 self.step = step;
@@ -23,10 +25,14 @@
             self.procedureStepLinkNote = ko.observable(self.step.ProcedureStepLinkNote || "");
             self.procedureStepDateNote = ko.observable(self.step.ProcedureStepDateNote || "");
             self.selectedHouses = ko.observableArray(self.step.Houses);
+            self.publicationName = ko.observable(self.step.Publication.PublicationName || "");
+            self.publicationUrl = ko.observable(self.step.Publication.PublicationUrl || "");
             self.isDeletePopupVisible = ko.observable(false);
             self.warningText = "Are you sure you wish to delete " + self.step.TripleStoreId + " step?";
             self.isBeingSaved = ko.observable(false);
             self.houses = ko.observableArray();
+            self.steps = ko.observableArray([]);
+            self.commonlyActualisedAlongsideProcedureStepId = ko.observable(self.step.CommonlyActualisedAlongsideProcedureStepId);
 
             $.getJSON(window.urls.getHouses, function (data) {
                 self.houses(data);
@@ -35,6 +41,10 @@
             self.canSave = ko.computed(function () {
                 return (self.procedureStepName().length > 0) &&
                     (self.isBeingSaved() === false);
+            });
+
+            $.getJSON(window.urls.getSteps, function (data) {
+                self.steps(data);
             });
 
             self.save = function () {
@@ -49,7 +59,13 @@
                             ProcedureStepScopeNote: self.procedureStepScopeNote(),
                             ProcedureStepLinkNote: self.procedureStepLinkNote(),
                             ProcedureStepDateNote: self.procedureStepDateNote(),
-                            Houses: self.selectedHouses()
+                            CommonlyActualisedAlongsideProcedureStepId: self.commonlyActualisedAlongsideProcedureStepId(),
+                            Houses: self.selectedHouses(),
+                            Publication: {
+                                TripleStoreId: self.step.Publication.TripleStoreId,
+                                PublicationName: self.publicationName(),
+                                PublicationUrl: self.publicationUrl(),
+                            }
                         }
                     }).done(function (data) {
                         if (data === true)
@@ -72,7 +88,13 @@
                             ProcedureStepScopeNote: self.procedureStepScopeNote(),
                             ProcedureStepLinkNote: self.procedureStepLinkNote(),
                             ProcedureStepDateNote: self.procedureStepDateNote(),
-                            Houses: self.selectedHouses()
+                            CommonlyActualisedAlongsideProcedureStepId: self.commonlyActualisedAlongsideProcedureStepId(),
+                            Houses: self.selectedHouses(),
+                            Publication: {
+                                TripleStoreId: self.step.Publication.TripleStoreId,
+                                PublicationName: self.publicationName(),
+                                PublicationUrl: self.publicationUrl(),
+                            }
                         }
                     }).done(function (data) {
                         if (data === true)

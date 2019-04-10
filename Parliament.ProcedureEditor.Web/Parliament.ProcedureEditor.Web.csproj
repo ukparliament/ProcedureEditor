@@ -224,6 +224,7 @@
     <Compile Include="Models\LayingItemEditParameters.cs" />
     <Compile Include="Models\SeriesMembershipType.cs" />
     <Compile Include="Models\SolrTreaty.cs" />
+    <Compile Include="Models\StepPublication.cs" />
     <Compile Include="Models\StepSearchParameters.cs" />
     <Compile Include="Models\LayingItem.cs" />
     <Compile Include="Models\BusinessItemEditParameters.cs" />

@@ -17,7 +17,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         {
             if (searchParameters == null)
                 return null;
-            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription, s.ProcedureStepScopeNote, s.ProcedureStepLinkNote, s.ProcedureStepDateNote from (
+            CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName, s.ProcedureStepDescription from (
 	                select unionsteps.step from (
 		                select wp.Id as wp, s.Id as step from ProcedureWorkPackagedThing wp
 		                join ProcedureRouteProcedure rp on rp.ProcedureId=wp.ProcedureId
@@ -66,7 +66,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         public List<Step> Get()
         {
             CommandDefinition command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.ProcedureStepName,
-                s.ProcedureStepDescription, s.ProcedureStepScopeNote, s.ProcedureStepLinkNote, s.ProcedureStepDateNote from ProcedureStep s;
+                s.ProcedureStepDescription from ProcedureStep s;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId");
             Tuple<List<Step>, List<StepHouse>> tuple = GetItems<Step, StepHouse>(command);
@@ -98,13 +98,17 @@ namespace Parliament.ProcedureEditor.Web.Api
         public Step Get(int id)
         {
             CommandDefinition command = new CommandDefinition(@"select Id, TripleStoreId, ProcedureStepName,
-                ProcedureStepDescription, ProcedureStepScopeNote, ProcedureStepLinkNote, ProcedureStepDateNote from ProcedureStep
+                ProcedureStepDescription, ProcedureStepScopeNote, ProcedureStepLinkNote, ProcedureStepDateNote, CommonlyActualisedAlongsideProcedureStepId from ProcedureStep
                 where Id=@Id;
                 select h.Id, h.ProcedureStepId, h.HouseId, hh.HouseName from ProcedureStepHouse h
                 join House hh on hh.Id=h.HouseId
-                where h.ProcedureStepId=@Id",
+                where h.ProcedureStepId=@Id;
+                select psp.Id, psp.TripleStoreId, psp.PublicationName, psp.PublicationUrl from ProcedureStepPublication psp
+                join ProcedureStep ps
+                on psp.Id = ps.ProcedureStepPublicationId
+                where ps.Id=@Id",
                 new { Id = id });
-            Tuple<Step, List<StepHouse>> tuple = GetItem<Step, StepHouse>(command);
+            Tuple<Step, List<StepHouse>, List<StepPublication>> tuple = GetItem<Step, StepHouse, StepPublication>(command);
 
             tuple.Item1.Houses = tuple.Item2
                     .Select(h => h.HouseId)
@@ -113,6 +117,8 @@ namespace Parliament.ProcedureEditor.Web.Api
             tuple.Item1.HouseNames=tuple.Item2
                     .Select(h => h.HouseName)
                     .ToList();
+
+            tuple.Item1.Publication = tuple.Item3.SingleOrDefault()?? new StepPublication();
 
             return tuple.Item1;
         }
@@ -145,6 +151,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     ProcedureStepScopeNote=@ProcedureStepScopeNote, 
                     ProcedureStepLinkNote=@ProcedureStepLinkNote,
                     ProcedureStepDateNote=@ProcedureStepDateNote,
+                    CommonlyActualisedAlongsideProcedureStepId=@CommonlyActualisedAlongsideProcedureStepId,
                     ModifiedBy=@ModifiedBy,
                     ModifiedAt=@ModifiedAt
                 where Id=@Id",
@@ -155,6 +162,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     ProcedureStepScopeNote = step.ProcedureStepScopeNote,
                     ProcedureStepLinkNote = step.ProcedureStepLinkNote,
                     ProcedureStepDateNote = step.ProcedureStepDateNote,
+                    CommonlyActualisedAlongsideProcedureStepId = step.CommonlyActualisedAlongsideProcedureStepId,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     Id = id
@@ -170,6 +178,54 @@ namespace Parliament.ProcedureEditor.Web.Api
                             Id = id,
                             HouseId = h
                         })));
+
+            if (step.Publication != null )
+            {
+                if (step.Publication.TripleStoreId != null)
+                {
+                    updates.Add(new CommandDefinition(@"update ProcedureStep 
+                        set ProcedureStepPublicationId = null
+                        where Id = @Id",
+                    new
+                    {
+                        Id = id
+                    }));
+                    updates.Add(new CommandDefinition(@"delete from ProcedureStepPublication
+                        where TripleStoreId=@TripleStoreId",
+                        new { TripleStoreId = step.Publication.TripleStoreId }));
+                }
+                else
+                {
+                    step.Publication.TripleStoreId = GetTripleStoreId();
+                    if (String.IsNullOrWhiteSpace(step.Publication.TripleStoreId))
+                        return false;
+
+                }
+                if (!String.IsNullOrWhiteSpace(step.Publication.PublicationName) || !String.IsNullOrWhiteSpace(step.Publication.PublicationUrl))
+                {
+                    updates.Add(new CommandDefinition(@"insert into ProcedureStepPublication
+                    (PublicationName, PublicationUrl, TripleStoreId)
+                    values(@PublicationName,@PublicationUrl,@TripleStoreId)",
+                        new
+                        {
+                            PublicationName = step.Publication.PublicationName,
+                            PublicationUrl = step.Publication.PublicationUrl,
+                            TripleStoreId = step.Publication.TripleStoreId
+                        }));
+
+                    updates.Add(new CommandDefinition(@"update ProcedureStep 
+                        set ProcedureStepPublicationId = (select Id from ProcedureStepPublication 
+                        where TripleStoreId = @PublicationTripleStoreId) 
+                        where Id = @Id",
+                    new
+                    {
+                        PublicationTripleStoreId = step.Publication.TripleStoreId,
+                        Id = id
+                    }));
+                }
+            }
+
+
             return Execute(updates.ToArray());
         }
 
@@ -181,7 +237,8 @@ namespace Parliament.ProcedureEditor.Web.Api
                 (string.IsNullOrWhiteSpace(step.ProcedureStepName)))
                 return false;
             string tripleStoreId = GetTripleStoreId();
-            if (string.IsNullOrWhiteSpace(tripleStoreId))
+            string tripleStorePublicationId = GetTripleStoreId();
+            if (string.IsNullOrWhiteSpace(tripleStoreId) || string.IsNullOrWhiteSpace(tripleStorePublicationId))
                 return false;
             List<CommandDefinition> updates = new List<CommandDefinition>();
             updates.Add(new CommandDefinition(@"insert into ProcedureStep
@@ -189,10 +246,12 @@ namespace Parliament.ProcedureEditor.Web.Api
                     ProcedureStepScopeNote,
                     ProcedureStepLinkNote,
                     ProcedureStepDateNote,
+                    CommonlyActualisedAlongsideProcedureStepId,
                     ModifiedBy,ModifiedAt,TripleStoreId)
                 values(@ProcedureStepName,@ProcedureStepDescription, @ProcedureStepScopeNote,
                     @ProcedureStepLinkNote,
                     @ProcedureStepDateNote,
+                    @CommonlyActualisedAlongsideProcedureStepId,
                     @ModifiedBy,@ModifiedAt,@TripleStoreId)",
                 new
                 {
@@ -201,6 +260,7 @@ namespace Parliament.ProcedureEditor.Web.Api
                     ProcedureStepScopeNote = step.ProcedureStepScopeNote,
                     ProcedureStepLinkNote = step.ProcedureStepLinkNote,
                     ProcedureStepDateNote = step.ProcedureStepDateNote,
+                    CommonlyActualisedAlongsideProcedureStepId = step.CommonlyActualisedAlongsideProcedureStepId,
                     ModifiedBy = EMail,
                     ModifiedAt = DateTimeOffset.UtcNow,
                     TripleStoreId = tripleStoreId
@@ -214,6 +274,30 @@ namespace Parliament.ProcedureEditor.Web.Api
                         TripleStoreId = tripleStoreId,
                         HouseId = h
                     })));
+            if (step.Publication != null && (! String.IsNullOrWhiteSpace(step.Publication.PublicationName) ||
+                !String.IsNullOrWhiteSpace(step.Publication.PublicationUrl)))
+            {
+                updates.Add(new CommandDefinition(@"insert into ProcedureStepPublication
+                (PublicationName, PublicationUrl, TripleStoreId)
+                values(@PublicationName,@PublicationUrl,@TripleStoreId)",
+                new
+                {
+                    PublicationName = step.Publication.PublicationName,
+                    PublicationUrl = step.Publication.PublicationUrl,
+                    TripleStoreId = tripleStorePublicationId
+                }));
+
+                updates.Add(new CommandDefinition(@"update ProcedureStep 
+                    set ProcedureStepPublicationId = (select Id from ProcedureStepPublication 
+                    where TripleStoreId = @PublicationTripleStoreId) 
+                    where TripleStoreId = @StepTripleStoreId",
+                    new
+                    {
+                        PublicationTripleStoreId = tripleStorePublicationId,
+                        StepTripleStoreId = tripleStoreId
+                    }));
+
+            }
             return Execute(updates.ToArray());
         }
 

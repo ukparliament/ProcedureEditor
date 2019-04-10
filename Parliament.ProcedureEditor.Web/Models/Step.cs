@@ -14,5 +14,7 @@ namespace Parliament.ProcedureEditor.Web.Models
         public IEnumerable<int> Houses { get; set; }
 
         public IEnumerable<string> HouseNames { get; set; }
+        public int? CommonlyActualisedAlongsideProcedureStepId { get; set; }
+        public StepPublication Publication { get; set; }
     }
 }
