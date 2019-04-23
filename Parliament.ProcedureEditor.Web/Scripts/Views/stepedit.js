@@ -11,7 +11,7 @@
                     ProcedureStepScopeNote: null,
                     ProcedureStepLinkNote: null,
                     ProcedureStepDateNote: null,
-                    CommonlyActualisedAlongsideProcedureStepId: null,
+                    CommonlyActualisedAlongsideProcedureStepIds: [],
                     Houses: [],
                     Publication: {TripleStoreId: null, PublicationName:null, PublicationUrl:null}
                 };
@@ -32,7 +32,16 @@
             self.isBeingSaved = ko.observable(false);
             self.houses = ko.observableArray();
             self.steps = ko.observableArray([]);
-            self.commonlyActualisedAlongsideProcedureStepId = ko.observable(self.step.CommonlyActualisedAlongsideProcedureStepId);
+            self.commonlyActualisedAlongsideProcedureStepIds = ko.observableArray([]);
+            if (self.step.CommonlyActualisedAlongsideProcedureStepIds != null)
+                self.step.CommonlyActualisedAlongsideProcedureStepIds.forEach(function (val) {
+                    self.commonlyActualisedAlongsideProcedureStepIds.push({
+                        Id: ko.observable(val)
+                    });
+                });
+            self.commonlyActualisedAlongsideProcedureStepIds.push({
+                Id: ko.observable(null)
+            });
 
             $.getJSON(window.urls.getHouses, function (data) {
                 self.houses(data);
@@ -47,6 +56,26 @@
                 self.steps(data);
             });
 
+            self.removeStep = function (stepId) {
+                self.commonlyActualisedAlongsideProcedureStepIds.remove(function (val) {
+                    return val.Id() === null;
+                });
+                self.commonlyActualisedAlongsideProcedureStepIds.push({ Id: ko.observable(null) });
+            };
+
+            self.addStep = function (step) {
+                self.commonlyActualisedAlongsideProcedureStepIds.push({ Id: ko.observable(null) });
+            };
+
+            self.alongsideSteps = ko.pureComputed(function () {
+                return self.commonlyActualisedAlongsideProcedureStepIds().filter(function (itm) {
+                    return itm.Id() !== null;
+                })
+                    .map(function (itm) {
+                        return itm.Id();
+                    });
+            });
+
             self.save = function () {
                 self.isBeingSaved(true);
                 if (Number.isNaN(Number.parseInt(self.step.Id)))
@@ -59,7 +88,7 @@
                             ProcedureStepScopeNote: self.procedureStepScopeNote(),
                             ProcedureStepLinkNote: self.procedureStepLinkNote(),
                             ProcedureStepDateNote: self.procedureStepDateNote(),
-                            CommonlyActualisedAlongsideProcedureStepId: self.commonlyActualisedAlongsideProcedureStepId(),
+                            CommonlyActualisedAlongsideProcedureStepIds: self.alongsideSteps(),
                             Houses: self.selectedHouses(),
                             Publication: {
                                 TripleStoreId: self.step.Publication.TripleStoreId,
@@ -88,7 +117,7 @@
                             ProcedureStepScopeNote: self.procedureStepScopeNote(),
                             ProcedureStepLinkNote: self.procedureStepLinkNote(),
                             ProcedureStepDateNote: self.procedureStepDateNote(),
-                            CommonlyActualisedAlongsideProcedureStepId: self.commonlyActualisedAlongsideProcedureStepId(),
+                            CommonlyActualisedAlongsideProcedureStepIds: self.alongsideSteps(),
                             Houses: self.selectedHouses(),
                             Publication: {
                                 TripleStoreId: self.step.Publication.TripleStoreId,

@@ -142,6 +142,29 @@ namespace Parliament.ProcedureEditor.Web.Api
             return Tuple.Create<T, List<K>, List<L>>(resultT, resultK, resultL);
         }
 
+        internal Tuple<T, List<K>, List<L>, List<M>> GetItem<T, K, L, M>(CommandDefinition command)
+            where T : new()
+            where K : new()
+            where L : new()
+            where M : new()
+        {
+            T resultT = new T();
+            List<K> resultK = new List<K>();
+            List<L> resultL = new List<L>();
+            List<M> resultM = new List<M>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlMapper.GridReader grid = connection.QueryMultiple(command))
+                {
+                    resultT = grid.Read<T>().SingleOrDefault();
+                    resultK = grid.Read<K>().ToList();
+                    resultL = grid.Read<L>().ToList();
+                    resultM = grid.Read<M>().ToList();
+                }
+            }
+            return Tuple.Create<T, List<K>, List<L>, List<M>>(resultT, resultK, resultL, resultM);
+        }
+
         internal bool Execute(CommandDefinition command)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))

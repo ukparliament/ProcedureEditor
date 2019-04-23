@@ -17,6 +17,8 @@ BEGIN
 		begin
 			delete from ProcedureStepHouse where ProcedureStepId=@StepId
 
+			delete from ProcedureStepAlongsideStep where ProcedureStepId=@StepId
+
 			declare @PublicationId int;
 
 			select @PublicationId=psp.Id from ProcedureStepPublication psp

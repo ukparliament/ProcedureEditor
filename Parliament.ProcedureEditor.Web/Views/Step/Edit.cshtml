@@ -52,8 +52,12 @@
                 <input type="text" class="form-control form-control-md" data-bind="textInput: procedureStepDateNote" />
             </div>
             <div class="form-group">
-                <label>Commonly actualised alongside procedure step</label>
-                <step-selector params="procedureStepId: commonlyActualisedAlongsideProcedureStepId, steps: steps"></step-selector>
+                <label>Commonly actualised alongside procedure step*</label>
+                <ul class="list-unstyled" data-bind="foreach: commonlyActualisedAlongsideProcedureStepIds">
+                    <li>
+                        <step-selector params="procedureStepId: Id, steps: $parent.steps, addCallback: $parent.addStep, removeCallback: $parent.removeStep"></step-selector>
+                    </li>
+                </ul>
             </div>
             <div class="form-group">
                 <label>Publication name</label>
