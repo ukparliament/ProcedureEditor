@@ -267,6 +267,7 @@ namespace Parliament.ProcedureEditor.Web.Api
             parameters.Add("@WorkPackagedKind", (int)workPackaged.WorkPackagedKind);
             parameters.Add("@WorkPackagedThingName", workPackaged.WorkPackagedThingName);
             parameters.Add("@StatutoryInstrumentNumber", workPackaged.StatutoryInstrumentNumber);
+            parameters.Add("@StatutoryInstrumentNumberYear", workPackaged.StatutoryInstrumentNumberYear);
             parameters.Add("@StatutoryInstrumentNumberPrefix", workPackaged.StatutoryInstrumentNumberPrefix);
             parameters.Add("@ComingIntoForceNote", workPackaged.ComingIntoForceNote);
             parameters.Add("@ComingIntoForceDate", workPackaged.ComingIntoForceDate);
