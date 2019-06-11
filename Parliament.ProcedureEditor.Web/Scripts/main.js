@@ -78,7 +78,7 @@ var urls = {
     showWorkPackagedPreceding: "/WorkPackagePreceding/{id}",
 
     getSolrTreaties: "/solrfeed/treaty",
-    getSolrStatutoryInstruments: "/solrfeed/statutoryinstrument",
+    getSolrStatutoryInstruments: "/solrfeed/statutoryinstrument/{sitype}",
     getSolrBusinessItems: "/solrfeed/businessitem",
     getSolrTreaty: "/solrfeed/treaty/{id}",
     getSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
@@ -93,7 +93,7 @@ var urls = {
     editSolrStatutoryInstrument: "/SolrFeed/StatutoryInstrument/Edit/{id}",
     editSolrBusinessItem: "/SolrFeed/BusinessItem/Edit/{id}",
     showSolrTreaties: "/SolrFeed/Treaty",
-    showSolrStatutoryInstruments: "/SolrFeed/StatutoryInstrument",
+    showSolrStatutoryInstruments: "/SolrFeed/StatutoryInstrument/old",
     showSolrBusinessItems: "/SolrFeed/BusinessItem"
 
 };

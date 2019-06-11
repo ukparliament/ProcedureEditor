@@ -33,7 +33,8 @@
 
         };
 
-        $.getJSON(window.urls.getSolrStatutoryInstruments, function (statutoryInstruments) {
+        var sitype = $("#sitype").val();
+        $.getJSON(window.urls.getSolrStatutoryInstruments.replace("{sitype}", sitype), function (statutoryInstruments) {
             var vm = new viewModel(statutoryInstruments);
             ko.applyBindings(vm);
         });

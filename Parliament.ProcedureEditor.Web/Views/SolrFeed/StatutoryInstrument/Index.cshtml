@@ -1,6 +1,10 @@
-﻿@{
+﻿@model string
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<input id="sitype" type="hidden" value="@Model" />
 
 <section>
     <div class="container">
@@ -23,7 +27,7 @@
                 <a class="btn btn-outline-primary btn-sm" data-bind="attr:{href:window.urls.editSolrStatutoryInstrument.replace('{id}',Id) }">Create work package</a>
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bind="click: $parent.showDeletePopup">Delete</button>
             </li>
-        </ul>        
+        </ul>
     </div>
 </section>
 
