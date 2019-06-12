@@ -44,7 +44,7 @@ namespace Parliament.ProcedureEditor.Web.Api
         private readonly DateTimeOffset _laydate = new DateTime(2018, 3, 31);
 
         [HttpGet]
-        [ContentNegotiation("solrfeed/statutoryinstrument", ContentType.JSON)]
+        [ContentNegotiation("solrfeed/statutoryinstrument/{sitype}", ContentType.JSON)]
         public List<SolrStatutoryInstrument> GetStatutoryInstruments(string sitype)
         {
             CommandDefinition command;
