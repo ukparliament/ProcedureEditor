@@ -78,7 +78,7 @@ var urls = {
     showWorkPackagedPreceding: "/WorkPackagePreceding/{id}",
 
     getSolrTreaties: "/solrfeed/treaty",
-    getSolrStatutoryInstruments: "/solrfeed/statutoryinstrument/{sitype}",
+    getSolrStatutoryInstruments: "/solrfeed/statutoryinstrument?sitype={sitype}",
     getSolrBusinessItems: "/solrfeed/businessitem",
     getSolrTreaty: "/solrfeed/treaty/{id}",
     getSolrStatutoryInstrument: "/solrfeed/statutoryinstrument/{id}",
