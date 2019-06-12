@@ -41,24 +41,27 @@ namespace Parliament.ProcedureEditor.Web.Api
             return GetItems<SolrTreaty>(command);
         }
 
-        private readonly string _laydate = "2018-03-31";
+        private readonly DateTimeOffset _laydate = new DateTime(2018, 3, 31);
+
         [HttpGet]
         [ContentNegotiation("solrfeed/statutoryinstrument/{sitype}", ContentType.JSON)]
         public List<SolrStatutoryInstrument> GetStatutoryInstruments(string sitype)
         {
             CommandDefinition command;
             if (sitype == "old")
-                command = new CommandDefinition($@"select s.Id, s.TripleStoreId, s.Title,
+                command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
                     s.SIPrefix, s.SINumber, s.WebUrl, s.ComingIntoForceNote,
                     s.ComingIntoForceDate, s.MadeDate, s.LaidDate, s.SIProcedure, s.IsStatutoryInstrument
                     from SolrStatutoryInstrumentData s
-                    where s.TripleStoreId is null and s.IsDeleted=0 and s.LaidDate <= '{_laydate}'");
+                    where s.TripleStoreId is null and s.IsDeleted=0 and s.LaidDate <= @LayDate",
+                    new { LayDate = _laydate });
             else
-                command = new CommandDefinition($@"select s.Id, s.TripleStoreId, s.Title,
+                command = new CommandDefinition(@"select s.Id, s.TripleStoreId, s.Title,
                     s.SIPrefix, s.SINumber, s.WebUrl, s.ComingIntoForceNote,
                     s.ComingIntoForceDate, s.MadeDate, s.LaidDate, s.SIProcedure, s.IsStatutoryInstrument
                     from SolrStatutoryInstrumentData s
-                    where s.TripleStoreId is null and s.IsDeleted=0 and s.LaidDate > '{_laydate}'");
+                    where s.TripleStoreId is null and s.IsDeleted=0 and s.LaidDate > @LayDate",
+                    new { LayDate = _laydate });
             return GetItems<SolrStatutoryInstrument>(command);
         }
 
