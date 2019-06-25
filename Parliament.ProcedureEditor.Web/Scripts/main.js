@@ -93,7 +93,7 @@ var urls = {
     editSolrStatutoryInstrument: "/SolrFeed/StatutoryInstrument/Edit/{id}",
     editSolrBusinessItem: "/SolrFeed/BusinessItem/Edit/{id}",
     showSolrTreaties: "/SolrFeed/Treaty",
-    showSolrStatutoryInstruments: "/SolrFeed/StatutoryInstrument/old",
+    showSolrStatutoryInstruments: "/SolrFeed/StatutoryInstrument/new",
     showSolrBusinessItems: "/SolrFeed/BusinessItem"
 
 };
