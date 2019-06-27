@@ -109,7 +109,14 @@
                 });
                 self.laidSteps(filteredSteps);
                 self.laidDate(businessItemCandidate.LaidDate);
-                self.startedDate(businessItemCandidate.LaidDate);
+                if (procedureTripleStoreId == "iWugpxMn") //Made affirmative
+                {
+                    self.startedDate(businessItemCandidate.MadeDate);
+                }
+                else
+                {
+                    self.startedDate(businessItemCandidate.LaidDate);
+                }
             };
 
             $.getJSON(window.urls.getProcedure.replace("{id}", businessItemCandidate.ProcedureId), function (procedure) {
